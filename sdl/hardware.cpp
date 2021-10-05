@@ -15,6 +15,9 @@ SDL_Texture *texture = nullptr;
 SDL_mutex *m_flip = nullptr;
 static bool running = true;
 std::chrono::time_point<std::chrono::high_resolution_clock> t_start;
+std::chrono::time_point<std::chrono::high_resolution_clock> t_last_flip;
+
+const uint32_t FPS = 50;
 
 namespace picosystem {
 
@@ -175,7 +178,8 @@ namespace picosystem {
   }
 
   uint32_t time() {
-    return SDL_GetTicks();
+    auto elapsed = std::chrono::high_resolution_clock::now() - t_start;
+    return std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
   }
 
   uint32_t time_us() {
@@ -196,6 +200,12 @@ namespace picosystem {
   }
 
   void _wait_vsync() {
+    while (1) {
+      auto elapsed = std::chrono::high_resolution_clock::now() - t_last_flip;
+      if(std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() >= 1000000 / FPS) {
+        break;
+      }
+    }
   }
 
   bool _is_flipping() {
@@ -219,6 +229,8 @@ namespace picosystem {
 
 	  SDL_RenderPresent(renderer);
     SDL_UnlockMutex(m_flip);
+
+    t_last_flip = std::chrono::high_resolution_clock::now();
   }
 
   uint16_t _gamma_correct(uint8_t v) {
