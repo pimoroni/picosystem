@@ -109,17 +109,6 @@ namespace picosystem {
         }
         break;
 
-      case SDL_MOUSEBUTTONUP:
-      case SDL_MOUSEBUTTONDOWN:
-        // Eh
-        break;
-
-      case SDL_MOUSEMOTION:
-        if (event.motion.state & SDL_BUTTON_LMASK) {
-          // Hmm
-        }
-        break;
-
       case SDL_KEYDOWN: // fall-though
       case SDL_KEYUP:
         _sdl_handle_keyboard(event.key.keysym.sym, event.type == SDL_KEYDOWN);
@@ -127,11 +116,7 @@ namespace picosystem {
 
       case SDL_CONTROLLERBUTTONDOWN:
       case SDL_CONTROLLERBUTTONUP:
-        //blit_input->handle_controller_button(event.cbutton.button, event.type == SDL_CONTROLLERBUTTONDOWN);
-        break;
-
-      case SDL_CONTROLLERAXISMOTION:
-        //blit_input->handle_controller_motion(event.caxis.axis, event.caxis.value);
+        _sdl_handle_controller_button(event.cbutton.button, event.type == SDL_CONTROLLERBUTTONDOWN);
         break;
 
       case SDL_CONTROLLERDEVICEADDED:
@@ -207,9 +192,8 @@ namespace picosystem {
   void _wait_vsync() {
   }
 
-  bool _in_flip = false;
   bool _is_flipping() {
-    return _in_flip;
+    return false;
   }
 
   void _flip() {
