@@ -1,5 +1,7 @@
 #include <math.h>
 #include <iostream>
+#include <chrono>
+#include <thread>
 #include <map>
 #include "SDL.h"
 
@@ -12,6 +14,7 @@ SDL_Renderer *renderer = nullptr;
 SDL_Texture *texture = nullptr;
 SDL_mutex *m_flip = nullptr;
 static bool running = true;
+std::chrono::time_point<std::chrono::high_resolution_clock> t_start;
 
 namespace picosystem {
 
@@ -176,13 +179,16 @@ namespace picosystem {
   }
 
   uint32_t time_us() {
-    return 0;
+    auto elapsed = std::chrono::high_resolution_clock::now() - t_start;
+    return std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
   }
 
   void sleep(uint32_t d) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(d));
   }
 
   void sleep_us(uint32_t d) {
+    std::this_thread::sleep_for(std::chrono::microseconds(d));
   }
 
   uint32_t battery() {
@@ -239,6 +245,7 @@ namespace picosystem {
   }
 
   void _init_hardware() {
+    t_start = std::chrono::high_resolution_clock::now();
     m_flip = SDL_CreateMutex();
 
     std::cout << "Powered by PicoSystem SDL2 debugger runtime" << std::endl << std::endl;
