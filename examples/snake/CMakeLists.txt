@@ -7,20 +7,12 @@ project(snake C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
-# Initialize the SDK
-pico_sdk_init()
+find_package(PICOSYSTEM REQUIRED)
 
-add_definitions(-DPIXEL_DOUBLE -DNO_STARTUP_LOGO)
-
-add_executable(
+picosystem_executable(
   snake
   snake.cpp
 )
 
-find_package(PICOSYSTEM REQUIRED)
-
-# Pull in pico libraries that we need
-target_link_libraries(snake picosystem)
-
-# create map/bin/hex file etc.
-pico_add_extra_outputs(snake)
+pixel_double(snake)
+disable_startup_logo(snake)
