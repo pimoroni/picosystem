@@ -1,9 +1,23 @@
+cmake_minimum_required(VERSION 3.12)
+
+# Pull in PICO SDK (must be before project)
+include(../../pico_sdk_import.cmake)
+
+project(snake C CXX ASM)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+
+# Initialize the SDK
+pico_sdk_init()
+
 add_definitions(-DPIXEL_DOUBLE -DNO_STARTUP_LOGO)
 
 add_executable(
   snake
   snake.cpp
 )
+
+find_package(PICOSYSTEM REQUIRED)
 
 # Pull in pico libraries that we need
 target_link_libraries(snake picosystem)
