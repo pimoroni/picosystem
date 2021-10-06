@@ -1,0 +1,29 @@
+.program screen
+.side_set 1 opt
+
+; takes roughly 50 cycles for two pixels which equates to
+; 1.4m cycles per full screen (240x240) or roughly 12ms per
+; full frame
+
+.wrap_target
+
+  pull                      ; fetch two pixels (32 bits)
+
+; write first pixel
+
+  out null, 4               ; discard 4 alpha bits
+  set x, 11                 ; 12 bits to shift out
+p1:
+  out pins, 1   side 0      ; output bit, clear clock
+  jmp x-- p1    side 1      ; jump to next bit and set clock
+
+; write second pixel
+
+  out null, 4               ; discard 4 alpha bits
+  set x, 11                 ; 12 bits to shift out
+p2:
+  out pins, 1   side 0      ; output bit, clear clock
+  jmp x-- p2    side 1      ; jump to next bit and set clock
+
+.wrap
+
