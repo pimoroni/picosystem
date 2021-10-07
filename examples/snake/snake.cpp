@@ -54,6 +54,11 @@ void place_apple() {
   } while(hit);
 }
 
+// convert a map coordinate into its position on the screen
+vec_t transform(vec_t v) {
+  return {.x = (v.x * scale) + 6, .y = (v.y * scale) + 18};
+}
+
 // initialise the world
 void init() {
   // set the current state to PLAYING
@@ -70,6 +75,7 @@ void init() {
   place_apple();
 }
 
+// process user input and update the world state
 void update(uint32_t tick) {
   if(state == PLAYING) {
     // every 10 ticks (10 times per second) we'll update position
@@ -117,11 +123,7 @@ void update(uint32_t tick) {
   }
 }
 
-// convert a map coordinate into its position on the screen
-vec_t t(vec_t v) {
-  return {.x = (v.x * scale) + 6, .y = (v.y * scale) + 18};
-}
-
+// draw the world
 void draw() {
   // clear the screen in noxious 3310 backlight green and draw everything in
   // a faint blended black to get that cheap 90s LCD feel
@@ -137,14 +139,14 @@ void draw() {
   rect(2, 14, 116, 104);
 
   // draw the apple
-  fcircle(t(apple).x + 3, t(apple).y + 3, 2);
+  fcircle(transform(apple).x + 3, transform(apple).y + 3, 2);
 
   // draw the snake - if we're in GAME_OVER state then make it flash like in
   // the original
   bool flash = ((time() / 250) % 2) == 0;
   if(state == PLAYING || (state == GAME_OVER && flash)) {
     for(uint32_t i = 0; i < snake.body.size(); i++) {
-      vec_t p = t(snake.body[i]);
+      vec_t p = transform(snake.body[i]);
       frect(p.x, p.y, scale, scale);
     }
   }
