@@ -1,1 +1,1 @@
-include(picosystem)
+include(picosystem.cmake)
