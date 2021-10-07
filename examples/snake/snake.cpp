@@ -71,15 +71,15 @@ void init() {
 
 void update(uint32_t tick) {
   if(state == PLAYING) {
-    // player input, you can't reverse direction - for example changing
-    // direction to "up" cannot occur if you're currently pointing "down"
-    if(pressed(UP)    && !snake.dir.y) {snake.dir.x =  0; snake.dir.y = -1;}
-    if(pressed(DOWN)  && !snake.dir.y) {snake.dir.x =  0; snake.dir.y =  1;}
-    if(pressed(LEFT)  && !snake.dir.x) {snake.dir.x = -1; snake.dir.y =  0;}
-    if(pressed(RIGHT) && !snake.dir.x) {snake.dir.x =  1; snake.dir.y =  0;}
-
     // every 10 ticks (10 times per second) we'll update position
     if(tick % 10 == 0) {
+      // player input, you can't reverse direction - for example changing
+      // direction to "up" cannot occur if you're currently pointing "down"
+      if(button(UP)    && snake.dir.y == 0) {snake.dir.x =  0; snake.dir.y = -1;}
+      if(button(DOWN)  && snake.dir.y == 0) {snake.dir.x =  0; snake.dir.y =  1;}
+      if(button(LEFT)  && snake.dir.x == 0) {snake.dir.x = -1; snake.dir.y =  0;}
+      if(button(RIGHT) && snake.dir.x == 0) {snake.dir.x =  1; snake.dir.y =  0;}
+
       vec_t next = snake.next();
 
       // check if the snake's head is on the apple, if so make the snake longer
@@ -130,7 +130,7 @@ void draw() {
 
   // draw the scoreboard
   hline(2, 12, 116);
-  text(str(snake.length - 1), 2, 3);
+  text(str(snake.length - 1), 3, 3);
 
   // draw the walls
   rect(2, 14, 116, 104);
