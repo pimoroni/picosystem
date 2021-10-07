@@ -25,7 +25,7 @@ The entire API is exposed as around 40 functions which provide access to the
 hardware and help with drawing, audio, and user input.
 
 Once you're comfortable with building your project for PicoSystem you may find
-our [PicoSystem C++ API Cheatsheet](#) a useful reference to keep open.
+our [PicoSystem C++ API Cheatsheet](https://learn.pimoroni.com/article/picosystem-api-cheatsheet) a useful reference to keep open.
 
 ## Getting started
 
