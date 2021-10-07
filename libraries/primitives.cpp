@@ -280,8 +280,8 @@ namespace picosystem {
     // clip source coordinates
     if(sx < 0) {dx += -sx; w += sx; sx = 0;}
     if(sy < 0) {dy += -sy; h += sy; sy = 0;}
-    if(sx + w >= src->w) {w -= (sx + w) - src->w;}
-    if(sy + h >= src->h) {h -= (sy + h) - src->h;}
+    if(sx + w >= (int32_t)src->w) {w -= (sx + w) - src->w;}
+    if(sy + h >= (int32_t)src->h) {h -= (sy + h) - src->h;}
 
     // clip destination coordinates
     if(dx < _cx) {sx += (_cx - dx); w += (_cx - dx); dx = _cx;}

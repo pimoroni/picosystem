@@ -15,13 +15,13 @@ namespace picosystem {
 
   std::string str(int32_t v) {
     static char b[32];
-    snprintf(b, 32, "%d", v);
+    snprintf(b, 32, "%ld", v);
     return b;
   }
 
   std::string str(uint32_t v) {
     static char b[32];
-    snprintf(b, 32, "%d", v);
+    snprintf(b, 32, "%lu", v);
     return b;
   }
 
