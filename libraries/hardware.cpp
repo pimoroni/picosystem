@@ -12,6 +12,8 @@
 #include "pico/stdlib.h"
 #include "pico/time.h"
 
+#define PIXEL_DOUBLE
+
 #ifdef PIXEL_DOUBLE
   #include "screen_double.pio.h"
 #else
