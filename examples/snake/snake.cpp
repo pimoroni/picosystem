@@ -1,21 +1,21 @@
-#include <string.h>
-#include <math.h>
-#include <vector>
-
 #include "picosystem.hpp"
 
 using namespace picosystem;
 
-struct vec_t {int32_t x, y;};
-
-// the map will be 18x16 squares big
-constexpr vec_t bounds{.x = 18, .y = 16};
-// each square on the screen will be 6x6 pixels
-constexpr int scale = 6;
-
 enum state_t {PLAYING, GAME_OVER};
 state_t state = PLAYING;
 
+// a helpful way to represent an x, y coordinate pair such as the apple
+// location or the body segments of the snake
+struct vec_t {
+  int32_t x, y;
+};
+
+// the map will be 18x16 squares big with 6x6 pixel sized squares
+constexpr vec_t bounds{.x = 18, .y = 16};
+constexpr int scale = 6;
+
+// details about the snake
 struct {
   vec_t dir;
   uint32_t length;
@@ -27,14 +27,15 @@ struct {
     return {.x = body[0].x + dir.x, .y = body[0].y + dir.y};
   }
 
+  // adds new location to front of body and if that makes the snake too long
+  // then removes the last segment of its body
   void move() {
-    // add new location to front of body and if that makes the snake too long
-    // then remove the last segment of its body
     body.insert(body.begin(), next());
     if(body.size() > length) { body.pop_back(); }
   }
 } snake;
 
+// location of the apple
 vec_t apple;
 
 // place the apple in a new random location which is not the snake location
@@ -97,8 +98,8 @@ void update(uint32_t tick) {
 
       // check if the snake's head has collided with its tail
       for(uint32_t i = 1; i < snake.body.size() - 1; i++) {
-        vec_t b = snake.body[i];
-        if(b.x == next.x && b.y == next.y) {
+        vec_t v = snake.body[i];
+        if(v.x == next.x && v.y == next.y) {
           state = GAME_OVER;
         }
       }
