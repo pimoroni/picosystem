@@ -13,18 +13,24 @@ namespace picosystem {
     return b;
   }
 
+  std::string str(int32_t v) {
+    static char b[32];
+    snprintf(b, 32, "%d", v);
+    return b;
+  }
+
   std::string str(uint32_t v) {
     static char b[32];
     snprintf(b, 32, "%d", v);
     return b;
   }
 
-  color_t color(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+  color_t rgb(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
     // color_t will contain pixel data in the format aaaarrrrggggbbbb
     return (r & 0xf) | ((a & 0xf) << 4) | ((b & 0xf) << 8) | ((g & 0xf) << 12);
   }
 
-  color_t hsv_color(float h, float s, float v, float a) {
+  color_t hsv(float h, float s, float v, float a) {
     float i = floor(h * 6.0f);
     float f = h * 6.0f - i;
     v *= 15.0f;
@@ -34,15 +40,15 @@ namespace picosystem {
     uint8_t t = v * (1.0f - (1.0f - f) * s);
 
     switch (int(i) % 6) {
-      case 0: return color(v, t, p, a); break;
-      case 1: return color(q, v, p, a); break;
-      case 2: return color(p, v, t, a); break;
-      case 3: return color(p, q, v, a); break;
-      case 4: return color(t, p, v, a); break;
-      case 5: return color(v, p, q, a); break;
+      case 0: return rgb(v, t, p, a); break;
+      case 1: return rgb(q, v, p, a); break;
+      case 2: return rgb(p, v, t, a); break;
+      case 3: return rgb(p, q, v, a); break;
+      case 4: return rgb(t, p, v, a); break;
+      case 5: return rgb(v, p, q, a); break;
     }
 
-    return color(0, 0, 0);
+    return rgb(0, 0, 0);
   }
 
   // returns true if the provided rectangles intersect

@@ -4,7 +4,7 @@
 namespace picosystem {
 
   void pen(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
-    _pen = color(r, g, b, a);
+    _pen = rgb(r, g, b, a);
   }
 
   void pen(color_t p) {
@@ -15,7 +15,7 @@ namespace picosystem {
     _cx = x; _cy = y; _cw = w; _ch = h;
   }
 
-  void blend_mode(blend_func_t bf) {
+  void blend(blend_func_t bf) {
     _bf = bf;
   }
 
@@ -28,7 +28,7 @@ namespace picosystem {
     _camy = camy;
   }
 
-  void sprite_sheet(buffer_t &ss) {
+  void spritesheet(buffer_t &ss) {
     _ss = &ss;
   }
 

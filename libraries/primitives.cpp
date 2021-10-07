@@ -1,10 +1,12 @@
+#include <cassert>
+
 #include "picosystem.hpp"
 
 namespace picosystem {
 
   // drawing
   void clear() {
-    rect(_cx, _cy, _cw, _ch);
+    frect(_cx, _cy, _cw, _ch);
   }
 
   void pixel(int32_t x, int32_t y) {
@@ -14,7 +16,7 @@ namespace picosystem {
     }
   }
 
-  void hspan(int32_t x, int32_t y, int32_t c) {
+  void hline(int32_t x, int32_t y, int32_t c) {
     _camera_offset(x, y);
     if(y < _cy || y >= _cy + _ch) {return;}
     if(x < _cx) {c -= (_cx - x); x = _cx;}
@@ -24,7 +26,7 @@ namespace picosystem {
     }
   }
 
-  void vspan(int32_t x, int32_t y, int32_t c) {
+  void vline(int32_t x, int32_t y, int32_t c) {
     _camera_offset(x, y);
     if(x < _cx || x >= _cx + _cw) {return;}
     if(y < _cy) {c -= (_cy - y); y = _cy;}
@@ -37,6 +39,14 @@ namespace picosystem {
   }
 
   void rect(int32_t x, int32_t y, int32_t w, int32_t h) {
+    _camera_offset(x, y);
+    hline(x, y, w);
+    vline(x, y + 1, h - 1);
+    hline(x + 1, y + h - 1, w - 1);
+    vline(x + w - 1, y, h - 1);
+  }
+
+  void frect(int32_t x, int32_t y, int32_t w, int32_t h) {
     _camera_offset(x, y);
     intersection(x, y, w, h, _cx, _cy, _cw, _ch);
     color_t *dest = _dt.p(x, y);
@@ -52,15 +62,24 @@ namespace picosystem {
       return;
     }
 
+    assert(true); // not implemented
+  }
+
+  void fcircle(int32_t x, int32_t y, int32_t r) {
+    _camera_offset(x, y);
+    if(!intersects(x - r, y - r, r + r, r + r, _cx, _cy, _cw, _ch)) {
+      return;
+    }
+
     int ox = r, oy = 0, err = -r;
     while (ox >= oy)
     {
       int last_oy = oy; err += oy; oy++; err += oy;
-      hspan(x - ox, y + last_oy, ox * 2 + 1);
-      if (last_oy != 0) {hspan(x - ox, y - last_oy, ox * 2 + 1);}
+      hline(x - ox, y + last_oy, ox * 2 + 1);
+      if (last_oy != 0) {hline(x - ox, y - last_oy, ox * 2 + 1);}
       if(err >= 0 && ox != last_oy) {
-        hspan(x - last_oy, y + ox, last_oy * 2 + 1);
-        if (ox != 0) {hspan(x - last_oy, y - ox, last_oy * 2 + 1);}
+        hline(x - last_oy, y + ox, last_oy * 2 + 1);
+        if (ox != 0) {hline(x - last_oy, y - ox, last_oy * 2 + 1);}
         err -= ox; ox--; err -= ox;
       }
     }
@@ -87,6 +106,25 @@ namespace picosystem {
         balance += dx; y += incy;
       }
     }
+  }
+
+  void fpoly(const int32_t *p, uint32_t l) {
+    assert(true); // not implemented
+  }
+
+  void fpoly(const std::initializer_list<int32_t> &pts) {
+    fpoly(pts.begin(), pts.size());
+  }
+
+  void poly(const int32_t *p, uint32_t l) {
+    for(uint32_t i = 0; i < l - 2; i += 2) {
+      line(p[i], p[i + 1], p[i + 2], p[i + 3]);
+    }
+    line(p[l - 2], p[l - 1], p[0], p[1]);
+  }
+
+  void poly(const std::initializer_list<int32_t> &pts) {
+    poly(pts.begin(), pts.size());
   }
 
   void blit(const buffer_t &src, int32_t x, int32_t y, int32_t w, int32_t h, int32_t dx, int32_t dy) {

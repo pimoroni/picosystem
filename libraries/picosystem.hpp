@@ -3,6 +3,7 @@
 #include <memory>
 #include <cstdint>
 #include <climits>
+#include <initializer_list>
 
 #include <string>
 #include <vector>
@@ -47,18 +48,24 @@ namespace picosystem {
   void        pen(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255);
   void        pen(color_t p);
   void        clip(int32_t x, int32_t y, uint32_t w, uint32_t h);
-  void        blend_mode(blend_func_t bf);
+  void        blend(blend_func_t bf);
   void        target(buffer_t &dt);
   void        camera(int32_t camx, int32_t camy);
-  void        sprite_sheet(buffer_t &ss);
+  void        spritesheet(buffer_t &ss);
 
   // primitives
   void        clear();
   void        pixel(int32_t x, int32_t y);
-  void        hspan(int32_t x, int32_t y, int32_t c);
-  void        vspan(int32_t x, int32_t y, int32_t c);
+  void        hline(int32_t x, int32_t y, int32_t c);
+  void        vline(int32_t x, int32_t y, int32_t c);
   void        rect(int32_t x, int32_t y, int32_t w, int32_t h);
   void        circle(int32_t x, int32_t y, int32_t r);
+  void        poly(const int32_t *p, uint32_t l);
+  void        poly(const std::initializer_list<int32_t> &pts);
+  void        frect(int32_t x, int32_t y, int32_t w, int32_t h);
+  void        fcircle(int32_t x, int32_t y, int32_t r);
+  void        fpoly(const int32_t *p, uint32_t l);
+  void        fpoly(const std::initializer_list<int32_t> &pts);
   void        line(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
   void        blit(
                 const buffer_t &source,
@@ -83,9 +90,10 @@ namespace picosystem {
 
   // utility
   std::string str(float v, uint8_t precision = 2);
+  std::string str(int32_t v);
   std::string str(uint32_t v);
-  color_t     color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 15);
-  color_t     hsv_color(float h, float s, float v, float a = 1.0f);
+  color_t     rgb(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 15);
+  color_t     hsv(float h, float s, float v, float a = 1.0f);
   uint32_t    time();
   uint32_t    time_us();
   void        sleep(uint32_t d);

@@ -12,8 +12,8 @@ struct vec_t {
 
 // each square of the map is 4x4 pixels which on a 120x120 display
 // means the map is 60x60 squares large
-constexpr uint32_t scale = 8;
-constexpr vec_t map_size{.x = 120 / scale, .y = 120 / scale};
+constexpr uint32_t scale = 6;
+constexpr vec_t bounds{.x = 18, .y = 16};
 
 enum state_t {PLAYING, PAUSED, GAME_OVER};
 state_t state = PLAYING;
@@ -26,18 +26,22 @@ struct {
 
   void reset() {
     // place the player back in the centre of the map and remove it's tail
-    vec_t start = {.x = map_size.x / 2, .y = map_size.y / 2};
+    vec_t start = {.x = bounds.x / 2, .y = bounds.y / 2};
     body.clear();
     body.insert(body.begin(), start);
     dir.x = 1; dir.y = 0;
     length = 1;
   }
 
+  vec_t next_pos() {
+    vec_t p = body[0];
+    p.x += dir.x; p.y += dir.y;
+    return p;
+  }
+
   void move() {
     // add new location to front of body
-    vec_t pos = body[0];
-    pos.x += dir.x; pos.y += dir.y;
-    body.insert(body.begin(), pos);
+    body.insert(body.begin(), next_pos());
 
     // if snake tail is too long now then remove last element
     if(body.size() > length) { body.pop_back(); }
@@ -56,8 +60,8 @@ void place_apple() {
   bool hit = false;
   do {
     // generate a new location for the apple
-    apple.x = (std::rand() % (map_size.x - 2)) + 1;
-    apple.y = (std::rand() % (map_size.y - 2)) + 1;
+    apple.x = std::rand() % bounds.x;
+    apple.y = std::rand() % bounds.y;
 
     // check new apple location not in snake position or snakes tail
     for(auto v : snake.body) {
@@ -85,29 +89,32 @@ void update(uint32_t tick) {
 
     // every 10 (100ms) ticks we'll update position
     if(tick % 10 == 0) {
-      snake.move();
+      vec_t next_pos = snake.next_pos();
 
-      vec_t head = snake.head();
 
       // check if the snakes head is on the apple, if so make longer and
       // move the apple
-      if(head.x == apple.x && head.y == apple.y) {
+      if(next_pos.x == apple.x && next_pos.y == apple.y) {
         snake.length++;
         place_apple();
       }
 
       // check if the snakes head has collided with the walls
-      if(head.x <= 0 || head.x >= map_size.x - 1 ||
-         head.y <= 0 || head.y >= map_size.y - 1) {
+      if(next_pos.x < 0 || next_pos.x >= bounds.x ||
+         next_pos.y < 0 || next_pos.y >= bounds.y) {
         state = GAME_OVER;
       }
 
       // check if the snakes head has collided with it's tail
       for(uint32_t i = 1; i < snake.body.size() - 1; i++) {
         vec_t b = snake.body[i];
-        if(b.x == head.x && b.y == head.y) {
+        if(b.x == next_pos.x && b.y == next_pos.y) {
           state = GAME_OVER;
         }
+      }
+
+      if(state != GAME_OVER) {
+        snake.move();
       }
     }
 
@@ -122,36 +129,44 @@ void update(uint32_t tick) {
 }
 
 // fills a single square on the map in the provided colour
-void tile(color_t col, int32_t x, int32_t y) {
+void tile(color_t col, int32_t x, int32_t y, int d = 0) {
   pen(col);
-  rect(x * scale, y * scale, scale, scale);
+  frect(x * scale + d, y * scale + d, scale - d * 2, scale - d * 2);
+}
+
+vec_t t(vec_t v) {
+  v.x = (v.x * scale) + 6;
+  v.y = (v.y * scale) + 18;
+  return v;
 }
 
 void draw() {
   // clear the screen
-  pen(0, 0, 0);
+  pen(10, 12, 0);
   clear();
 
+  pen(0, 0, 0, 4);
+  hline(2, 12, 116);
+  text(str(snake.length - 1), 2, 3);
+
+
+  text(str(snake.head().x) + ", " + str(snake.head().y), 60, 3);
+
   // draw the walls
-  uint32_t size = map_size.x;
-  for(int i = 0; i < size; i++) {
-    tile(color(5, 6, 7), i, 0);
-    tile(color(5, 6, 7), i, map_size.y - 1);
-    tile(color(5, 6, 7), 0, i);
-    tile(color(5, 6, 7), map_size.x - 1, i);
-  }
+  rect(2, 14, 116, 104);
 
   // draw the apple
-  tile(color(15, 0, 0), apple.x, apple.y);
+  fcircle(t(apple).x + 3, t(apple).y + 3, 2);
 
   // draw the snake
   for(uint32_t i = 0; i < snake.body.size(); i++) {
-    vec_t p = snake.body[i];
-    tile(color(0, i == 0 ? 15 : 7, 0), p.x, p.y);
+    vec_t p = t(snake.body[i]);
+    frect(p.x, p.y, scale, scale);
   }
 
-  pen(15, 15, 15);
-  text(str(snake.length), 0, 0);
+  for(int i = 0; i < 10; i++) {
+    fcircle(i * 20 + 10, 40, i);
+  }
 
   // if pause then overlay a message
   if(state == PAUSED) {
@@ -163,8 +178,8 @@ void draw() {
   }
 
   if(state == GAME_OVER) {
-    pen(15, 0, 0, 8);
-    rect(0, 0, 120, 120);
+   /* pen(15, 0, 0, 8);
+    rect(0, 0, 120, 120);*/
 
     pen(15, 15, 15);
     text("GAME OVER", 10, 10);
