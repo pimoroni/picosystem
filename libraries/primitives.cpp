@@ -154,7 +154,9 @@ namespace picosystem {
       return;
     }
 
-    const uint8_t *p = &_font[(c - 32) * 8];
+    const uint8_t *p = &_font[(c - 32) * 9];
+
+    uint8_t w = *p++;
     color_t *dest = _dt.p(_tx, _ty);
 
     for(int32_t y = _ty; y < _ty + 8; y++) {
@@ -171,7 +173,7 @@ namespace picosystem {
       p++; dest += _dt.w - 8;
     }
 
-    _tx += 8;
+    _tx += w + 1;
   }
 
   void text(const char &c, int32_t x, int32_t y) {

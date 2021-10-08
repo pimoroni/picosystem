@@ -143,7 +143,7 @@ namespace picosystem {
   };
 
   // assets
-  const extern uint8_t _default_font[96][8];
+  const extern uint8_t _default_font[96][9];
   extern uint8_t _picosystem_logo[550];
   const extern color_t _default_sprite_sheet[16384];
 
