@@ -213,12 +213,17 @@ namespace picosystem {
 
   void _logo() {
     uint8_t *s = _picosystem_logo;
+    bool hires = _dt.w == 240 && _dt.h == 240;
 
     for(int y = 35; y < 85; y++) {
       for(int x = 19; x < 101; x+=8) {
         for(int bit = 0; bit < 8; bit++) {
           if(*s & (0b10000000 >> bit)) {
-            pixel(x + bit, y);
+            if(hires) {
+              pixel((x + bit)*2, y*2);
+            } else {
+              pixel(x + bit, y);
+            }
           }
         }
         s++;
