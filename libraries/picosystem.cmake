@@ -41,3 +41,15 @@ endfunction()
 function(disable_startup_logo NAME)
   target_compile_options(${NAME} PRIVATE -DNO_STARTUP_LOGO)
 endfunction()
+
+function(no_font NAME)
+  target_compile_options(${NAME} PRIVATE -DNO_FONT)
+endfunction()
+
+function(no_spritesheet NAME)
+  target_compile_options(${NAME} PRIVATE -DNO_SPRITESHEET)
+endfunction()
+
+function(no_overclock NAME)
+  target_compile_options(${NAME} PRIVATE -DNO_OVERCLOCK)
+endfunction()
