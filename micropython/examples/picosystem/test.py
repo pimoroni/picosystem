@@ -13,16 +13,16 @@ while True:
     g = 0
     b = 0
     if picosystem.button(picosystem.A):
-        r = 255
+        r = 100
     if picosystem.button(picosystem.B):
-        g = 255
+        g = 100
     if picosystem.button(picosystem.X):
-        b = 255
+        b = 100
     picosystem.led(r, g, b)
     if picosystem.button(picosystem.Y):
         picosystem.backlight(0)
     else:
-        picosystem.backlight(255)
+        picosystem.backlight(100)
     col = picosystem.hsv(h, 1, 0.5)
     h += 0.001
     if h > 1.0:
