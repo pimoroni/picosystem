@@ -123,23 +123,85 @@ mp_obj_t picosystem_tick() {
 }
 
 // state
-mp_obj_t picosystem_pen(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_pen(mp_uint_t n_args, const mp_obj_t *args) {
+    switch(n_args) {
+        case 1: {
+            int p = mp_obj_get_int(args[0]);
+
+            if(p < 0 || p > 0xffff) {
+                mp_raise_ValueError("p is not a valid pen.");
+            }
+            else {
+                pen(p);
+            }
+        } break;
+
+        case 3:
+        case 4: {
+            int r = mp_obj_get_int(args[0]);
+            int g = mp_obj_get_int(args[1]);
+            int b = mp_obj_get_int(args[2]);
+
+            if(r < 0 || r > 15) {
+                mp_raise_ValueError("r out of range. Expected 0 to 15");
+            }
+            else if(g < 0 || g > 15) {
+                mp_raise_ValueError("g out of range. Expected 0 to 15");
+            }
+            else if(b < 0 || b > 15) {
+                mp_raise_ValueError("b out of range. Expected 0 to 15");
+            }
+            else {
+                if(n_args == 4) {
+                    int a = mp_obj_get_int(args[3]);
+                    if(a < 0 || a > 15) {
+                        mp_raise_ValueError("a out of range. Expected 0 to 15");
+                    }
+                    else {
+                        pen(r, g, b, a);
+                    }
+                }
+                else {
+                    pen(r, g, b);
+                }
+            }
+        } break;
+
+        default: {
+            char *buffer;
+            buffer = (char*)malloc(100);
+            sprintf(buffer, "function takes 1 (color), 3 (r,g,b), or 4 (r,g,b,a) positional arguments but %d were given", n_args);
+            mp_raise_TypeError(buffer);
+            free(buffer);
+        } break;
+    }
+
     return mp_const_none;
 }
 
-mp_obj_t picosystem_clip(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_clip(mp_uint_t n_args, const mp_obj_t *args) {
+    int x = mp_obj_get_int(args[0]);
+    int y = mp_obj_get_int(args[1]);
+    int w = mp_obj_get_int(args[2]);
+    int h = mp_obj_get_int(args[3]);
+    clip(x, y, w, h);
     return mp_const_none;
 }
 
-mp_obj_t picosystem_blend(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_blend(mp_obj_t bf_obj) {
+    //TODO
     return mp_const_none;
 }
 
 mp_obj_t picosystem_target(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    //TODO
     return mp_const_none;
 }
 
-mp_obj_t picosystem_camera(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_camera(mp_obj_t camx_obj, mp_obj_t camy_obj) {
+    int camx = mp_obj_get_int(camx_obj);
+    int camy = mp_obj_get_int(camy_obj);
+    camera(camx, camy);
     return mp_const_none;
 }
 
@@ -149,94 +211,242 @@ mp_obj_t picosystem_spritesheet(size_t n_args, const mp_obj_t *pos_args, mp_map_
 
 // primitives
 mp_obj_t picosystem_clear() {
+    clear();
     return mp_const_none;
 }
 
-mp_obj_t picosystem_pixel(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_pixel(mp_obj_t x_obj, mp_obj_t y_obj) {
+    int x = mp_obj_get_int(x_obj);
+    int y = mp_obj_get_int(y_obj);
+    pixel(x, y);
     return mp_const_none;
 }
 
-mp_obj_t picosystem_hline(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_hline(mp_obj_t x_obj, mp_obj_t y_obj, mp_obj_t c_obj) {
+    int x = mp_obj_get_int(x_obj);
+    int y = mp_obj_get_int(y_obj);
+    int c = mp_obj_get_int(c_obj);
+    hline(x, y, c);
     return mp_const_none;
 }
 
-mp_obj_t picosystem_vline(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_vline(mp_obj_t x_obj, mp_obj_t y_obj, mp_obj_t c_obj) {
+    int x = mp_obj_get_int(x_obj);
+    int y = mp_obj_get_int(y_obj);
+    int c = mp_obj_get_int(c_obj);
+    vline(x, y, c);
     return mp_const_none;
 }
 
-mp_obj_t picosystem_rect(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_rect(mp_uint_t n_args, const mp_obj_t *args) {
+    int x = mp_obj_get_int(args[0]);
+    int y = mp_obj_get_int(args[1]);
+    int w = mp_obj_get_int(args[2]);
+    int h = mp_obj_get_int(args[3]);
+    rect(x, y, w, h);
     return mp_const_none;
 }
 
-mp_obj_t picosystem_circle(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_circle(mp_obj_t x_obj, mp_obj_t y_obj, mp_obj_t r_obj) {
+    int x = mp_obj_get_int(x_obj);
+    int y = mp_obj_get_int(y_obj);
+    int r = mp_obj_get_int(r_obj);
+    circle(x, y, r);
     return mp_const_none;
 }
 
 mp_obj_t picosystem_poly(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    //TODO
     return mp_const_none;
 }
 
-mp_obj_t picosystem_frect(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_frect(mp_uint_t n_args, const mp_obj_t *args) {
+    int x = mp_obj_get_int(args[0]);
+    int y = mp_obj_get_int(args[1]);
+    int w = mp_obj_get_int(args[2]);
+    int h = mp_obj_get_int(args[3]);
+    frect(x, y, w, h);
     return mp_const_none;
 }
 
-mp_obj_t picosystem_fcircle(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_fcircle(mp_obj_t x_obj, mp_obj_t y_obj, mp_obj_t r_obj) {
+    int x = mp_obj_get_int(x_obj);
+    int y = mp_obj_get_int(y_obj);
+    int r = mp_obj_get_int(r_obj);
+    fcircle(x, y, r);
     return mp_const_none;
 }
 
 mp_obj_t picosystem_fpoly(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    //TODO
     return mp_const_none;
 }
 
-mp_obj_t picosystem_line(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_line(mp_uint_t n_args, const mp_obj_t *args) {
+    int x1 = mp_obj_get_int(args[0]);
+    int y1 = mp_obj_get_int(args[1]);
+    int x2 = mp_obj_get_int(args[2]);
+    int y2 = mp_obj_get_int(args[3]);
+    line(x1, y1, x2, y2);
     return mp_const_none;
 }
 
 mp_obj_t picosystem_blit(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    //TODO
     return mp_const_none;
 }
 
-mp_obj_t picosystem_sprite(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_sprite(mp_uint_t n_args, const mp_obj_t *args) {
+    int i = mp_obj_get_int(args[0]);
+    int x = mp_obj_get_int(args[1]);
+    int y = mp_obj_get_int(args[2]);
+
+    if(n_args == 4) {
+        int flags = mp_obj_get_int(args[3]);
+        sprite(i, x, y, flags);
+    }
+    else {
+        sprite(i, x, y);
+    }
     return mp_const_none;
 }
 
-mp_obj_t picosystem_text(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+mp_obj_t picosystem_text(mp_uint_t n_args, const mp_obj_t *args) {
+    if(mp_obj_is_str_or_bytes(args[0])) {
+        GET_STR_DATA_LEN(args[0], str, str_len);
+
+        std::string t((const char*)str);
+
+        if(n_args == 3) {
+            int x = mp_obj_get_int(args[1]);
+            int y = mp_obj_get_int(args[2]);
+            text(t, x, y);
+        }
+        else {
+            text(t);
+        }
+    }
+    else if(mp_obj_is_float(args[0])) {
+        mp_raise_TypeError("can't convert 'float' object to str implicitly");
+    }
+    else if(mp_obj_is_int(args[0])) {
+        mp_raise_TypeError("can't convert 'int' object to str implicitly");
+    }
+    else if(mp_obj_is_bool(args[0])) {
+        mp_raise_TypeError("can't convert 'bool' object to str implicitly");
+    }
+    else {
+        mp_raise_TypeError("can't convert object to str implicitly");
+    }
+
     return mp_const_none;
 }
 
 // utility
-mp_obj_t picosystem_str(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    return mp_const_none;
+mp_obj_t picosystem_rgb(mp_uint_t n_args, const mp_obj_t *args) {
+    int r = mp_obj_get_int(args[0]);
+    int g = mp_obj_get_int(args[1]);
+    int b = mp_obj_get_int(args[2]);
+    if(r < 0 || r > 15) {
+        mp_raise_ValueError("r out of range. Expected 0 to 15");
+    }
+    else if(g < 0 || g > 15) {
+        mp_raise_ValueError("g out of range. Expected 0 to 15");
+    }
+    else if(b < 0 || b > 15) {
+        mp_raise_ValueError("b out of range. Expected 0 to 15");
+    }
+    else {
+        if(n_args == 4) {
+            int a = mp_obj_get_int(args[3]);
+            if(a < 0 || a > 15) {
+                mp_raise_ValueError("a out of range. Expected 0 to 15");
+            }
+            else {
+                return mp_obj_new_int(rgb(r, g, b, a));
+            }
+        }
+        else {
+            return mp_obj_new_int(rgb(r, g, b));
+        }
+    }
+    return mp_obj_new_int(0);
 }
 
-mp_obj_t picosystem_rgb(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    return mp_const_none;
+mp_obj_t picosystem_hsv(mp_uint_t n_args, const mp_obj_t *args) {
+    float h = mp_obj_get_float(args[0]);
+    float s = mp_obj_get_float(args[1]);
+    float v = mp_obj_get_float(args[2]);
+    if(h < 0.0f || h > 1.0f) {
+        mp_raise_ValueError("h out of range. Expected 0.0 to 1.0");
+    }
+    else if(s < 0.0f || s > 1.0f) {
+        mp_raise_ValueError("s out of range. Expected 0.0 to 1.0");
+    }
+    else if(v < 0.0f || v > 1.0f) {
+        mp_raise_ValueError("v out of range. Expected 0.0 to 1.0");
+    }
+    else {
+        if(n_args == 4) {
+            float a = mp_obj_get_float(args[3]);
+            if(a < 0.0f || a > 1.0f) {
+                mp_raise_ValueError("v out of range. Expected 0.0 to 1.0");
+            }
+            return mp_obj_new_int(hsv(h, s, v, a));
+        }
+        else {
+            return mp_obj_new_int(hsv(h, s, v));
+        }
+    }
+    return mp_obj_new_int(0);
 }
 
-mp_obj_t picosystem_hsv(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    return mp_const_none;
+mp_obj_t picosystem_intersects(mp_uint_t n_args, const mp_obj_t *args) {
+    int x = mp_obj_get_int(args[0]);
+    int y = mp_obj_get_int(args[1]);
+    int w = mp_obj_get_int(args[2]);
+    int h = mp_obj_get_int(args[3]);
+    int cx = mp_obj_get_int(args[4]);
+    int cy = mp_obj_get_int(args[5]);
+    int cw = mp_obj_get_int(args[6]);
+    int ch = mp_obj_get_int(args[7]);
+    return mp_obj_new_bool(intersects(x, y, w, h, cx, cy, cw, ch));
 }
 
-mp_obj_t picosystem_intersects(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    return mp_const_none;
+mp_obj_t picosystem_intersection(mp_uint_t n_args, const mp_obj_t *args) {
+    int32_t x = mp_obj_get_int(args[0]);
+    int32_t y = mp_obj_get_int(args[1]);
+    int32_t w = mp_obj_get_int(args[2]);
+    int32_t h = mp_obj_get_int(args[3]);
+    int cx = mp_obj_get_int(args[4]);
+    int cy = mp_obj_get_int(args[5]);
+    int cw = mp_obj_get_int(args[6]);
+    int ch = mp_obj_get_int(args[7]);
+
+    intersection(x, y, w, h, cx, cy, cw, ch);
+
+    mp_obj_t tuple[4];
+    tuple[0] = mp_obj_new_int(x);
+    tuple[1] = mp_obj_new_int(y);
+    tuple[2] = mp_obj_new_int(w);
+    tuple[3] = mp_obj_new_int(h);
+    return mp_obj_new_tuple(4, tuple);
 }
 
-mp_obj_t picosystem_intersection(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    return mp_const_none;
-}
-
-mp_obj_t picosystem_contains(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    return mp_const_none;
-}
-
-mp_obj_t picosystem_wrap(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    return mp_const_none;
+mp_obj_t picosystem_contains(mp_uint_t n_args, const mp_obj_t *args) {
+    int x = mp_obj_get_int(args[0]);
+    int y = mp_obj_get_int(args[1]);
+    int cx = mp_obj_get_int(args[2]);
+    int cy = mp_obj_get_int(args[3]);
+    int cw = mp_obj_get_int(args[4]);
+    int ch = mp_obj_get_int(args[5]);
+    return mp_obj_new_bool(contains(x, y, cx, cy, cw, ch));
 }
 
 // hardware
 mp_obj_t picosystem_pressed(mp_obj_t b_obj) {
     bool button_pressed = false;
-    
+
     int b = mp_obj_get_int(b_obj);
     switch(b) {
         case button::UP:
@@ -291,14 +501,18 @@ mp_obj_t picosystem_led(mp_obj_t r_obj, mp_obj_t g_obj, mp_obj_t b_obj) {
     int g = mp_obj_get_int(g_obj);
     int b = mp_obj_get_int(b_obj);
 
-    if(r < 0 || r > 255)
-        mp_raise_ValueError("r out of range. Expected 0 to 255");
-    else if(g < 0 || g > 255)
-        mp_raise_ValueError("g out of range. Expected 0 to 255");
-    else if(b < 0 || b > 255)
-        mp_raise_ValueError("b out of range. Expected 0 to 255");
-    else
+    if(r < 0 || r > 100) {
+        mp_raise_ValueError("r out of range. Expected 0 to 100");
+    }
+    else if(g < 0 || g > 100) {
+        mp_raise_ValueError("g out of range. Expected 0 to 100");
+    }
+    else if(b < 0 || b > 100) {
+        mp_raise_ValueError("b out of range. Expected 0 to 100");
+    }
+    else {
         led(r, g, b);
+    }
 
     return mp_const_none;
 }
@@ -306,10 +520,12 @@ mp_obj_t picosystem_led(mp_obj_t r_obj, mp_obj_t g_obj, mp_obj_t b_obj) {
 mp_obj_t picosystem_backlight(mp_obj_t b_obj) {
     int b = mp_obj_get_int(b_obj);
 
-    if(b < 0 || b > 255)
-        mp_raise_ValueError("b out of range. Expected 0 to 255");
-    else
+    if(b < 0 || b > 100) {
+        mp_raise_ValueError("b out of range. Expected 0 to 100");
+    }
+    else {
         backlight(b);
+    }
 
     return mp_const_none;
 }

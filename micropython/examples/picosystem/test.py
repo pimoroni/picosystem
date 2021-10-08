@@ -2,6 +2,7 @@ import picosystem
 
 picosystem.init()
 
+h = 0
 while True:
     picosystem.tick()
     print("UP: ", picosystem.button(picosystem.UP), end=", ")
@@ -22,3 +23,14 @@ while True:
         picosystem.backlight(0)
     else:
         picosystem.backlight(255)
+    col = picosystem.hsv(h, 1, 0.5)
+    h += 0.001
+    if h > 1.0:
+        h -= 1.0
+       
+    picosystem.pen(col)
+    picosystem.frect(10, 10, 110, 110)
+    picosystem.pen(15, 15, 15)
+    picosystem.line(10, 10, 110, 110)
+    picosystem.line(110, 10, 10, 110)
+    

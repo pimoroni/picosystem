@@ -8,36 +8,34 @@
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_init_obj, picosystem_init);
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_tick_obj, picosystem_tick);
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_pen_obj, 1, picosystem_pen);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_clip_obj, 1, picosystem_clip);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_blend_obj, 1, picosystem_blend);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_pen_obj, 1, 4, picosystem_pen);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_clip_obj, 4, 4, picosystem_clip);
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(picosystem_blend_obj, picosystem_blend);
 STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_target_obj, 1, picosystem_target);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_camera_obj, 1, picosystem_camera);
+STATIC MP_DEFINE_CONST_FUN_OBJ_2(picosystem_camera_obj, picosystem_camera);
 STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_spritesheet_obj, 1, picosystem_spritesheet);
 
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_clear_obj, picosystem_clear);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_pixel_obj, 1, picosystem_pixel);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_hline_obj, 1, picosystem_hline);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_vline_obj, 1, picosystem_vline);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_rect_obj, 1, picosystem_rect);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_circle_obj, 1, picosystem_circle);
+STATIC MP_DEFINE_CONST_FUN_OBJ_2(picosystem_pixel_obj, picosystem_pixel);
+STATIC MP_DEFINE_CONST_FUN_OBJ_3(picosystem_hline_obj, picosystem_hline);
+STATIC MP_DEFINE_CONST_FUN_OBJ_3(picosystem_vline_obj, picosystem_vline);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_rect_obj, 4, 4, picosystem_rect);
+STATIC MP_DEFINE_CONST_FUN_OBJ_3(picosystem_circle_obj, picosystem_circle);
 STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_poly_obj, 1, picosystem_poly);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_frect_obj, 1, picosystem_frect);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_fcircle_obj, 1, picosystem_fcircle);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_frect_obj, 4, 4, picosystem_frect);
+STATIC MP_DEFINE_CONST_FUN_OBJ_3(picosystem_fcircle_obj, picosystem_fcircle);
 STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_fpoly_obj, 1, picosystem_fpoly);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_line_obj, 1, picosystem_line);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_line_obj, 4, 4, picosystem_line);
 STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_blit_obj, 1, picosystem_blit);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_sprite_obj, 1, picosystem_sprite);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_text_obj, 1, picosystem_text);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_sprite_obj, 3, 4, picosystem_sprite);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_text_obj, 1, 3, picosystem_text);
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_str_obj, 1, picosystem_str);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_rgb_obj, 1, picosystem_rgb);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_hsv_obj, 1, picosystem_hsv);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_rgb_obj, 3, 4, picosystem_rgb);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_hsv_obj, 3, 4, picosystem_hsv);
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_intersects_obj, 1, picosystem_intersects);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_intersection_obj, 1, picosystem_intersection);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_contains_obj, 1, picosystem_contains);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_wrap_obj, 1, picosystem_wrap);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_intersects_obj, 8, 8, picosystem_intersects);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_intersection_obj, 8, 8, picosystem_intersection);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_contains_obj, 6, 6, picosystem_contains);
 
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(picosystem_pressed_obj, picosystem_pressed);
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(picosystem_button_obj, picosystem_button);
@@ -73,14 +71,12 @@ STATIC const mp_map_elem_t picosystem_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_sprite), MP_ROM_PTR(&picosystem_sprite_obj) },
     { MP_ROM_QSTR(MP_QSTR_text), MP_ROM_PTR(&picosystem_text_obj) },
 
-    { MP_ROM_QSTR(MP_QSTR_str), MP_ROM_PTR(&picosystem_str_obj) },
     { MP_ROM_QSTR(MP_QSTR_rgb), MP_ROM_PTR(&picosystem_rgb_obj) },
     { MP_ROM_QSTR(MP_QSTR_hsv), MP_ROM_PTR(&picosystem_hsv_obj) },
 
     { MP_ROM_QSTR(MP_QSTR_intersects), MP_ROM_PTR(&picosystem_intersects_obj) },
     { MP_ROM_QSTR(MP_QSTR_intersection), MP_ROM_PTR(&picosystem_intersection_obj) },
     { MP_ROM_QSTR(MP_QSTR_contains), MP_ROM_PTR(&picosystem_contains_obj) },
-    { MP_ROM_QSTR(MP_QSTR_wrap), MP_ROM_PTR(&picosystem_wrap_obj) },
 
     { MP_ROM_QSTR(MP_QSTR_pressed), MP_ROM_PTR(&picosystem_pressed_obj) },
     { MP_ROM_QSTR(MP_QSTR_button), MP_ROM_PTR(&picosystem_button_obj) },
