@@ -78,8 +78,24 @@ endfunction()
 
 function(pixel_double NAME)
   target_compile_options(${NAME} PRIVATE -DPIXEL_DOUBLE)
+  target_compile_options(picosystem PRIVATE -DPIXEL_DOUBLE)
 endfunction()
 
 function(disable_startup_logo NAME)
   target_compile_options(${NAME} PRIVATE -DNO_STARTUP_LOGO)
+  target_compile_options(picosystem PRIVATE -DDNO_STARTUP_LOGO)
+endfunction()
+
+function(no_font NAME)
+  target_compile_options(${NAME} PRIVATE -DNO_FONT)
+  target_compile_options(picosystem PRIVATE -DNO_FONT)
+endfunction()
+
+function(no_spritesheet NAME)
+  target_compile_options(${NAME} PRIVATE -DNO_SPRITESHEET)
+  target_compile_options(picosystem PRIVATE -DNO_SPRITESHEET)
+endfunction()
+
+function(no_overclock NAME)
+  # noop on SDL
 endfunction()

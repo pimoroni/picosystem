@@ -266,6 +266,8 @@ namespace picosystem {
       return;
     }
 
+    std::cout << "Screen "  << SCREEN.w << "x" << SCREEN.h << std::endl << std::endl;
+
     window = SDL_CreateWindow(
       "SDL Debug",
       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
