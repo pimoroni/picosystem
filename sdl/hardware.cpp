@@ -163,11 +163,11 @@ namespace picosystem {
   }
 
   bool pressed(uint32_t b) {
-    return !(_io & (1U << b)) && (_lio & (1U << b));
+    return (_io & (1U << b)) && (_lio & (1U << b));
   }
 
   bool button(uint32_t b) {
-    return !(_io & (1U << b));
+    return (_io & (1U << b));
   }
 
   void _reset_to_dfu() {
