@@ -31,6 +31,7 @@ function(picosystem_executable NAME SOURCES)
   target_link_libraries(${NAME} picosystem)
 
   # create map/bin/hex file etc.
+
   pico_add_extra_outputs(${NAME})
 endfunction()
 
