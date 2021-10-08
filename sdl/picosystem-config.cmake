@@ -83,7 +83,7 @@ endfunction()
 
 function(disable_startup_logo NAME)
   target_compile_options(${NAME} PRIVATE -DNO_STARTUP_LOGO)
-  target_compile_options(picosystem PRIVATE -DDNO_STARTUP_LOGO)
+  target_compile_options(picosystem PRIVATE -DNO_STARTUP_LOGO)
 endfunction()
 
 function(no_font NAME)
