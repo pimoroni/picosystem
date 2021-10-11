@@ -30,6 +30,16 @@ uint32_t last_ms = time();
 
 uint32_t tick = 0;
 
+mp_obj_t update_callback_obj = mp_const_none;
+mp_obj_t draw_callback_obj = mp_const_none;
+
+mp_obj_t pimoroni_mp_load_global(qstr qst) {
+    mp_map_elem_t *elem = mp_map_lookup(&mp_globals_get()->map, MP_OBJ_NEW_QSTR(qst), MP_MAP_LOOKUP);
+    if (elem == NULL) {
+        return mp_const_none;
+    }
+    return elem->value;
+}
 
 mp_obj_t picosystem_init() {
 
@@ -85,6 +95,22 @@ mp_obj_t picosystem_init() {
 }
 
 mp_obj_t picosystem_tick() {
+
+    if(update_callback_obj == mp_const_none) {
+        update_callback_obj = pimoroni_mp_load_global(qstr_from_str("update"));
+        if(update_callback_obj == mp_const_none) {
+            //TODO switch out this URL for the final one
+            mp_raise_msg(&mp_type_NameError, "a function named 'update(ticks)' is not defined. Check out https://github.com/pimoroni/picosystem-micropython/README.md for instructions");
+        }
+    }
+    if(draw_callback_obj == mp_const_none) {
+        draw_callback_obj = mp_load_global(qstr_from_str("draw"));
+        if(draw_callback_obj == mp_const_none) {
+            //TODO switch out this URL for the final one
+            mp_raise_msg(&mp_type_NameError, "a function named 'draw()' is not defined. Check out https://github.com/pimoroni/picosystem-micropython/README.md for instructions");
+        }
+    }
+
   //while(true) {
     uint32_t ms = time();
 
@@ -96,7 +122,7 @@ mp_obj_t picosystem_tick() {
       _lio = _io;
       _io = _gpio_get();
 
-      //update(tick++);
+      mp_call_function_1(update_callback_obj, mp_obj_new_int(tick++));
       pending_update_ms -= update_rate_ms;
     }
 
@@ -106,7 +132,7 @@ mp_obj_t picosystem_tick() {
     while(_is_flipping()) {}
 
     // call user render function to draw world
-    //draw();
+    mp_call_function_0(draw_callback_obj);
 
     // wait for the screen to vsync before triggering flip
     // to ensure no tearing

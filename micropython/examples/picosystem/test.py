@@ -1,36 +1,41 @@
-import picosystem
-
-picosystem.init()
+from picosystem import *
+init()
 
 h = 0
-while True:
-    picosystem.tick()
-    print("UP: ", picosystem.button(picosystem.UP), end=", ")
-    print("DOWN: ", picosystem.button(picosystem.DOWN), end=", ")
-    print("LEFT: ", picosystem.button(picosystem.LEFT), end=", ")
-    print("RIGHT: ", picosystem.button(picosystem.RIGHT))
+col = 0
+ 
+def update(ticks):
+    global h
+    global col
+    print("UP: ", button(UP), end=", ")
+    print("DOWN: ", button(DOWN), end=", ")
+    print("LEFT: ", button(LEFT), end=", ")
+    print("RIGHT: ", button(RIGHT))
     r = 0
     g = 0
     b = 0
-    if picosystem.button(picosystem.A):
+    if button(A):
         r = 100
-    if picosystem.button(picosystem.B):
+    if button(B):
         g = 100
-    if picosystem.button(picosystem.X):
+    if button(X):
         b = 100
-    picosystem.led(r, g, b)
-    if picosystem.button(picosystem.Y):
-        picosystem.backlight(0)
+    led(r, g, b)
+    if button(Y):
+        backlight(50)
     else:
-        picosystem.backlight(100)
-    col = picosystem.hsv(h, 1, 0.5)
+        backlight(100)
+    col = hsv(h, 1, 1)
     h += 0.001
     if h > 1.0:
         h -= 1.0
-       
-    picosystem.pen(col)
-    picosystem.frect(10, 10, 110, 110)
-    picosystem.pen(15, 15, 15)
-    picosystem.line(10, 10, 110, 110)
-    picosystem.line(110, 10, 10, 110)
-    
+        
+def draw():
+    pen(col)
+    frect(10, 10, 100, 100)
+    pen(15, 15, 15)
+    line(10, 10, 110, 110)
+    line(110, 10, 10, 110)
+
+while True:
+    tick()
