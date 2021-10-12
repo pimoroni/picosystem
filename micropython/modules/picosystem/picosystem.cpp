@@ -110,6 +110,9 @@ mp_obj_t pimoroni_mp_load_global(qstr qst) {
 
 mp_obj_t picosystem_init() {
 
+    MP_STATE_PORT(picosystem_framebuffer) = m_new(color_t, 120 * 120);
+    SCREEN.data = MP_STATE_PORT(picosystem_framebuffer);
+
     _init_hardware();
 
     // setup lut for fast sin/cos functions
