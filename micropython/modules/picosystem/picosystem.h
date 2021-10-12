@@ -43,10 +43,10 @@ extern mp_obj_t picosystem_hline(mp_obj_t x_obj, mp_obj_t y_obj, mp_obj_t c_obj)
 extern mp_obj_t picosystem_vline(mp_obj_t x_obj, mp_obj_t y_obj, mp_obj_t c_obj);
 extern mp_obj_t picosystem_rect(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_circle(mp_obj_t x_obj, mp_obj_t y_obj, mp_obj_t r_obj);
-extern mp_obj_t picosystem_poly(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t picosystem_poly(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_frect(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_fcircle(mp_obj_t x_obj, mp_obj_t y_obj, mp_obj_t r_obj);
-extern mp_obj_t picosystem_fpoly(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t picosystem_fpoly(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_line(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_blit(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t picosystem_sprite(mp_uint_t n_args, const mp_obj_t *args);
