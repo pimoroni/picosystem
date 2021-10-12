@@ -4,20 +4,20 @@
 
 // input pins
 enum button_pin {
-  UP    = 23,
-  DOWN  = 20,
-  LEFT  = 22,
-  RIGHT = 21,
-  A     = 18,
-  B     = 19,
-  X     = 17,
-  Y     = 16
+    UP    = 23,
+    DOWN  = 20,
+    LEFT  = 22,
+    RIGHT = 21,
+    A     = 18,
+    B     = 19,
+    X     = 17,
+    Y     = 16
 };
 
 enum blend_mode {
-  MODE_COPY = 0,
-  MODE_BLEND,
-  MODE_MASK
+    MODE_COPY = 0,
+    MODE_BLEND,
+    MODE_MASK
 };
 
 // Declare the functions we'll make available in Python

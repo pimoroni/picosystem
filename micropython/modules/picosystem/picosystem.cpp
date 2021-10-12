@@ -43,55 +43,55 @@ mp_obj_t pimoroni_mp_load_global(qstr qst) {
 
 mp_obj_t picosystem_init() {
 
-  _init_hardware();
+    _init_hardware();
 
-  // setup lut for fast sin/cos functions
-  for(uint32_t i = 0; i < 256; i++) {
-    _fsin_lut[i] = sin((_PI * 2.0f) * (float(i) / 256.0f));
-  }
+    // setup lut for fast sin/cos functions
+    for(uint32_t i = 0; i < 256; i++) {
+        _fsin_lut[i] = sin((_PI * 2.0f) * (float(i) / 256.0f));
+    }
 
-  #ifndef NO_STARTUP_LOGO
+#ifndef NO_STARTUP_LOGO
     // fade in logo by ramping up backlight
     pen(0, 0, 0); clear();
     pen(15, 15, 15); _logo();
     for(int i = 0; i < 75; i++) {
-      backlight(i);
-      _wait_vsync();
-      _flip();
+        backlight(i);
+        _wait_vsync();
+        _flip();
     }
 
     sleep(300); // ...and breathe out...
 
     // fade out logo in 16 colour steps
     for(int i = 15; i >= 0; i--) {
-      pen(0, 0, 0); clear();
-      pen(i, i, i); _logo();
-      _wait_vsync();
-      _flip();
+        pen(0, 0, 0); clear();
+        pen(i, i, i); _logo();
+        _wait_vsync();
+        _flip();
 
-      sleep(20);
+        sleep(20);
     }
-  #else
+#else
     backlight(75);
-  #endif
+#endif
 
-  sleep(300);
+    sleep(300);
 
-  pen(0, 0, 0); clear();
+    pen(0, 0, 0); clear();
 
-  // call users init() function so they can perform any needed
-  // setup for world state etc
-  //init();
+    // call users init() function so they can perform any needed
+    // setup for world state etc
+    //init();
 
-  update_rate_ms = 10;
-  pending_update_ms = 0;
-  last_ms = time();
+    update_rate_ms = 10;
+    pending_update_ms = 0;
+    last_ms = time();
 
-  tick = 0;
+    tick = 0;
 
-  _io = _gpio_get();
+    _io = _gpio_get();
 
-  return mp_const_none;
+    return mp_const_none;
 }
 
 mp_obj_t picosystem_tick() {
@@ -111,7 +111,7 @@ mp_obj_t picosystem_tick() {
         }
     }
 
-  //while(true) {
+    //while(true) {
     uint32_t ms = time();
 
     // work out how many milliseconds of updates we're waiting
@@ -119,11 +119,11 @@ mp_obj_t picosystem_tick() {
     // many times as needed to catch up
     pending_update_ms += (ms - last_ms);
     while(pending_update_ms >= update_rate_ms) {
-      _lio = _io;
-      _io = _gpio_get();
+        _lio = _io;
+        _io = _gpio_get();
 
-      mp_call_function_1(update_callback_obj, mp_obj_new_int(tick++));
-      pending_update_ms -= update_rate_ms;
+        mp_call_function_1(update_callback_obj, mp_obj_new_int(tick++));
+        pending_update_ms -= update_rate_ms;
     }
 
     // if current flipping the framebuffer in the background
@@ -142,10 +142,10 @@ mp_obj_t picosystem_tick() {
     _flip();
 
     last_ms = ms;
-  //}
+    //}
 
 
-  return mp_const_none;
+    return mp_const_none;
 }
 
 // state
