@@ -92,6 +92,9 @@ STATIC const mp_map_elem_t picosystem_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_B), MP_ROM_INT(B) },
     { MP_ROM_QSTR(MP_QSTR_X), MP_ROM_INT(X) },
     { MP_ROM_QSTR(MP_QSTR_Y), MP_ROM_INT(Y) },
+    { MP_ROM_QSTR(MP_QSTR_COPY), MP_ROM_INT(MODE_COPY) },
+    { MP_ROM_QSTR(MP_QSTR_BLEND), MP_ROM_INT(MODE_BLEND) },
+    { MP_ROM_QSTR(MP_QSTR_MASK), MP_ROM_INT(MODE_MASK) },
 };
 STATIC MP_DEFINE_CONST_DICT(mp_module_picosystem_globals, picosystem_globals_table);
 

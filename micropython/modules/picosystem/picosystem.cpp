@@ -217,7 +217,20 @@ mp_obj_t picosystem_clip(mp_uint_t n_args, const mp_obj_t *args) {
 }
 
 mp_obj_t picosystem_blend(mp_obj_t bf_obj) {
-    //TODO
+    int bf = mp_obj_get_int(bf_obj);
+    switch(bf) {
+        case MODE_COPY:
+            blend(COPY);
+            break;
+        case MODE_BLEND:
+            blend(BLEND);
+            break;
+        case MODE_MASK:
+            blend(MASK);
+            break;
+        default:
+            mp_raise_ValueError("not a valid blend mode. Expected COPY (0), BLEND (1), or MASK (2)");
+    }
     return mp_const_none;
 }
 
