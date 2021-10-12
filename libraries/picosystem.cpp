@@ -21,6 +21,7 @@ namespace picosystem {
   uint32_t _io = 0, _lio = 0;
   blend_func_t _bf = ALPHA;
 
+  #ifndef DYNAMIC_BUFFER
   #ifdef PIXEL_DOUBLE
     color_t _fb[120 * 120];
     buffer_t *SCREEN = buffer(120, 120, _fb);
@@ -29,6 +30,10 @@ namespace picosystem {
     color_t _fb[240 * 240];
     buffer_t *SCREEN = buffer(240, 240, _fb);
     int32_t _cx = 0, _cy = 0, _cw = 240, _ch = 240;
+  #endif
+  #else
+    buffer_t SCREEN{.w = 120, .h = 120, .data = nullptr};
+    int32_t _cx = 0, _cy = 0, _cw = 120, _ch = 120;
   #endif
 
   buffer_t *_dt = SCREEN;

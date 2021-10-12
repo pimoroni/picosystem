@@ -22,7 +22,8 @@ target_include_directories(usermod_${MOD_NAME} INTERFACE
 )
 
 target_compile_definitions(usermod_${MOD_NAME} INTERFACE
-    -DMODULE_${MOD_NAME_UPPER}_ENABLED=1
+    MODULE_${MOD_NAME_UPPER}_ENABLED=1
+    DYNAMIC_BUFFER=1
 )
 
 target_link_libraries(usermod INTERFACE usermod_${MOD_NAME})
