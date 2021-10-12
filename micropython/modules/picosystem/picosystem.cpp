@@ -11,6 +11,7 @@ using namespace picosystem;
 extern "C" {
 #include "picosystem.h"
 #include "math.h"
+#include "cstring"
 
 //#define NOT_INITIALISED_MSG     "Cannot call this function, as picodisplay is not initialised. Call picodisplay.init(<bytearray>) first."
 
@@ -34,6 +35,70 @@ uint32_t tick = 0;
 
 mp_obj_t update_callback_obj = mp_const_none;
 mp_obj_t draw_callback_obj = mp_const_none;
+
+/***** Variables Struct *****/
+typedef struct _PicosystemBuffer_obj_t {
+    mp_obj_base_t base;
+    buffer_t buffer;
+} _PicosystemBuffer_obj_t;
+
+
+/***** Print *****/
+void PicosystemBuffer_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind) {
+    (void)kind; //Unused input parameter
+    _PicosystemBuffer_obj_t *self = MP_OBJ_TO_PTR2(self_in, _PicosystemBuffer_obj_t);
+    mp_print_str(print, "Buffer(");
+
+    mp_print_str(print, "w = ");
+    mp_obj_print_helper(print, mp_obj_new_int(self->buffer.w), PRINT_REPR);
+
+    mp_print_str(print, ", h = ");
+    mp_obj_print_helper(print, mp_obj_new_int(self->buffer.h), PRINT_REPR);
+
+    mp_print_str(print, ")");
+}
+
+/***** Destructor ******/
+mp_obj_t PicosystemBuffer___del__(mp_obj_t self_in) {
+    _PicosystemBuffer_obj_t *self = MP_OBJ_TO_PTR2(self_in, _PicosystemBuffer_obj_t);
+    uint32_t size = self->buffer.w * self->buffer.h;
+    m_del(color_t, self->buffer.data, size);
+    return mp_const_none;
+}
+
+/***** Constructor *****/
+mp_obj_t PicosystemBuffer_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args) {
+    _PicosystemBuffer_obj_t *self = nullptr;
+
+    enum { ARG_w, ARG_h };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_w, MP_ARG_INT | MP_ARG_REQUIRED, {.u_int = 0} },
+        { MP_QSTR_h, MP_ARG_INT | MP_ARG_REQUIRED, {.u_int = 0} },
+    };
+
+    // Parse args.
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all_kw_array(n_args, n_kw, all_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
+    // Get I2C bus.
+    int w = args[ARG_w].u_int;
+    int h = args[ARG_h].u_int;
+
+    if(w <= 0 || h <= 0) {
+        mp_raise_ValueError("both w and h must be greater than zero");
+    }
+
+    self = m_new_obj_with_finaliser(_PicosystemBuffer_obj_t);
+    self->base.type = &PicosystemBuffer_type;
+
+    self->buffer.w = w;
+    self->buffer.h = h;
+    uint32_t size = w * h;
+    self->buffer.data = m_new(color_t, size);
+    memset(self->buffer.data, 0, sizeof(color_t));
+
+    return MP_OBJ_FROM_PTR(self);
+}
 
 mp_obj_t pimoroni_mp_load_global(qstr qst) {
     mp_map_elem_t *elem = mp_map_lookup(&mp_globals_get()->map, MP_OBJ_NEW_QSTR(qst), MP_MAP_LOOKUP);
@@ -234,8 +299,14 @@ mp_obj_t picosystem_blend(mp_obj_t bf_obj) {
     return mp_const_none;
 }
 
-mp_obj_t picosystem_target(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    //TODO
+mp_obj_t picosystem_target(mp_obj_t dt_obj) {
+    if(mp_obj_is_type(dt_obj, &PicosystemBuffer_type)) {
+        _PicosystemBuffer_obj_t *buffer_obj = MP_OBJ_TO_PTR2(dt_obj, _PicosystemBuffer_obj_t);
+        target(buffer_obj->buffer);
+    }
+    else {
+        mp_raise_TypeError("not a valid buffer. Expected a Buffer class");
+    }
     return mp_const_none;
 }
 
@@ -246,8 +317,14 @@ mp_obj_t picosystem_camera(mp_obj_t camx_obj, mp_obj_t camy_obj) {
     return mp_const_none;
 }
 
-mp_obj_t picosystem_spritesheet(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    //TODO
+mp_obj_t picosystem_spritesheet(mp_obj_t ss_obj) {
+    if(mp_obj_is_type(ss_obj, &PicosystemBuffer_type)) {
+        _PicosystemBuffer_obj_t *buffer_obj = MP_OBJ_TO_PTR2(ss_obj, _PicosystemBuffer_obj_t);
+        spritesheet(buffer_obj->buffer);
+    }
+    else {
+        mp_raise_TypeError("not a valid buffer. Expected a Buffer class");
+    }
     return mp_const_none;
 }
 
@@ -303,7 +380,7 @@ mp_obj_t picosystem_poly(mp_uint_t n_args, const mp_obj_t *args) {
 
     // Check if there is only one argument, which might be a list
     if(n_args == 1) {
-        if(mp_obj_is_type(args[0], &mp_type_list)) {
+        if(mp_obj_is_type(args[0], &PicosystemBuffer_type)) {
             mp_obj_list_t *points = MP_OBJ_TO_PTR2(args[0], mp_obj_list_t);
             if(points->len > 0) {
                 num_tuples = points->len;
@@ -417,8 +494,21 @@ mp_obj_t picosystem_line(mp_uint_t n_args, const mp_obj_t *args) {
     return mp_const_none;
 }
 
-mp_obj_t picosystem_blit(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    //TODO
+mp_obj_t picosystem_blit(mp_uint_t n_args, const mp_obj_t *args) {
+    if(mp_obj_is_type(args[0], &PicosystemBuffer_type)) {
+        _PicosystemBuffer_obj_t *buffer_obj = MP_OBJ_TO_PTR2(args[0], _PicosystemBuffer_obj_t);
+
+        int x = mp_obj_get_int(args[1]);
+        int y = mp_obj_get_int(args[2]);
+        int w = mp_obj_get_int(args[3]);
+        int h = mp_obj_get_int(args[4]);
+        int dx = mp_obj_get_int(args[5]);
+        int dy = mp_obj_get_int(args[6]);
+        blit(buffer_obj->buffer, x, y, w, h, dx, dy);
+    }
+    else {
+        mp_raise_TypeError("src is not a valid buffer. Expected a Buffer class");
+    }
     return mp_const_none;
 }
 

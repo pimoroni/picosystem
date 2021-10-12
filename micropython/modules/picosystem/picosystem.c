@@ -1,6 +1,30 @@
 #include "picosystem.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// PicosystemBuffer Class
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/***** Methods *****/
+MP_DEFINE_CONST_FUN_OBJ_1(PicosystemBuffer___del___obj, PicosystemBuffer___del__);
+
+/***** Binding of Methods *****/
+STATIC const mp_rom_map_elem_t PicosystemBuffer_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___del__), MP_ROM_PTR(&PicosystemBuffer___del___obj) },
+};
+
+STATIC MP_DEFINE_CONST_DICT(PicosystemBuffer_locals_dict, PicosystemBuffer_locals_dict_table);
+
+/***** Class Definition *****/
+const mp_obj_type_t PicosystemBuffer_type = {
+    { &mp_type_type },
+    .name = MP_QSTR_pimoroni_i2c,
+    .print = PicosystemBuffer_print,
+    .make_new = PicosystemBuffer_make_new,
+    .locals_dict = (mp_obj_dict_t*)&PicosystemBuffer_locals_dict,
+};
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // picosystem Module
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -11,9 +35,9 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_tick_obj, picosystem_tick);
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_pen_obj, 1, 4, picosystem_pen);
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_clip_obj, 4, 4, picosystem_clip);
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(picosystem_blend_obj, picosystem_blend);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_target_obj, 1, picosystem_target);
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(picosystem_target_obj, picosystem_target);
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(picosystem_camera_obj, picosystem_camera);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_spritesheet_obj, 1, picosystem_spritesheet);
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(picosystem_spritesheet_obj, picosystem_spritesheet);
 
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_clear_obj, picosystem_clear);
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(picosystem_pixel_obj, picosystem_pixel);
@@ -26,7 +50,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_frect_obj, 4, 4, picosyste
 STATIC MP_DEFINE_CONST_FUN_OBJ_3(picosystem_fcircle_obj, picosystem_fcircle);
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR(picosystem_fpoly_obj, 1, picosystem_fpoly);
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_line_obj, 4, 4, picosystem_line);
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_blit_obj, 1, picosystem_blit);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_blit_obj, 7, 7, picosystem_blit);
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_sprite_obj, 3, 4, picosystem_sprite);
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_text_obj, 1, 3, picosystem_text);
 
@@ -46,6 +70,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_1(picosystem_backlight_obj, picosystem_backlight)
 /***** Globals Table *****/
 STATIC const mp_map_elem_t picosystem_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_picosystem) },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_Buffer), (mp_obj_t)&PicosystemBuffer_type },
+
     { MP_ROM_QSTR(MP_QSTR_init), MP_ROM_PTR(&picosystem_init_obj) },
     { MP_ROM_QSTR(MP_QSTR_tick), MP_ROM_PTR(&picosystem_tick_obj) },
 

@@ -20,6 +20,14 @@ enum blend_mode {
     MODE_MASK
 };
 
+/***** Extern of Class Definition *****/
+extern const mp_obj_type_t PicosystemBuffer_type;
+
+/***** Extern of Class Methods *****/
+extern void PicosystemBuffer_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind);
+extern mp_obj_t PicosystemBuffer_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args);
+extern mp_obj_t PicosystemBuffer___del__(mp_obj_t self_in);
+
 // Declare the functions we'll make available in Python
 //extern mp_obj_t picosystem_init();
 //extern mp_obj_t picosystem_update(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
@@ -32,9 +40,9 @@ extern mp_obj_t picosystem_tick();
 extern mp_obj_t picosystem_pen(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_clip(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_blend(mp_obj_t bf_obj);
-extern mp_obj_t picosystem_target(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t picosystem_target(mp_obj_t dt_obj);
 extern mp_obj_t picosystem_camera(mp_obj_t camx_obj, mp_obj_t camy_obj);
-extern mp_obj_t picosystem_spritesheet(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t picosystem_spritesheet(mp_obj_t ss_obj);
 
 // primitives
 extern mp_obj_t picosystem_clear();
@@ -48,7 +56,7 @@ extern mp_obj_t picosystem_frect(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_fcircle(mp_obj_t x_obj, mp_obj_t y_obj, mp_obj_t r_obj);
 extern mp_obj_t picosystem_fpoly(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_line(mp_uint_t n_args, const mp_obj_t *args);
-extern mp_obj_t picosystem_blit(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t picosystem_blit(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_sprite(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_text(mp_uint_t n_args, const mp_obj_t *args);
 
