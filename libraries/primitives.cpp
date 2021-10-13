@@ -241,7 +241,7 @@ namespace picosystem {
 
   // draws a character at the current cursor position
   void text(const char &c) {
-    if(!intersects(_tx, _ty, 6, 6, _cx, _cy, _cw, _ch)) {
+    if(!intersects(_tx, _ty, 8, 8, _cx, _cy, _cw, _ch)) {
       return;
     }
 
@@ -251,17 +251,17 @@ namespace picosystem {
     color_t *dest = _dt.p(_tx, _ty);
 
     for(int32_t y = _ty; y < _ty + 8; y++) {
-      if(y >= _cy && y < _cy + _ch) {
-        uint8_t pr = *p;
-
-        for(uint8_t x = _tx; x < _tx + 8; x++) {
+      color_t *dest = _dt.p(_tx, y);
+      uint8_t pr = *p;
+      if(pr && y >= _cy && y < _cy + _ch) {
+        for(uint8_t x = _tx; x < _tx + w; x++) {
           if(x >= _cx && x < _cx + _cw && pr & 0x80) {
             _bf(&_pen, 0, dest, 1);
           }
           pr <<= 1; dest++;
         }
       }
-      p++; dest += _dt.w - 8;
+      p++;
     }
 
     _tx += w + 1;

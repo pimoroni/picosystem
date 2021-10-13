@@ -47,7 +47,7 @@ void update(uint32_t tick) {
     reset();
     view++;
 
-    if(view > 7) {
+    if(view > 8) {
       view = 0;
     }
   }
@@ -75,10 +75,18 @@ void draw() {
     } break;
     case 2: {
       uint32_t i = 0;
+      for(auto &s : shapes) {
+        pen(s.p);
+        text(char((i++ % 96) + 32), s.x, s.y);
+      }
+      label("Text");
+    } break;
+    case 3: {
+      uint32_t i = 0;
       for(auto &s : shapes) {sprite(i++, s.x, s.y);}
       label("Sprites");
     } break;
-    case 3: {
+    case 4: {
       for(auto &s : shapes) {
         pen(s.p);
         int32_t rx = sin(s.r * (3.1415927f / 180.0f)) * (s.w / 2);
@@ -90,19 +98,19 @@ void draw() {
       }
       label("Filled polygons");
     } break;
-    case 4: {
+    case 5: {
       for(auto &s : shapes) {pen(s.p); circle(s.x, s.y, s.w / 2);}
       label("Circles");
     } break;
-    case 5: {
+    case 6: {
       for(auto &s : shapes) {pen(s.p); rect(s.x, s.y, s.w, s.h);}
       label("Rectangles");
     } break;
-    case 6: {
+    case 7: {
       for(auto &s : shapes) {pen(s.p); fcircle(s.x, s.y, s.w / 2);}
       label("Filled circles");
     } break;
-    case 7: {
+    case 8: {
       for(auto &s : shapes) {
         pen(s.p);
         int32_t rx = sin(s.r * (3.1415927f / 180.0f)) * (s.w / 2);
