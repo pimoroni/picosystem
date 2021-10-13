@@ -135,22 +135,68 @@ namespace picosystem {
   }
 
   void fpoly(const int32_t *p, uint32_t l) {
-    assert(true); // not implemented
+    int32_t nodes[64]; // max number of nodes per scanline
+
+    if(l <= 1) {
+      return;
+    }
+
+    int32_t miny = p[1], maxy = p[1];
+
+    for (uint16_t i = 1; i < l; i++) {
+      miny = std::min(miny, p[i * 2 + 1]);
+      maxy = std::max(maxy, p[i * 2 + 1]);
+    }
+
+    // for each scanline within the polygon bounds (clipped to clip rect)
+    int32_t x, y;
+
+    for (y = std::max(_cy, miny); y <= std::min(_cy + _ch, maxy); y++) {
+      uint8_t n = 0;
+      for (uint16_t i = 0; i < l; i++) {
+        uint16_t j = (i + 1) % l;
+        int32_t sy = p[i * 2 + 1];
+        int32_t ey = p[j * 2 + 1];
+        int32_t fy = y;
+        if ((sy < fy && ey >= fy) || (ey < fy && sy >= fy)) {
+          int32_t sx = p[i * 2];
+          int32_t ex = p[j * 2];
+          int32_t px = int32_t(sx + float(fy - sy) / float(ey - sy) * float(ex - sx));
+
+          nodes[n++] = px < _cx ? _cx : (px >= _cx + _cw ? _cx + _cw - 1 : px);
+        }
+      }
+
+      uint16_t i = 0;
+      while (i < n - 1) {
+        if (nodes[i] > nodes[i + 1]) {
+          int32_t s = nodes[i]; nodes[i] = nodes[i + 1]; nodes[i + 1] = s;
+          if (i) i--;
+        }
+        else {
+          i++;
+        }
+      }
+
+      for (i = 0; i < n; i += 2) {
+        hline(nodes[i], y, nodes[i + 1] - nodes[i] + 1);
+      }
+    }
   }
 
   void fpoly(const std::initializer_list<int32_t> &pts) {
-    fpoly(pts.begin(), pts.size());
+    fpoly(pts.begin(), pts.size() / 2);
   }
 
   void poly(const int32_t *p, uint32_t l) {
-    for(uint32_t i = 0; i < l - 2; i += 2) {
-      line(p[i], p[i + 1], p[i + 2], p[i + 3]);
+    for(uint32_t i = 0; i < l - 1; i++) {
+      line(p[i * 2], p[i * 2 + 1], p[i * 2 + 2], p[i * 2 + 3]);
     }
-    line(p[l - 2], p[l - 1], p[0], p[1]);
+    line(p[l * 2 - 2], p[l * 2 - 1], p[0], p[1]);
   }
 
   void poly(const std::initializer_list<int32_t> &pts) {
-    poly(pts.begin(), pts.size());
+    poly(pts.begin(), pts.size() / 2);
   }
 
   void blit(const buffer_t &src, int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t dx, int32_t dy) {

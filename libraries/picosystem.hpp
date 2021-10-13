@@ -70,7 +70,7 @@ namespace picosystem {
   void        clip(int32_t x, int32_t y, uint32_t w, uint32_t h);
   void        blend(blend_func_t bf);
   void        target(buffer_t &dt);
-  void        camera(int32_t camx, int32_t camy);
+  void        camera(int32_t x, int32_t y);
   void        spritesheet(buffer_t &ss);
 
   // primitives

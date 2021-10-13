@@ -1,11 +1,12 @@
 #include <array>
+#include <math.h>
 
 #include "picosystem.hpp"
 
 using namespace picosystem;
 
 struct shape_t {
-  int32_t x, y, w, h;
+  int32_t x, y, w, h, r;
   color_t p;
 };
 
@@ -17,6 +18,7 @@ void reset() {
     s.y = std::rand() % 120;
     s.w = std::rand() % 20;
     s.h = std::rand() % 20;
+    s.r = std::rand() % 360;
     s.p = hsv((std::rand() % 100) / 100.0f, 1.0f, 1.0f);
   }
 }
@@ -27,6 +29,8 @@ void move() {
     s.y += std::rand() % 3 - 1;
     s.w += std::rand() % 3 - 1;
     s.h += std::rand() % 3 - 1;
+    //s.r += std::rand() % 11 - 5;
+    s.r += 3;
   }
 }
 
@@ -43,7 +47,7 @@ void update(uint32_t tick) {
     reset();
     view++;
 
-    if(view > 5) {
+    if(view > 7) {
       view = 0;
     }
   }
@@ -75,24 +79,51 @@ void draw() {
       label("Sprites");
     } break;
     case 3: {
+      for(auto &s : shapes) {
+        pen(s.p);
+        int32_t rx = sin(s.r * (3.1415927f / 180.0f)) * (s.w / 2);
+        int32_t ry = cos(s.r * (3.1415927f / 180.0f)) * (s.h / 2);
+        fpoly({
+          s.x - rx, s.y - ry, s.x + ry, s.y - rx,
+          s.x + rx, s.y + ry, s.x - ry, s.y + rx
+        });
+      }
+      label("Filled polygons");
+    } break;
+    case 4: {
       for(auto &s : shapes) {pen(s.p); circle(s.x, s.y, s.w / 2);}
       label("Circles");
     } break;
-    case 4: {
+    case 5: {
       for(auto &s : shapes) {pen(s.p); rect(s.x, s.y, s.w, s.h);}
       label("Rectangles");
     } break;
-    case 5: {
+    case 6: {
       for(auto &s : shapes) {pen(s.p); fcircle(s.x, s.y, s.w / 2);}
       label("Filled circles");
+    } break;
+    case 7: {
+      for(auto &s : shapes) {
+        pen(s.p);
+        int32_t rx = sin(s.r * (3.1415927f / 180.0f)) * (s.w / 2);
+        int32_t ry = cos(s.r * (3.1415927f / 180.0f)) * (s.h / 2);
+        poly({
+          s.x - rx, s.y - ry, s.x + ry, s.y - rx,
+          s.x + rx, s.y + ry, s.x - ry, s.y + rx
+        });
+      }
+      label("Polygons");
     } break;
   }
 
   // draw title
   pen(15, 15, 15);
+
   frect(0, 0, 120, 11);
   pen(0, 0, 0);
   text("Shapes Test", 2, 2);
+
+
 
 
 }

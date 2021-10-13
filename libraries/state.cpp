@@ -21,11 +21,12 @@ namespace picosystem {
 
   void target(buffer_t &dt) {
     _dt = dt;
+    _cx = 0; _cy = 0; _cw = dt.w; _ch = dt.h; // reset clip rect
   }
 
-  void camera(int32_t camx, int32_t camy) {
-    _camx = camx;
-    _camy = camy;
+  void camera(int32_t x, int32_t y) {
+    _camx = x;
+    _camy = y;
   }
 
   void spritesheet(buffer_t &ss) {
