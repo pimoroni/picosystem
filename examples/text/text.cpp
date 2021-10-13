@@ -2,27 +2,43 @@
 
 using namespace picosystem;
 
-// initialise the world
+uint32_t wrap_width;
+
 void init() {
 }
 
-// process user input and update the world state
 void update(uint32_t tick) {
+  wrap_width = (fsin(time() / 1000.0f) * 40.0f) + 76;
 }
 
-// draw the world
 void draw() {
-  // clear the screen in noxious 3310 backlight green and draw everything in
-  // a faint blended black to get that cheap 90s LCD feel
-  pen(10, 12, 0);
+  pen(0, 0, 0);
   clear();
 
-  pen(0, 0, 0, 4);
-  std::string test = "THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG. The Quick Brown Fox Jumped Over The Lazy Dog. 1234567890 ?><,.;'# []{}-=_+ \\|";
-  int wr = (fsin(time() / 1000.0f) * 30.0f) + 60;
-  uint32_t s = time_us();
-  wrap(test, wr);
-  text(str(time_us() - s), 50, 50);
-  text(test, 4, 20);
-  rect(4, 20, wr, 140);
+  // draw title
+  pen(15, 15, 15);
+  frect(0, 0, 120, 11);
+  pen(0, 0, 0);
+  text("Word Wrap Test", 2, 2);
+
+  pen(15, 15, 15);
+  text("Wrap at " + str(wrap_width) + " pixels:", 2, 15);
+
+  // define a long message to word wrap
+  std::string message = "\
+THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG. \
+The Quick Brown Fox Jumped Over The Lazy Dog. \
+1234567890 ?><,.;'# []{}-=_+ \\|";
+
+  // given the message, and a width in pixels, the wrap() method will insert
+  // newline characters where needed (modifying the original string)
+  wrap(message, wrap_width);
+
+  // draw wrapped text
+  pen(8, 8, 8);
+  text(message, 2, 28);
+
+  // draw green box to show wrap width
+  pen(0, 12, 0);
+  rect(1, 27, wrap_width + 2, 92);
 }
