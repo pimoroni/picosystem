@@ -25,6 +25,17 @@ namespace picosystem {
     }
   };
 
+  struct voice_t {
+    uint32_t i = 0; // current sample index
+    int32_t s = 0; // last sample
+    uint32_t t = 0;
+    uint32_t frequency, bend; // pitch (hz)
+    uint32_t waveform; // shape (sine, triangle, saw, noise)
+    uint32_t attack, decay, hold, release; // envelope (ms)
+    uint32_t reset, reverb; // effects (ms)
+    uint32_t sustain, volume, noise, distort; // effects (strength 0..100)
+  };
+
   using blend_func_t =
     void(*)(color_t* source, uint32_t source_step,
             color_t*   dest, uint32_t count);
@@ -39,7 +50,16 @@ namespace picosystem {
   extern buffer_t SCREEN;                 // framebuffer
   extern buffer_t &_dt;                   // drawing target
   extern buffer_t *_ss;                   // sprite sheet
-  extern uint8_t *_font;
+  extern uint8_t *_font;                  // font data
+  extern voice_t _chan[4];                // audio channels
+  extern uint32_t _vol;                   // master volume
+  extern uint32_t _sr;                    // sample rate
+  enum waveform {
+    SINE,
+    SAW,
+    TRIANGLE,
+    NOISE
+  };
   extern float _fsin_lut[256];            // fast sin lut
 
   constexpr float _PI = 3.1415927f;
@@ -118,6 +138,8 @@ namespace picosystem {
   uint32_t    battery();
   void        led(uint8_t r, uint8_t g, uint8_t b);
   void        backlight(uint8_t b);
+  //void        play_audio(uint8_t *b);
+  void        play(voice_t v);
 
   // internal methods - do not call directly, will change!
   void       _logo();
@@ -129,6 +151,10 @@ namespace picosystem {
   void       _flip();
   bool       _is_flipping();
   void       _camera_offset(int32_t &x, int32_t &y);
+
+  int8_t     _get_audio_frame();
+  //int16_t*   _get_audio_buffer(uint32_t &s);
+  //void       _update_audio();
 
   // input pins
   enum button {

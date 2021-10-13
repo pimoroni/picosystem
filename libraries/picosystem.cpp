@@ -126,6 +126,8 @@ int main() {
     // flip the framebuffer to the screen
     _flip();
 
+    //_update_audio();
+
     last_ms = ms;
   }
 

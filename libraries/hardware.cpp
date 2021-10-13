@@ -1,4 +1,5 @@
 #include <math.h>
+#include <string.h>
 
 #include "hardware/adc.h"
 #include "hardware/spi.h"
@@ -7,6 +8,7 @@
 #include "hardware/pio.h"
 #include "hardware/irq.h"
 
+#include "pico/audio_pwm.h"
 #include "pico/bootrom.h"
 #include "pico/stdlib.h"
 #include "pico/time.h"
@@ -226,6 +228,33 @@ namespace picosystem {
     pwm_set_gpio_level(BACKLIGHT, _gamma_correct(b));
   }
 
+  // for debugging...
+  /*uint32_t _last_buffer_size;
+  int16_t _last_buffer[8192];
+  int16_t* _get_audio_buffer(uint32_t &size) {
+    size = _last_buffer_size;
+    return _last_buffer;
+  }
+
+  static audio_buffer_pool *_audio_pool = nullptr;
+  void _update_audio() {
+    struct audio_buffer *buffer = take_audio_buffer(_audio_pool, false);
+
+    if(buffer) {
+      int16_t *samples = (int16_t *)buffer->buffer->bytes;
+
+      for(uint32_t i = 0; i < buffer->max_sample_count; i++) {
+        *samples++ = _get_audio_frame() * 256;
+      }
+      buffer->sample_count = buffer->max_sample_count;
+      _last_buffer_size = buffer->max_sample_count;
+      memcpy(_last_buffer, buffer->buffer->bytes, buffer->max_sample_count * 2);
+      give_audio_buffer(_audio_pool, buffer);
+    }else{
+      // skip since no audio needed... this never happens though?
+    }
+  }*/
+
   void led(uint8_t r, uint8_t g, uint8_t b) {
     pwm_set_gpio_level(RED,   _gamma_correct(r));
     pwm_set_gpio_level(GREEN, _gamma_correct(g));
@@ -279,6 +308,43 @@ namespace picosystem {
     pwm_set_wrap(pwm_gpio_to_slice_num(BLUE), 65535);
     pwm_init(pwm_gpio_to_slice_num(BLUE), &cfg, true);
     gpio_set_function(BLUE, GPIO_FUNC_PWM);
+/*
+    pwm_set_wrap(pwm_gpio_to_slice_num(AUDIO), 65535);
+    pwm_init(pwm_gpio_to_slice_num(AUDIO), &cfg, true);
+    gpio_set_function(AUDIO, GPIO_FUNC_PWM);
+*/
+
+    /*
+    static audio_format_t audio_format =
+      {.sample_freq = 11025, .format = AUDIO_BUFFER_FORMAT_PCM_S8,
+       .channel_count = 1};
+
+    static struct audio_buffer_format producer_format =
+      {.format = &audio_format, .sample_stride = 1};
+
+    struct audio_buffer_pool *producer_pool =
+      audio_new_producer_pool(&producer_format, 4, 441);
+
+    const struct audio_format *output_format;
+
+    struct audio_pwm_channel_config audio_pwm_config = {
+      .core = {.base_pin = AUDIO, .dma_channel = 1, .pio_sm = 1,},
+      .pattern = 3,
+    };
+
+    output_format = audio_pwm_setup(&audio_format, -1, &audio_pwm_config);
+
+    #ifndef NO_OVERCLOCK
+      pio_sm_set_clkdiv(pio1, 1, 2.0f);
+    #endif
+
+    audio_pwm_default_connect(producer_pool, false);
+    audio_pwm_set_enabled(true);
+    gpio_set_drive_strength(AUDIO, GPIO_DRIVE_STRENGTH_4MA );
+    gpio_set_slew_rate(AUDIO, GPIO_SLEW_RATE_FAST);
+
+    _audio_pool = producer_pool;
+    */
 
     // configure the spi interface used to initialise the screen
     spi_init(spi0, 8000000);
