@@ -62,7 +62,20 @@ namespace picosystem {
       return;
     }
 
-    assert(true); // not implemented
+    /*int ox = r, oy = 0, err = -r, last_ox;
+    while (ox >= oy)
+    {
+      int last_oy = oy; err += oy; oy++; err += oy;
+      hline(x - ox, y + last_oy, ox - last_ox);
+      if (last_oy != 0) {hline(x - ox, y - last_oy, ox - last_ox);}
+      if(err >= 0 && ox != last_oy) {
+        hline(x - last_oy, y + ox, last_oy * 2 + 1);
+        if (ox != 0) {hline(x - last_oy, y - ox, last_oy * 2 + 1);}
+        err -= ox; ox--; err -= ox;
+      }
+
+      last_ox = x - ox;
+    }*/
   }
 
   void fcircle(int32_t x, int32_t y, int32_t r) {
@@ -127,11 +140,30 @@ namespace picosystem {
     poly(pts.begin(), pts.size());
   }
 
-  void blit(const buffer_t &src, int32_t x, int32_t y, int32_t w, int32_t h, int32_t dx, int32_t dy) {
-    _camera_offset(x, y);
-    intersection(x, y, w, h, _cx, _cy, _cw, _ch);
+  void blit(const buffer_t &src, int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t dx, int32_t dy) {
+    _camera_offset(dx, dy);
 
-    color_t *ps = src.data + (x + y * src.w);
+    if(!intersects(dx, dy, w, h, _cx, _cy, _cw, _ch)) {
+      return;
+    }
+
+    // clip source coordinates
+    if(sx < 0) {dx += -sx; w += sx; sx = 0;}
+    if(sy < 0) {dy += -sy; h += sx; sy = 0;}
+    if(sx + w >= src.w) {w -= (sx + w) - src.w;}
+    if(sy + h >= src.h) {h -= (sy + h) - src.h;}
+
+    // clip destination coordinates
+    if(dx < _cx) {sx += (_cx - dx); w += (_cx - dx); dx = _cx;}
+    if(dy < _cy) {sy += (_cy - dy); h += (_cy - dy); dy = _cy;}
+    if(dx + w >= _cx + _cw) {w -= (dx + w) - (_cx + _cw);}
+    if(dy + h >= _cy + _ch) {h -= (dy + h) - (_cy + _ch);}
+
+    if(w < 0 || h < 0) {
+      return;
+    }
+
+    color_t *ps = src.data + (sx + sy * src.w);
     color_t *pd = _dt.data + (dx + dy * _dt.w);
 
     while(h--) {

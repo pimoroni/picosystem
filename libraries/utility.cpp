@@ -74,6 +74,12 @@ namespace picosystem {
     return x >= cx && y >= cy && x < cx + cw && y < cy + ch;
   }
 
+  // returns true if the rect is inside the provided rectangle
+  bool contains(int32_t x, int32_t y, int32_t w, int32_t h,
+    int32_t cx, int32_t cy, int32_t cw, int32_t ch) {
+    return x >= cx && y >= cy && x + w <= cx + cw && y + h <= cy + ch;
+  }
+
   uint32_t _word_length(std::string &t, std::size_t &i) {
     // skip past any spaces if present
     i = t.find_first_not_of(' ', i);

@@ -127,6 +127,9 @@ namespace picosystem {
   bool        contains(
                 int32_t  x, int32_t  y,
                 int32_t cx, int32_t cy, int32_t cw, int32_t ch);
+  bool        contains(
+                int32_t  x, int32_t  y, int32_t  w, int32_t  h,
+                int32_t cx, int32_t cy, int32_t cw, int32_t ch);
   void        wrap(std::string &t, std::size_t chars);
   std::vector<std::string> split(const std::string& t, char d = '\n');
   float       fsin(float v);
