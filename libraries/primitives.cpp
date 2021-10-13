@@ -149,7 +149,7 @@ namespace picosystem {
     }
 
     // for each scanline within the polygon bounds (clipped to clip rect)
-    int32_t x, y;
+    int32_t y;
 
     for (y = std::max(_cy, miny); y <= std::min(_cy + _ch, maxy); y++) {
       uint8_t n = 0;

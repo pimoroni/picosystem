@@ -17,7 +17,7 @@ namespace picosystem {
   typedef uint16_t color_t;
 
   struct buffer_t {
-    uint32_t w, h;
+    int32_t w, h;
     color_t *data;
 
     color_t *p(int32_t x, int32_t y) {
