@@ -47,17 +47,19 @@ void update(uint32_t tick) {
     reset();
     view++;
 
-    if(view > 8) {
+    if(view > 9) {
       view = 0;
     }
   }
 }
 
 void label(std::string s) {
+  pen(0, 0, 0, 8);
+  frect(0, 11, 120, 15);
   pen(0, 0, 0);
-  text(s, 3, 16);
+  text(s + ":", 3, 16);
   pen(15, 15, 15);
-  text(s, 2, 15);
+  text(s + ":", 2, 15);
 }
 
 void draw() {
@@ -121,6 +123,13 @@ void draw() {
         });
       }
       label("Polygons");
+    } break;
+    case 9: {
+      for(auto &s : shapes) {
+        pen(s.p);
+        pixel(s.x, s.y);
+      }
+      label("Pixels");
     } break;
   }
 
