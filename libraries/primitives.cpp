@@ -62,20 +62,33 @@ namespace picosystem {
       return;
     }
 
-    /*int ox = r, oy = 0, err = -r, last_ox;
-    while (ox >= oy)
+    int32_t p = 3 - 2 * r;
+    int32_t xc = 0, yc = r;
+
+    pixel(x + xc, y + yc);
+    pixel(x + xc, y - yc);
+    pixel(x + yc, y + xc);
+    pixel(x - yc, y + xc);
+
+    while(xc < yc)
     {
-      int last_oy = oy; err += oy; oy++; err += oy;
-      hline(x - ox, y + last_oy, ox - last_ox);
-      if (last_oy != 0) {hline(x - ox, y - last_oy, ox - last_ox);}
-      if(err >= 0 && ox != last_oy) {
-        hline(x - last_oy, y + ox, last_oy * 2 + 1);
-        if (ox != 0) {hline(x - last_oy, y - ox, last_oy * 2 + 1);}
-        err -= ox; ox--; err -= ox;
+      if(p <= 0) {
+        p = p + (4 * xc) + 6;
+        xc++;
+      } else {
+        p = p + (4 * (xc - yc)) + 10;
+        xc++; yc--;
       }
 
-      last_ox = x - ox;
-    }*/
+      pixel(x + xc, y + yc);
+      pixel(x - xc, y + yc);
+      pixel(x + xc, y - yc);
+      pixel(x - xc, y - yc);
+      pixel(x + yc, y + xc);
+      pixel(x - yc, y + xc);
+      pixel(x + yc, y - xc);
+      pixel(x - yc, y - xc);
+    }
   }
 
   void fcircle(int32_t x, int32_t y, int32_t r) {
