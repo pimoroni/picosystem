@@ -115,6 +115,9 @@ mp_obj_t picosystem_init() {
     MP_STATE_PORT(picosystem_framebuffer) = m_new(color_t, 120 * 120);
     SCREEN.data = MP_STATE_PORT(picosystem_framebuffer);
 
+    update_callback_obj = mp_const_none;
+    draw_callback_obj = mp_const_none;
+
     _init_hardware();
 
     // setup lut for fast sin/cos functions
