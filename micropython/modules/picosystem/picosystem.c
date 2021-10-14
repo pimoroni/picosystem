@@ -20,6 +20,7 @@ const mp_obj_type_t PicosystemBuffer_type = {
     .name = MP_QSTR_pimoroni_i2c,
     .print = PicosystemBuffer_print,
     .make_new = PicosystemBuffer_make_new,
+    .buffer_p = { .get_buffer = PicosystemBuffer_get_buffer },
     .locals_dict = (mp_obj_dict_t*)&PicosystemBuffer_locals_dict,
 };
 
