@@ -1,5 +1,4 @@
 from picosystem import *
-init()
 
 h = 0
 col = 0

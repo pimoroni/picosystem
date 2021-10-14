@@ -1,7 +1,6 @@
 from picosystem import *
 from math import sin, cos
 from random import randrange
-init()
 
 view = -1
 shapes = []
