@@ -396,7 +396,7 @@ namespace picosystem {
 
     // initialise dma channel for transmitting pixel data to screen
     // via the screen updating pio program
-    dma_channel = dma_claim_unused_channel(true);
+    dma_channel = 0; //dma_claim_unused_channel(true); // avoid MicroPython soft-reset timebomb
     dma_channel_config config = dma_channel_get_default_config(dma_channel);
     channel_config_set_bswap(&config, true);
     channel_config_set_dreq(&config, pio_get_dreq(screen_pio, screen_sm, true));
