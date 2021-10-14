@@ -87,7 +87,7 @@ mp_obj_t PicosystemBuffer_make_new(const mp_obj_type_t *type, size_t n_args, siz
     int h = args[ARG_h].u_int;
 
     if(w <= 0 || h <= 0) {
-        mp_raise_ValueError("both w and h must be greater than zero");
+        mp_raise_ValueError("Buffer: both w and h must be greater than zero");
     }
 
     self = m_new_obj_with_finaliser(_PicosystemBuffer_obj_t);
@@ -100,6 +100,15 @@ mp_obj_t PicosystemBuffer_make_new(const mp_obj_type_t *type, size_t n_args, siz
     memset(self->buffer.data, 0, sizeof(color_t));
 
     return MP_OBJ_FROM_PTR(self);
+}
+
+mp_int_t PicosystemBuffer_get_buffer(mp_obj_t self_in, mp_buffer_info_t *bufinfo, mp_uint_t flags) {
+    (void)flags;
+    _PicosystemBuffer_obj_t *self = MP_OBJ_TO_PTR2(self_in, _PicosystemBuffer_obj_t);;
+    bufinfo->buf = (void *)(self->buffer.data);
+    bufinfo->len = self->buffer.w * self->buffer.h * sizeof(color_t);
+    bufinfo->typecode = 'B'; // view PicosystemBuffer as bytes
+    return 0;
 }
 
 mp_obj_t pimoroni_mp_load_global(qstr qst) {
