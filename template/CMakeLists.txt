@@ -28,11 +28,8 @@ set(CMAKE_CXX_STANDARD 17)
 # Initialize the SDK
 pico_sdk_init()
 
-# Would find_package kindly search PATHS
-set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE BOTH)
-
 # Find the PicoSystem library
-find_package(PICOSYSTEM CONFIG REQUIRED PATHS .. ../picosystem)
+include(picosystem_sdk_import.cmake)
 
 # Create the output target
 picosystem_executable(
