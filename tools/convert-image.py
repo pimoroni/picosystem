@@ -8,25 +8,28 @@ import pathlib
 IMAGE_PATH = pathlib.Path(sys.argv[1])
 OUTPUT_PATH = IMAGE_PATH.with_suffix(".16bpp")
 
-WIDTH = 128
-HEIGHT = 128
-
 
 def image_to_data(image):
     """Generator function to convert a PIL image to 16-bit 565 RGB bytes."""
     # NumPy is much faster at doing this. NumPy code provided by:
     # Keith (https://www.blogger.com/profile/02555547344016007163)
-    pb = numpy.array(image.convert('RGB')).astype('uint16')
+    pb = numpy.array(image.convert('RGBA')).astype('uint16')
+
+    r = pb[:, :, 0] // 16
+    g = pb[:, :, 1] // 16
+    b = pb[:, :, 2] // 16
+    a = pb[:, :, 3] // 16
 
     # AAAA RRRR GGGG BBBB
-    color = 0xF000 | ((pb[:, :, 0] & 0xF0) << 4) | (pb[:, :, 1] & 0xF0) | (pb[:, :, 2] & 0xF0 >> 4)
-    return numpy.dstack(((color >> 8) & 0xFF, color & 0xFF)).flatten().astype('uint8').tobytes()
+    color = (a << 12) | (r << 8) | (g << 4) | b
+    return color.flatten().byteswap().tobytes()
 
 
 img = Image.open(IMAGE_PATH)
+w, h = img.size
 data = image_to_data(img)
 
-print(f"Converted: {len(data)} bytes, Expected: {WIDTH * HEIGHT * 2} bytes.")
+print(f"Converted: {w}x{h} {len(data)} bytes")
 
 with open(OUTPUT_PATH, "wb") as f:
     f.write(data)
