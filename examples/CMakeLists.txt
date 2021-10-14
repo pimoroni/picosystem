@@ -1,4 +1,4 @@
 add_subdirectory(snake)
 add_subdirectory(text)
 add_subdirectory(shapes)
-#add_subdirectory(audio)
+add_subdirectory(audio)
