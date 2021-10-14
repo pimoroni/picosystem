@@ -33,6 +33,8 @@ uint32_t last_ms = time();
 
 uint32_t tick = 0;
 
+static bool done_splash = false;
+
 mp_obj_t update_callback_obj = mp_const_none;
 mp_obj_t draw_callback_obj = mp_const_none;
 
@@ -120,30 +122,35 @@ mp_obj_t picosystem_init() {
         _fsin_lut[i] = sin((_PI * 2.0f) * (float(i) / 256.0f));
     }
 
+    if(!done_splash) { // Squash splash on soft-reset. It's painful!
+        // Set the LED to green, just for gentle reassurance
+        led(0, 128, 0);
+
 #ifndef NO_STARTUP_LOGO
-    // fade in logo by ramping up backlight
-    pen(0, 0, 0); clear();
-    pen(15, 15, 15); _logo();
-    for(int i = 0; i < 75; i++) {
-        backlight(i);
-        _wait_vsync();
-        _flip();
-    }
-
-    sleep(300); // ...and breathe out...
-
-    // fade out logo in 16 colour steps
-    for(int i = 15; i >= 0; i--) {
+        // fade in logo by ramping up backlight
         pen(0, 0, 0); clear();
-        pen(i, i, i); _logo();
-        _wait_vsync();
-        _flip();
+        pen(15, 15, 15); _logo();
+        for(int i = 0; i < 75; i++) {
+            backlight(i);
+            _wait_vsync();
+            _flip();
+        }
 
-        sleep(20);
-    }
-#else
-    backlight(75);
+        sleep(300); // ...and breathe out...
+
+        // fade out logo in 16 colour steps
+        for(int i = 15; i >= 0; i--) {
+            pen(0, 0, 0); clear();
+            pen(i, i, i); _logo();
+            _wait_vsync();
+            _flip();
+
+            sleep(20);
+        }
 #endif
+        done_splash = true;
+    }
+    backlight(75);
 
     sleep(300);
 
