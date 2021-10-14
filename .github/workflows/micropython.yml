@@ -1,0 +1,94 @@
+name: MicroPython
+
+on:
+  push:
+  pull_request:
+  release:
+    types: [created]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  MICROPYTHON_VERSION: v1.17
+  BUILD_TYPE: Release
+  BOARD_TYPE: PIMORONI_PICOSYSTEM
+
+jobs:
+  build:
+    name: ${{matrix.name}}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-20.04
+            name: Linux
+            cache-key: linux
+            apt-packages: clang-tidy gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+    # Check out MicroPython
+    - name: Checkout MicroPython
+      uses: actions/checkout@v2
+      with:
+        repository: pimoroni/micropython
+        ref: board/rp2/pimoroni_picosystem #${{env.MICROPYTHON_VERSION}}
+        submodules: false  # MicroPython submodules are hideously broken
+        path: micropython
+
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+        path: picosystem-${{ github.sha }}
+
+    # HACK: Copy Python module files
+    - name: Copy modules
+      run: |
+        cp -r picosystem-${GITHUB_SHA}/micropython/modules_py/* micropython/ports/rp2/modules/
+
+    # Linux deps
+    - name: Install deps
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt update && sudo apt install ${{matrix.apt-packages}}
+
+    - name: Fetch base MicroPython submodules
+      shell: bash
+      working-directory: micropython
+      run: git submodule update --init
+
+    - name: Fetch Pico SDK submodules
+      shell: bash
+      working-directory: micropython/lib/pico-sdk
+      run: git submodule update --init
+
+    - name: Build mpy-cross
+      shell: bash
+      working-directory: micropython/mpy-cross
+      run: make
+
+    - name: Build MicroPython
+      shell: bash
+      working-directory: micropython/ports/rp2
+      run: make USER_C_MODULES=../../../picosystem-${GITHUB_SHA}/micropython/modules/micropython.cmake BOARD=${BOARD_TYPE} -j2
+
+    - name: Rename .uf2 for artifact
+      shell: bash
+      working-directory: micropython/ports/rp2/build-${{env.BOARD_TYPE}}
+      run: cp firmware.uf2 ${{github.event.repository.name}}-${{github.event.release.tag_name}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
+
+    - name: Store .uf2 as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{github.event.repository.name}}-${{ github.sha }}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
+        path: micropython/ports/rp2/build-${{env.BOARD_TYPE}}/${{github.event.repository.name}}-${{github.event.release.tag_name}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
+
+    - name: Upload .uf2
+      if: github.event_name == 'release'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        asset_path: micropython/ports/rp2/build-${{env.BOARD_TYPE}}/firmware.uf2
+        upload_url: ${{github.event.release.upload_url}}
+        asset_name: ${{github.event.repository.name}}-${{github.event.release.tag_name}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
+        asset_content_type: application/octet-stream
