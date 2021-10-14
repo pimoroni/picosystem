@@ -1,6 +1,3 @@
-# Initialize the Pico SDK
-pico_sdk_init()
-
 add_library(picosystem INTERFACE)
 
 pico_generate_pio_header(picosystem ${CMAKE_CURRENT_LIST_DIR}/screen.pio)

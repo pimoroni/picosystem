@@ -21,7 +21,7 @@ jobs:
             name: PicoSystem
             cache-key: picosystem
             release-suffix: PicoSystem
-            cmake-args: -DPICOSYSTEM_DIR=$GITHUB_WORKSPACE -DPICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk -DPICO_BOARD=pimoroni_picosystem -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+            cmake-args: -DPICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk -DPICO_BOARD=pimoroni_picosystem -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
             apt-packages: ccache gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib python3-setuptools
 
     runs-on: ${{matrix.os}}
@@ -66,21 +66,30 @@ jobs:
         pip3 install requests
 
     - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
-
-    - name: Set Tag Variable
-      if: github.event_name == 'release'
-      shell: bash
       run: |
-        echo "TRAVIS_TAG=${{github.event.release.tag_name}}" >> $GITHUB_ENV
+        cmake -E make_directory ${{runner.workspace}}/build
+        cmake -E make_directory ${{runner.workspace}}/build-template
 
-    - name: Configure CMake
+    - name: Configure CMake (Examples)
       shell: bash
       working-directory: ${{runner.workspace}}/build
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCPACK_PACKAGE_FILE_NAME=${{env.RELEASE_FILE}} ${{matrix.cmake-args}}
 
-    - name: Build
+    - name: Configure CMake (Template)
+      shell: bash
+      working-directory: ${{runner.workspace}}/build-template
+      run: cmake $GITHUB_WORKSPACE/template -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCPACK_PACKAGE_FILE_NAME=${{env.RELEASE_FILE}} ${{matrix.cmake-args}}
+
+    - name: Build (Examples)
       working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: |
+        ccache --zero-stats || true
+        cmake --build . --config $BUILD_TYPE -j 2
+        ccache --show-stats || true
+
+    - name: Build (Template)
+      working-directory: ${{runner.workspace}}/build-template
       shell: bash
       run: |
         ccache --zero-stats || true
