@@ -44,6 +44,7 @@ jobs:
     - name: Copy modules
       run: |
         cp -r picosystem-${GITHUB_SHA}/micropython/modules_py/* micropython/ports/rp2/modules/
+        cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/shapes.py micropython/ports/rp2/modules/
 
     # Linux deps
     - name: Install deps
