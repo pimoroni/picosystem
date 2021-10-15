@@ -32,36 +32,25 @@ uint32_t get_dial_value(std::string name) {
   return d->value;
 }
 
-voice_t v = {
-  .frequency  =  440,   // frequency in hz
-  .bend       =    0,   // amount to increase frequency by every bend ms
-  .bend_ms    =   10,   // time step between frequency bends
-  .attack     =  500,   // attack time in ms
-  .decay      =  250,   // decay time in ms
-  .sustain    =   80,   // sustain volume (0..100)
-  .release    =  500,   // release time in ms
-  .hold       =  800,   // hold time in ms
-  .reverb     =    0,   // reverb timing in ms
-  .volume     =  100,   // overall volume (0..100)
-  .noise      =  100,   // additive noise for each sample (0..100)
-  .distort    =    0    // level of bitcrushing to apply (0..100)
-};
+voice_t v;
 
 uint32_t draw_tick = 0;
 
 void set_voice() {
-  v.frequency = get_dial_value("frequency");
-  v.volume    = get_dial_value(   "volume");
-  v.sustain   = get_dial_value(  "sustain");
-  v.distort   = get_dial_value(  "distort");
-  v.attack    = get_dial_value(   "attack");
-  v.decay     = get_dial_value(    "decay");
-  v.hold      = get_dial_value(     "hold");
-  v.release   = get_dial_value(  "release");
-  v.reverb    = get_dial_value(   "reverb");
-  v.bend      = get_dial_value(     "bend");
-  v.bend_ms   = get_dial_value(  "bend ms");
-  v.noise     = get_dial_value(    "noise");
+  v = voice(
+    get_dial_value("frequency"),
+    get_dial_value(     "hold"),
+    get_dial_value(   "volume"),
+    get_dial_value(   "attack"),
+    get_dial_value(    "decay"),
+    get_dial_value(  "sustain"),
+    get_dial_value(  "release"),
+    get_dial_value(     "bend"),
+    get_dial_value(  "bend ms"),
+    get_dial_value(   "reverb"),
+    get_dial_value(    "noise"),
+    get_dial_value(  "distort"));
+
   play(v);
 }
 
@@ -86,7 +75,7 @@ void init() {
   dials.push_back(
     {.name =    "reverb", .unit = "ms", .min = 0, .max = 2000, .value =   0, .step = 50});
   dials.push_back(
-    {.name =      "bend", .unit = "hz", .min = 0, .max =  100, .value =   0, .step = 10});
+    {.name =      "bend", .unit = "hz", .min = -100, .max =  100, .value =   0, .step = 10});
   dials.push_back(
     {.name =   "bend ms", .unit = "ms", .min = 0, .max = 1000, .value = 100, .step = 50});
   dials.push_back(
@@ -164,7 +153,7 @@ void draw_dial(std::string name, int32_t x, int32_t y) {
   }
 
   // draw dot of the dial
-  float fv = float(d->value) / (d->max - d->min);
+  float fv = float(d->value + abs(d->min)) / (d->max - d->min);
   int32_t dotx = -sin(3.1415927 * 0.2f + fv * 3.1415927 * 1.6f) * 10;
   int32_t doty = cos(3.1415927 * 0.2f + fv * 3.1415927 * 1.6f) * 10;
 

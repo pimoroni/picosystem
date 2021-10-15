@@ -31,7 +31,8 @@ namespace picosystem {
 
   struct voice_t {
     uint32_t ms = 0; // ms counter
-    uint32_t frequency, bend; // pitch (hz)
+    uint32_t frequency; // pitch (hz)
+    int32_t  bend; // pitch bend (hz)
     uint32_t bend_ms; // bend speed (ms)
     uint32_t attack, decay, sustain, release; // envelope (ms, ms, %, ms)
     uint32_t hold; // duration to hold sustain level (ms)
@@ -108,6 +109,12 @@ namespace picosystem {
   std::string str(uint32_t v);
   color_t     rgb(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 15);
   color_t     hsv(float h, float s, float v, float a = 1.0f);
+  voice_t     voice(
+                uint32_t frequency, uint32_t hold, uint32_t volume = 100,
+                uint32_t attack = 100, uint32_t decay = 50,
+                uint32_t sustain = 80, uint32_t release = 100,
+                int32_t bend = 0, uint32_t bend_ms = 0, uint32_t reverb = 0,
+                uint32_t noise = 0, uint32_t distort = 0);
   uint32_t    time();
   uint32_t    time_us();
   void        sleep(uint32_t d);
@@ -136,7 +143,6 @@ namespace picosystem {
   uint32_t    battery();
   void        led(uint8_t r, uint8_t g, uint8_t b);
   void        backlight(uint8_t b);
-
   void        play(voice_t v);
   uint8_t     audio_sample(uint32_t ms);
   uint32_t    audio_position();
