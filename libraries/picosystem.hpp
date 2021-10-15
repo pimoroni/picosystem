@@ -33,9 +33,10 @@ namespace picosystem {
     uint32_t ms = 0; // ms counter
     uint32_t frequency, bend; // pitch (hz)
     uint32_t bend_ms; // bend speed (ms)
-    uint32_t attack, decay, hold, release; // envelope (ms)
+    uint32_t attack, decay, sustain, release; // envelope (ms, ms, %, ms)
+    uint32_t hold; // duration to hold sustain level (ms)
     uint32_t reverb; // effects (ms)
-    uint32_t sustain, volume, noise, distort; // effects (strength 0..100)
+    uint32_t volume, noise, distort; // effects (strength 0..100)
   };
 
   using blend_func_t =
