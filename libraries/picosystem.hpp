@@ -8,11 +8,15 @@
 #include <string>
 #include <vector>
 
+#include "pico/stdlib.h"
+
 void init();
 void update(uint32_t time_ms);
 void draw();
 
 namespace picosystem {
+
+  extern uint32_t _debug;
 
   typedef uint16_t color_t;
 
@@ -26,13 +30,10 @@ namespace picosystem {
   };
 
   struct voice_t {
-    uint32_t i = 0; // current sample index
-    int32_t s = 0; // last sample
-    uint32_t t = 0;
+    uint32_t ms = 0; // ms counter
     uint32_t frequency, bend; // pitch (hz)
-    uint32_t waveform; // shape (sine, triangle, saw, noise)
     uint32_t attack, decay, hold, release; // envelope (ms)
-    uint32_t reset, reverb; // effects (ms)
+    uint32_t reverb; // effects (ms)
     uint32_t sustain, volume, noise, distort; // effects (strength 0..100)
   };
 
@@ -51,17 +52,8 @@ namespace picosystem {
   extern buffer_t &_dt;                   // drawing target
   extern buffer_t *_ss;                   // sprite sheet
   extern uint8_t *_font;                  // font data
-  extern voice_t _chan[4];                // audio channels
-  extern uint32_t _vol;                   // master volume
-  extern uint32_t _sr;                    // sample rate
-  enum waveform {
-    SINE,
-    SAW,
-    TRIANGLE,
-    NOISE
-  };
+  extern voice_t _v;                      // audio channels
   extern float _fsin_lut[256];            // fast sin lut
-
   constexpr float _PI = 3.1415927f;
 
   // state
@@ -141,8 +133,9 @@ namespace picosystem {
   uint32_t    battery();
   void        led(uint8_t r, uint8_t g, uint8_t b);
   void        backlight(uint8_t b);
-  //void        play_audio(uint8_t *b);
+
   void        play(voice_t v);
+  uint8_t     last_audio_sample();
 
   // internal methods - do not call directly, will change!
   void       _logo();
@@ -154,10 +147,8 @@ namespace picosystem {
   void       _flip();
   bool       _is_flipping();
   void       _camera_offset(int32_t &x, int32_t &y);
-
-  int8_t     _get_audio_frame();
-  //int16_t*   _get_audio_buffer(uint32_t &s);
-  //void       _update_audio();
+  void       _update_audio();
+  void       _play_note(uint32_t f, uint32_t v);
 
   // input pins
   enum button {

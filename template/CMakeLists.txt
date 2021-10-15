@@ -13,12 +13,10 @@ set(PROJECT_SOURCES
 if(NOT PICO_SDK_PATH)
     message(WARNING "PICO_SDK_PATH not specified. Forcing fetch from git!")
     set(PICO_SDK_FETCH_FROM_GIT true)
-    set(PICO_EXTRAS_FETCH_FROM_GIT true)
 endif()
 
 # Pull in PICO SDK
 include(pico_sdk_import.cmake)
-include(pico_extras_import.cmake)
 
 # set up proejct
 project(${PROJECT_NAME} C CXX ASM)

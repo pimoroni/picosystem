@@ -8,7 +8,6 @@
 #include "hardware/pio.h"
 #include "hardware/irq.h"
 
-//#include "pico/audio_pwm.h"
 #include "pico/bootrom.h"
 #include "pico/stdlib.h"
 #include "pico/time.h"
@@ -23,11 +22,13 @@
 
 namespace picosystem {
 
-  PIO   screen_pio  = pio0;
-  uint  screen_sm   = 0;
+  PIO               screen_pio  = pio0;
+  uint              screen_sm   = 0;
+  uint32_t          dma_channel;
+  volatile int16_t  dma_scanline = -1;
 
-  uint32_t         dma_channel;
-  volatile int16_t dma_scanline = -1;
+  uint32_t         _audio_pwm_wrap = 5000;
+  struct repeating_timer _audio_update_timer;
 
   enum pin {
     RED = 14, GREEN = 13, BLUE = 15,                  // user rgb led
@@ -147,8 +148,8 @@ namespace picosystem {
   // once the dma transfer of the scanline is complete we move to the
   // next scanline (or quit if we're finished)
   void __isr dma_complete() {
-    if (dma_hw->ints0 & (1u << dma_channel)) {
-      dma_hw->ints0 = (1u << dma_channel); // clear irq flag
+    if(dma_channel_get_irq0_status(dma_channel)) {
+      dma_channel_acknowledge_irq0(dma_channel); // clear irq flag
 
       #ifdef PIXEL_DOUBLE
         if(++dma_scanline > 120) {
@@ -228,32 +229,33 @@ namespace picosystem {
     pwm_set_gpio_level(BACKLIGHT, _gamma_correct(b));
   }
 
-  // for debugging...
-  /*uint32_t _last_buffer_size;
-  int16_t _last_buffer[8192];
-  int16_t* _get_audio_buffer(uint32_t &size) {
-    size = _last_buffer_size;
-    return _last_buffer;
+  void _play_note(uint32_t f, uint32_t v) {
+    // adjust the clock divider to achieve this frequency
+    #ifndef NO_OVERCLOCK
+      float clock = 250000000.0f;
+    #else
+      float clock = 125000000.0f;
+    #endif
+    float pwm_divider = clock / _audio_pwm_wrap / f;
+    pwm_set_clkdiv(pwm_gpio_to_slice_num(AUDIO), pwm_divider);
+    pwm_set_wrap(pwm_gpio_to_slice_num(AUDIO), _audio_pwm_wrap);
+
+    // work out usable range of volumes at this frequency. the piezo speaker
+    // isn't driven in a way that can control volume easily however if we're
+    // clever with the duty cycle we can ensure that the ceramic doesn't have
+    // time to fully deflect - effectively reducing the volume.
+    //
+    // through experiment it seems that constraining the deflection period of
+    // the piezo to between 0 and 1/10000th of a second gives reasonable control
+    // over the volume. the relationship is non linear so we also apply a
+    // correction curve which is tuned so that the result sounds reasonable.
+    uint32_t max_count = (f * _audio_pwm_wrap) / 10000;
+
+    // the change in volume isn't linear - we correct for this here
+    float curve = 1.8f;
+    uint32_t level = (pow((float)(v) / 100.0f, curve) * max_count);
+    pwm_set_gpio_level(AUDIO, level);
   }
-
-  static audio_buffer_pool *_audio_pool = nullptr;
-  void _update_audio() {
-    struct audio_buffer *buffer = take_audio_buffer(_audio_pool, false);
-
-    if(buffer) {
-      int16_t *samples = (int16_t *)buffer->buffer->bytes;
-
-      for(uint32_t i = 0; i < buffer->max_sample_count; i++) {
-        *samples++ = _get_audio_frame() * 256;
-      }
-      buffer->sample_count = buffer->max_sample_count;
-      _last_buffer_size = buffer->max_sample_count;
-      memcpy(_last_buffer, buffer->buffer->bytes, buffer->max_sample_count * 2);
-      give_audio_buffer(_audio_pool, buffer);
-    }else{
-      // skip since no audio needed... this never happens though?
-    }
-  }*/
 
   void led(uint8_t r, uint8_t g, uint8_t b) {
     pwm_set_gpio_level(RED,   _gamma_correct(r));
@@ -276,6 +278,11 @@ namespace picosystem {
     return gpio_get_all();
   }
 
+  bool _audio_update_callback(struct repeating_timer *t) {
+    _update_audio();
+    return true;
+  }
+
   void _init_hardware() {
     // configure backlight pwm and disable backlight while setting up
     pwm_config cfg = pwm_get_default_config();
@@ -287,6 +294,7 @@ namespace picosystem {
     #ifndef NO_OVERCLOCK
       // overclock the rp2040 to 250mhz
       set_sys_clock_khz(250000, true);
+
     #endif
 
     // configure control io pins
@@ -308,43 +316,6 @@ namespace picosystem {
     pwm_set_wrap(pwm_gpio_to_slice_num(BLUE), 65535);
     pwm_init(pwm_gpio_to_slice_num(BLUE), &cfg, true);
     gpio_set_function(BLUE, GPIO_FUNC_PWM);
-/*
-    pwm_set_wrap(pwm_gpio_to_slice_num(AUDIO), 65535);
-    pwm_init(pwm_gpio_to_slice_num(AUDIO), &cfg, true);
-    gpio_set_function(AUDIO, GPIO_FUNC_PWM);
-*/
-
-    /*
-    static audio_format_t audio_format =
-      {.sample_freq = 11025, .format = AUDIO_BUFFER_FORMAT_PCM_S8,
-       .channel_count = 1};
-
-    static struct audio_buffer_format producer_format =
-      {.format = &audio_format, .sample_stride = 1};
-
-    struct audio_buffer_pool *producer_pool =
-      audio_new_producer_pool(&producer_format, 4, 441);
-
-    const struct audio_format *output_format;
-
-    struct audio_pwm_channel_config audio_pwm_config = {
-      .core = {.base_pin = AUDIO, .dma_channel = 1, .pio_sm = 1,},
-      .pattern = 3,
-    };
-
-    output_format = audio_pwm_setup(&audio_format, -1, &audio_pwm_config);
-
-    #ifndef NO_OVERCLOCK
-      pio_sm_set_clkdiv(pio1, 1, 2.0f);
-    #endif
-
-    audio_pwm_default_connect(producer_pool, false);
-    audio_pwm_set_enabled(true);
-    gpio_set_drive_strength(AUDIO, GPIO_DRIVE_STRENGTH_4MA );
-    gpio_set_slew_rate(AUDIO, GPIO_SLEW_RATE_FAST);
-
-    _audio_pool = producer_pool;
-    */
 
     // configure the spi interface used to initialise the screen
     spi_init(spi0, 8000000);
@@ -430,7 +401,18 @@ namespace picosystem {
       dma_channel, &config, &screen_pio->txf[screen_sm], nullptr, 0, false);
     dma_channel_set_irq0_enabled(dma_channel, true);
     irq_set_enabled(pio_get_dreq(screen_pio, screen_sm, true), true);
+
     irq_set_exclusive_handler(DMA_IRQ_0, dma_complete);
     irq_set_enabled(DMA_IRQ_0, true);
+
+    // initialise audio pwm pin
+    int audio_pwm_slice_number = pwm_gpio_to_slice_num(AUDIO);
+    pwm_config audio_pwm_cfg = pwm_get_default_config();
+    pwm_init(audio_pwm_slice_number, &audio_pwm_cfg, true);
+    gpio_set_function(AUDIO, GPIO_FUNC_PWM);
+    pwm_set_gpio_level(AUDIO, 0);
+
+    add_repeating_timer_ms(-1, _audio_update_callback, NULL, &_audio_update_timer);
   }
+
 }

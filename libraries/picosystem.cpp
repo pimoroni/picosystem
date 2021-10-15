@@ -7,6 +7,8 @@
 
 namespace picosystem {
 
+  uint32_t _debug;
+
   color_t _pen;
 
   int32_t _tx = 0, _ty = 0;
@@ -125,8 +127,6 @@ int main() {
 
     // flip the framebuffer to the screen
     _flip();
-
-    //_update_audio();
 
     last_ms = ms;
   }

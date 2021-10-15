@@ -16,7 +16,7 @@ target_sources(picosystem INTERFACE
 
 target_include_directories(picosystem INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
-target_link_libraries(picosystem INTERFACE pico_stdlib hardware_pio hardware_spi hardware_pwm hardware_dma hardware_irq hardware_adc hardware_interp pico_audio_pwm)
+target_link_libraries(picosystem INTERFACE pico_stdlib hardware_pio hardware_spi hardware_pwm hardware_dma hardware_irq hardware_adc hardware_interp)
 
 function(picosystem_executable NAME SOURCES)
   add_executable(
