@@ -13,7 +13,7 @@ namespace picosystem {
     return _last_audio_sample;
   }
 
-  uint32_t _get_audio_at_ms(int32_t ms) {
+  uint8_t get_audio_sample(uint32_t ms) {
     uint32_t duration = _v.attack + _v.decay + _v.hold + _v.release + _v.reverb;
     uint32_t sample = 0;
     if(ms > 0 && ms < duration) {
@@ -22,38 +22,39 @@ namespace picosystem {
       }
 
       // skip samples for distortion effect
-      if(_v.distort == 0 || !(ms % _v.distort)) {
-        // grab volume as start point for sample, convert to fp8
-        sample = _v.volume;
+      if(_v.distort) {
+        ms -= (ms % _v.distort);
+      }
 
-        // apply envelop to waveform sample
-        uint32_t env = 0;
-        if(ms < _v.attack) {
-          env = (ms << 8) / _v.attack;
-        } else if (ms < _v.attack + _v.decay) {
-          env = (1 << 8) - (((((ms - _v.attack) << 8) / _v.decay) * ((1 << 8) - ((_v.sustain << 8) / 100))) >> 8);
-        } else if (ms < _v.attack + _v.decay + _v.hold) {
-          env = (_v.sustain << 8) / 100;
-        } else if (ms < _v.attack + _v.decay + _v.hold + _v.release) {
-          uint32_t r = ((ms - _v.attack - _v.decay - _v.hold) << 8) / _v.release;
-          env = (((1 << 8) - r) * ((_v.sustain << 8) / 100)) >> 8;
-        }
-        sample *= env;
+      // grab volume as start point for sample, convert to fp8
+      sample = _v.volume;
 
-        // apply noise
-        if(_v.noise) {
-          int32_t n = ((std::rand() % _v.noise) - (_v.noise >> 1)) << 8;
-          sample += n;
-          sample = sample > (100 << 8) ? (100 << 8) : sample;
-        }
+      // apply envelop to waveform sample
+      uint32_t env = 0;
+      if(ms < _v.attack) {
+        env = (ms << 8) / _v.attack;
+      } else if (ms < _v.attack + _v.decay) {
+        env = (1 << 8) - (((((ms - _v.attack) << 8) / _v.decay) * ((1 << 8) - ((_v.sustain << 8) / 100))) >> 8);
+      } else if (ms < _v.attack + _v.decay + _v.hold) {
+        env = (_v.sustain << 8) / 100;
+      } else if (ms < _v.attack + _v.decay + _v.hold + _v.release) {
+        uint32_t r = ((ms - _v.attack - _v.decay - _v.hold) << 8) / _v.release;
+        env = (((1 << 8) - r) * ((_v.sustain << 8) / 100)) >> 8;
+      }
+      sample *= env;
 
-        sample >>= 8;
+      // apply noise
+      if(_v.noise) {
+        int32_t n = ((std::rand() % _v.noise) - (_v.noise >> 1)) << 8;
+        sample += n;
+        sample = sample > (100 << 8) ? (100 << 8) : sample;
+      }
 
-        if(ms > _v.reverb) {
-          uint32_t rs = _get_audio_at_ms(ms - _v.reverb);
-          sample = ((sample * ms) / duration) + ((rs * (duration - ms)) / duration);
-        }
+      sample >>= 8;
 
+      if(_v.reverb && ms > _v.reverb) {
+        uint8_t rs = get_audio_sample(ms - _v.reverb);
+        sample = ((sample * ms) / duration) + ((rs * (duration - ms)) / duration);
       }
     }
 
@@ -61,7 +62,7 @@ namespace picosystem {
   }
 
   void _update_audio() {
-    uint32_t sample = _get_audio_at_ms(_v.ms++);
+    uint32_t sample = get_audio_sample(_v.ms++);
     _last_audio_sample = sample;
     _play_note(_v.frequency, sample);
   }
