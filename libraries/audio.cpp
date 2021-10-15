@@ -26,11 +26,7 @@ namespace picosystem {
         ms -= (ms % _v.distort);
       }
 
-      if(ms % 10 == 0) {
-        _v.frequency += _v.bend;
-      }
-
-      // grab volume as start point for sample, convert to fp8
+      // grab volume as start point for sample
       sample = _v.volume;
 
       // apply envelop to waveform sample
@@ -64,8 +60,12 @@ namespace picosystem {
   }
 
   void _update_audio() {
+    uint32_t frequency = _v.frequency;
+    if(_v.bend && _v.bend_ms) {
+      frequency += _v.bend * (_v.ms / _v.bend_ms);
+    }
     uint32_t sample = audio_sample(_v.ms++);
     _last_audio_sample = sample;
-    _play_note(_v.frequency, sample);
+    _play_note(frequency, sample);
   }
 }

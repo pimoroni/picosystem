@@ -34,7 +34,8 @@ uint32_t get_dial_value(std::string name) {
 
 voice_t v = {
   .frequency  =  440,   // frequency in hz
-  .bend       =    0,   // amount to increase frequency by every 10 ms
+  .bend       =    0,   // amount to increase frequency by every bend ms
+  .bend_ms    =   10,   // time step between frequency bends
   .attack     =  500,   // attack time in ms
   .decay      =  250,   // decay time in ms
   .hold       =  800,   // hold time in ms
@@ -58,7 +59,8 @@ void set_voice() {
   v.hold      = get_dial_value(     "hold");
   v.release   = get_dial_value(  "release");
   v.reverb    = get_dial_value(   "reverb");
-  v.bend      = get_dial_value(     "bend") / 10;
+  v.bend      = get_dial_value(     "bend");
+  v.bend_ms   = get_dial_value(  "bend ms");
   v.noise     = get_dial_value(    "noise");
   play(v);
 }
@@ -66,27 +68,29 @@ void set_voice() {
 // initialise the world
 void init() {
   dials.push_back(
-    {.name = "frequency", .unit = "hz", .min = 0, .max = 8000, .value = 440, .step = 5});
+    {.name = "frequency", .unit = "hz", .min = 0, .max = 8000, .value = 440, .step = 50});
   dials.push_back(
-    {.name =    "volume", .unit =  "%", .min = 0, .max =  100, .value = 100, .step = 1});
+    {.name =    "volume", .unit =  "%", .min = 0, .max =  100, .value = 100, .step = 10});
   dials.push_back(
-    {.name =    "sustain", .unit = "%", .min = 0, .max =  100, .value =  80, .step = 1});
+    {.name =    "sustain", .unit = "%", .min = 0, .max =  100, .value =  80, .step = 10});
   dials.push_back(
-    {.name =    "distort", .unit = "%", .min = 0, .max =  100, .value =   0, .step = 1});
+    {.name =    "distort", .unit = "%", .min = 0, .max =  100, .value =   0, .step = 10});
   dials.push_back(
-    {.name =    "attack", .unit = "ms", .min = 0, .max = 1000, .value = 100, .step = 5});
+    {.name =    "attack", .unit = "ms", .min = 0, .max = 1000, .value = 100, .step = 50});
   dials.push_back(
-    {.name =     "decay", .unit = "ms", .min = 0, .max = 1000, .value =  50, .step = 5});
+    {.name =     "decay", .unit = "ms", .min = 0, .max = 1000, .value =  50, .step = 50});
   dials.push_back(
-    {.name =      "hold", .unit = "ms", .min = 0, .max = 1000, .value = 500, .step = 5});
+    {.name =      "hold", .unit = "ms", .min = 0, .max = 1000, .value = 500, .step = 50});
   dials.push_back(
-    {.name =   "release", .unit = "ms", .min = 0, .max = 1000, .value = 250, .step = 5});
+    {.name =   "release", .unit = "ms", .min = 0, .max = 1000, .value = 250, .step = 50});
   dials.push_back(
-    {.name =    "reverb", .unit = "ms", .min = 0, .max = 2000, .value =   0, .step = 5});
+    {.name =    "reverb", .unit = "ms", .min = 0, .max = 2000, .value =   0, .step = 50});
   dials.push_back(
-    {.name =      "bend", .unit = "hz", .min = 0, .max =  1000, .value =   0, .step = 1});
+    {.name =      "bend", .unit = "hz", .min = 0, .max =  100, .value =   0, .step = 10});
   dials.push_back(
-    {.name =     "noise", .unit =  "%", .min = 0, .max =  100, .value =   0, .step = 1});
+    {.name =   "bend ms", .unit = "ms", .min = 0, .max = 1000, .value = 100, .step = 50});
+  dials.push_back(
+    {.name =     "noise", .unit =  "%", .min = 0, .max =  100, .value =   0, .step = 10});
 
   set_voice();
 }
@@ -96,14 +100,16 @@ void update(uint32_t tick) {
 
   bool change = false;
 
-  if(button(UP)) {
-    adjust_dial_value(dials[active_dial], dials[active_dial].step);
-    change = true;
-  }
+  if(tick % 10 == 0) {
+    if(button(UP)) {
+      adjust_dial_value(dials[active_dial], dials[active_dial].step);
+      change = true;
+    }
 
-  if(button(DOWN)) {
-    adjust_dial_value(dials[active_dial], -dials[active_dial].step);
-    change = true;
+    if(button(DOWN)) {
+      adjust_dial_value(dials[active_dial], -dials[active_dial].step);
+      change = true;
+    }
   }
 
   if(pressed(LEFT)) {
@@ -190,7 +196,8 @@ void draw() {
   frect(0, 180, 240, 60);
   draw_dial("reverb", 0, 180);
   draw_dial("bend", 60, 180);
-  draw_dial("noise", 120, 180);
+  draw_dial("bend ms", 120, 180);
+  draw_dial("noise", 180, 180);
 
   // draw waveform graph
   pen(0, 0, 0);

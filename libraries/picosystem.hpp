@@ -32,6 +32,7 @@ namespace picosystem {
   struct voice_t {
     uint32_t ms = 0; // ms counter
     uint32_t frequency, bend; // pitch (hz)
+    uint32_t bend_ms; // bend speed (ms)
     uint32_t attack, decay, hold, release; // envelope (ms)
     uint32_t reverb; // effects (ms)
     uint32_t sustain, volume, noise, distort; // effects (strength 0..100)
