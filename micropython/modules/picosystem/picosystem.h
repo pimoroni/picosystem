@@ -20,14 +20,25 @@ enum blend_mode {
     MODE_MASK
 };
 
+
 /***** Extern of Class Definition *****/
 extern const mp_obj_type_t PicosystemBuffer_type;
+extern const mp_obj_type_t PicosystemVoice_type;
 
 /***** Extern of Class Methods *****/
 extern void PicosystemBuffer_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind);
 extern mp_obj_t PicosystemBuffer_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args);
 extern mp_obj_t PicosystemBuffer___del__(mp_obj_t self_in);
 extern mp_int_t PicosystemBuffer_get_buffer(mp_obj_t self_in, mp_buffer_info_t *bufinfo, mp_uint_t flags);
+
+extern void PicosystemVoice_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind);
+extern mp_obj_t PicosystemVoice_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args);
+extern mp_obj_t PicosystemVoice___del__(mp_obj_t self_in);
+extern void PicosystemVoice_attr(mp_obj_t self_in, qstr attr, mp_obj_t *dest);
+extern mp_obj_t PicosystemVoice_play(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t PicosystemVoice_envelope(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t PicosystemVoice_effects(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+
 
 // Declare the functions we'll make available in Python
 //extern mp_obj_t picosystem_init();
@@ -36,6 +47,9 @@ extern mp_int_t PicosystemBuffer_get_buffer(mp_obj_t self_in, mp_buffer_info_t *
 
 extern mp_obj_t picosystem_init();
 extern mp_obj_t picosystem_tick();
+
+// audio
+extern mp_obj_t picosystem_audio_play(mp_obj_t dt_obj);
 
 // state
 extern mp_obj_t picosystem_pen(mp_uint_t n_args, const mp_obj_t *args);

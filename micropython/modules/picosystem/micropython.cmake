@@ -6,6 +6,7 @@ target_sources(usermod_${MOD_NAME} INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/${MOD_NAME}.c
     ${CMAKE_CURRENT_LIST_DIR}/${MOD_NAME}.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/picosystem.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/audio.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/blend.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/state.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/primitives.cpp

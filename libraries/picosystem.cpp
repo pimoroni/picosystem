@@ -62,6 +62,7 @@ using namespace picosystem;
 #ifndef MICROPY_BUILD_TYPE
 int main() {
   _init_hardware();
+  _start_audio();
 
   // setup lut for fast sin/cos functions
   for(uint32_t i = 0; i < 256; i++) {

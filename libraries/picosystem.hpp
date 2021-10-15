@@ -180,6 +180,7 @@ namespace picosystem {
   // internal methods - do not call directly, will change!
   void       _logo();
   void       _init_hardware();
+  void       _start_audio();
   uint32_t   _gpio_get();
   float      _battery_voltage();
   void       _reset_to_dfu();

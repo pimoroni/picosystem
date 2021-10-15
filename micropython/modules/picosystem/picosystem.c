@@ -17,13 +17,42 @@ STATIC MP_DEFINE_CONST_DICT(PicosystemBuffer_locals_dict, PicosystemBuffer_local
 /***** Class Definition *****/
 const mp_obj_type_t PicosystemBuffer_type = {
     { &mp_type_type },
-    .name = MP_QSTR_pimoroni_i2c,
+    .name = MP_QSTR_Buffer,
     .print = PicosystemBuffer_print,
     .make_new = PicosystemBuffer_make_new,
     .buffer_p = { .get_buffer = PicosystemBuffer_get_buffer },
     .locals_dict = (mp_obj_dict_t*)&PicosystemBuffer_locals_dict,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// PicosystemVoice Class
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/***** Methods *****/
+MP_DEFINE_CONST_FUN_OBJ_1(PicosystemVoice___del___obj, PicosystemVoice___del__);
+MP_DEFINE_CONST_FUN_OBJ_KW(PicosystemVoice_play_obj, 2, PicosystemVoice_play);
+MP_DEFINE_CONST_FUN_OBJ_KW(PicosystemVoice_envelope_obj, 1, PicosystemVoice_envelope);
+MP_DEFINE_CONST_FUN_OBJ_KW(PicosystemVoice_effects_obj, 1, PicosystemVoice_effects);
+
+/***** Binding of Methods *****/
+STATIC const mp_rom_map_elem_t PicosystemVoice_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___del__), MP_ROM_PTR(&PicosystemVoice___del___obj) },
+    { MP_ROM_QSTR(MP_QSTR_play), MP_ROM_PTR(&PicosystemVoice_play_obj) },
+    { MP_ROM_QSTR(MP_QSTR_envelope), MP_ROM_PTR(&PicosystemVoice_envelope_obj) },
+    { MP_ROM_QSTR(MP_QSTR_effects), MP_ROM_PTR(&PicosystemVoice_effects_obj) },
+};
+
+STATIC MP_DEFINE_CONST_DICT(PicosystemVoice_locals_dict, PicosystemVoice_locals_dict_table);
+
+/***** Class Definition *****/
+const mp_obj_type_t PicosystemVoice_type = {
+    { &mp_type_type },
+    .name = MP_QSTR_Voice,
+    .print = PicosystemVoice_print,
+    .make_new = PicosystemVoice_make_new,
+    .locals_dict = (mp_obj_dict_t*)&PicosystemVoice_locals_dict,
+    //.attr = PicosystemVoice_attr,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // picosystem Module
@@ -32,6 +61,8 @@ const mp_obj_type_t PicosystemBuffer_type = {
 /***** Module Functions *****/
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_init_obj, picosystem_init);
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_tick_obj, picosystem_tick);
+
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(picosystem_play_obj, picosystem_audio_play);
 
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_pen_obj, 1, 4, picosystem_pen);
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_clip_obj, 4, 4, picosystem_clip);
@@ -72,9 +103,12 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_1(picosystem_backlight_obj, picosystem_backlight)
 STATIC const mp_map_elem_t picosystem_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_picosystem) },
     { MP_OBJ_NEW_QSTR(MP_QSTR_Buffer), (mp_obj_t)&PicosystemBuffer_type },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_Voice), (mp_obj_t)&PicosystemVoice_type },
 
     { MP_ROM_QSTR(MP_QSTR_init), MP_ROM_PTR(&picosystem_init_obj) },
     { MP_ROM_QSTR(MP_QSTR_tick), MP_ROM_PTR(&picosystem_tick_obj) },
+
+    { MP_ROM_QSTR(MP_QSTR_play), MP_ROM_PTR(&picosystem_play_obj) },
 
     { MP_ROM_QSTR(MP_QSTR_pen), MP_ROM_PTR(&picosystem_pen_obj) },
     { MP_ROM_QSTR(MP_QSTR_clip), MP_ROM_PTR(&picosystem_clip_obj) },
