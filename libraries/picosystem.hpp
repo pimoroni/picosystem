@@ -123,6 +123,7 @@ namespace picosystem {
                 int32_t  x, int32_t  y, int32_t  w, int32_t  h,
                 int32_t cx, int32_t cy, int32_t cw, int32_t ch);
   void        wrap(std::string &t, std::size_t chars);
+  uint32_t    text_width(std::string &t);
   std::vector<std::string> split(const std::string& t, char d = '\n');
   float       fsin(float v);
   float       fcos(float v);
@@ -136,6 +137,7 @@ namespace picosystem {
 
   void        play(voice_t v);
   uint8_t     last_audio_sample();
+  uint8_t     get_audio_sample(uint32_t ms);
 
   // internal methods - do not call directly, will change!
   void       _logo();

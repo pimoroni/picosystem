@@ -80,6 +80,15 @@ namespace picosystem {
     return x >= cx && y >= cy && x + w <= cx + cw && y + h <= cy + ch;
   }
 
+  uint32_t text_width(std::string &t) {
+    // add up length of characters
+    uint32_t l = 0;
+    for(auto c : t) {
+      l += _font[(c - 32) * 9] + 1;
+    }
+    return l;
+  }
+
   uint32_t _word_length(std::string &t, std::size_t &i) {
     // skip past any spaces if present
     i = t.find_first_not_of(' ', i);
