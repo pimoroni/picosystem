@@ -32,6 +32,36 @@ uint32_t get_dial_value(std::string name) {
   return d->value;
 }
 
+voice_t v = {
+  .frequency  =  440,   // frequency in hz
+  .bend       =    0,   // amount to increase frequency by every 10 ms
+  .attack     =  500,   // attack time in ms
+  .decay      =  250,   // decay time in ms
+  .hold       =  800,   // hold time in ms
+  .release    =  500,   // release time in ms
+  .reverb     =    0,   // reverb timing in ms
+  .sustain    =   80,   // sustain volume (0..100)
+  .volume     =  100,   // overall volume (0..100)
+  .noise      =  100,   // additive noise for each sample (0..100)
+  .distort    =    0    // level of bitcrushing to apply (0..100)
+};
+
+uint32_t draw_tick = 0;
+
+void set_voice() {
+  v.frequency = get_dial_value("frequency");
+  v.volume    = get_dial_value(   "volume");
+  v.sustain   = get_dial_value(  "sustain");
+  v.distort   = get_dial_value(  "distort");
+  v.attack    = get_dial_value(   "attack");
+  v.decay     = get_dial_value(    "decay");
+  v.hold      = get_dial_value(     "hold");
+  v.release   = get_dial_value(  "release");
+  v.reverb    = get_dial_value(   "reverb");
+  v.bend      = get_dial_value(     "bend") / 10;
+  v.noise     = get_dial_value(    "noise");
+  play(v);
+}
 
 // initialise the world
 void init() {
@@ -54,26 +84,12 @@ void init() {
   dials.push_back(
     {.name =    "reverb", .unit = "ms", .min = 0, .max = 2000, .value =   0, .step = 5});
   dials.push_back(
-    {.name =      "bend", .unit = "hz", .min = 0, .max =  100, .value =   0, .step = 1});
+    {.name =      "bend", .unit = "hz", .min = 0, .max =  1000, .value =   0, .step = 1});
   dials.push_back(
     {.name =     "noise", .unit =  "%", .min = 0, .max =  100, .value =   0, .step = 1});
+
+  set_voice();
 }
-
-voice_t v = {
-  .frequency  =  440,   // frequency in hz
-  .bend       =    0,   // amount to increase frequency by every 10 ms
-  .attack     =  500,   // attack time in ms
-  .decay      =  250,   // decay time in ms
-  .hold       =  800,   // hold time in ms
-  .release    =  500,   // release time in ms
-  .reverb     =    0,   // reverb timing in ms
-  .sustain    =   80,   // sustain volume (0..100)
-  .volume     =  100,   // overall volume (0..100)
-  .noise      =  100,   // additive noise for each sample (0..100)
-  .distort    =    0    // level of bitcrushing to apply (0..100)
-};
-
-uint32_t draw_tick = 0;
 
 // process user input and update the world state
 void update(uint32_t tick) {
@@ -98,20 +114,9 @@ void update(uint32_t tick) {
     active_dial = active_dial < dials.size() - 1 ? active_dial + 1 : 0;
   }
 
-
-  if(change) {
-    v.frequency = get_dial_value("frequency");
-    v.volume    = get_dial_value(   "volume");
-    v.sustain   = get_dial_value(  "sustain");
-    v.distort   = get_dial_value(  "distort");
-    v.attack    = get_dial_value(   "attack");
-    v.decay     = get_dial_value(    "decay");
-    v.hold      = get_dial_value(     "hold");
-    v.release   = get_dial_value(  "release");
-    v.reverb    = get_dial_value(   "reverb");
-    v.bend      = get_dial_value(     "bend");
-    v.noise     = get_dial_value(    "noise");
-    play(v);
+  uint32_t duration = v.attack + v.decay + v.hold + v.release + v.reverb;
+  if(change || audio_position() > duration) {
+    set_voice();
   }
 }
 
@@ -167,20 +172,6 @@ void draw_dial(std::string name, int32_t x, int32_t y) {
 
 // draw the world
 void draw() {
-  // clear the screen in noxious 3310 backlight green and draw everything in
-  // a faint blended black to get that cheap 90s LCD feel
-
-  pen(15, 15, 15);
-
-
-
-  text("frequency:  " + str(v.frequency), 10, 20);
-  text("volume:  " + str(v.volume), 10, 30);
-  text(str(_debug), 10, 40);
-
-  pixel(draw_tick * 2, 180 - (last_audio_sample() / 2));
-  draw_tick++;
-
   pen(12, 12, 2);
   frect(0, 60, 240, 60);
   draw_dial("frequency", 0, 60);
@@ -207,10 +198,16 @@ void draw() {
 
   uint32_t duration = v.attack + v.decay + v.hold + v.release + v.reverb;
   pen(15, 15, 15);
-  for(int i = 0; i < 230; i++) {
-    uint8_t s = get_audio_sample((i * duration) / 230);
-    pixel(i + 5, 55 - s / 2);
+  for(int i = 0; i < 230; i+=4) {
+    uint8_t s = audio_sample((i * duration) / 230);
+    //pixel(i + 5, 55 - s / 2);
+    frect(i + 5, 55 - s / 2, 3, 3);
   }
+
+  // draw current playback marker
+  pen(0, 15, 15);
+  uint32_t pos = (audio_position() * 230) / duration;
+  frect(pos + 5, 5, 2, 50);
 }
 
 

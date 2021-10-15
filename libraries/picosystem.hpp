@@ -136,8 +136,9 @@ namespace picosystem {
   void        backlight(uint8_t b);
 
   void        play(voice_t v);
-  uint8_t     last_audio_sample();
-  uint8_t     get_audio_sample(uint32_t ms);
+  uint8_t     audio_sample(uint32_t ms);
+  uint32_t    audio_position();
+
 
   // internal methods - do not call directly, will change!
   void       _logo();
