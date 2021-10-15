@@ -230,12 +230,13 @@ namespace picosystem {
   }
 
   void _play_note(uint32_t f, uint32_t v) {
-    // adjust the clock divider to achieve this frequency
+    // adjust the clock divider to achieve this desired frequency
     #ifndef NO_OVERCLOCK
       float clock = 250000000.0f;
     #else
       float clock = 125000000.0f;
     #endif
+
     float pwm_divider = clock / _audio_pwm_wrap / f;
     pwm_set_clkdiv(pwm_gpio_to_slice_num(AUDIO), pwm_divider);
     pwm_set_wrap(pwm_gpio_to_slice_num(AUDIO), _audio_pwm_wrap);
