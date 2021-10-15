@@ -33,7 +33,7 @@ jobs:
     - name: Checkout PicoSystem SDK
       uses: actions/checkout@v2
 
-    # pico sdk/extras for some builds
+    # Pico SDK
     - name: Checkout Pico SDK
       if: matrix.pico-sdk
       uses: actions/checkout@v2
@@ -41,13 +41,6 @@ jobs:
         repository: raspberrypi/pico-sdk
         path: pico-sdk
         submodules: true
-
-    - name: Checkout Pico Extras
-      if: matrix.pico-sdk
-      uses: actions/checkout@v2
-      with:
-        repository: raspberrypi/pico-extras
-        path: pico-extras
 
     - name: Cache
       uses: actions/cache@v2

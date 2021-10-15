@@ -6,5 +6,4 @@ You should have:
 
 - CMakeLists.txt
 - main.cpp (and/or your sources)
-- pico_extras_import.cmake
 - pico_sdk_import.cmake
