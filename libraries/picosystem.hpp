@@ -30,7 +30,6 @@ namespace picosystem {
   };
 
   struct voice_t {
-    uint32_t ms = 0; // ms counter
     uint32_t frequency; // pitch (hz)
     int32_t  bend; // pitch bend (hz)
     uint32_t bend_ms; // bend speed (ms)
@@ -38,6 +37,7 @@ namespace picosystem {
     uint32_t hold; // duration to hold sustain level (ms)
     uint32_t reverb; // effects (ms)
     uint32_t volume, noise, distort; // effects (strength 0..100)
+    uint32_t ms = 0; // ms counter
   };
 
   using blend_func_t =
