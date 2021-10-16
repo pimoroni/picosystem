@@ -208,7 +208,7 @@ namespace picosystem {
 
     // clip source coordinates
     if(sx < 0) {dx += -sx; w += sx; sx = 0;}
-    if(sy < 0) {dy += -sy; h += sx; sy = 0;}
+    if(sy < 0) {dy += -sy; h += sy; sy = 0;}
     if(sx + w >= src.w) {w -= (sx + w) - src.w;}
     if(sy + h >= src.h) {h -= (sy + h) - src.h;}
 
@@ -232,30 +232,41 @@ namespace picosystem {
     }
   }
 
-  void blit(buffer_t &source, int32_t sx, int32_t sy, int32_t sw, int32_t sh, int32_t dx, int32_t dy, int32_t dw, int32_t dh) {
+  void blit(buffer_t &src, int32_t sx, int32_t sy, int32_t sw, int32_t sh, int32_t dx, int32_t dy, int32_t dw, int32_t dh) {
     _camera_offset(dx, dy);
 
     if(!intersects(dx, dy, dw, dh, _cx, _cy, _cw, _ch)) {
       return;
     }
 
-    if(sw <= 0 || sh <= 0 || dw <= 0 || dh <= 0) {
-      return;
-    }
-
     // loop over destination y
-    for(int32_t y = 0; y < dh; y++) {
-      int32_t ssy = sy + ((y * sh) / dh); // calculate source sample y
+    int32_t ssy = 0;
+    int32_t ssys = (sh << 16) / dh;
 
-      for(int32_t x = 0; x < dw; x++) {
-        int32_t ssx = sx + ((x * sw) / dw); // calculate source sample y
+    int32_t ssx = 0;
+    int32_t ssxs = (sw << 16) / dw;
 
-        if(contains(ssx, ssy, 0, 0, source.w, source.h)) {
-          if(contains(x + dx, y + dy, _cx, _cy, _cw, _ch)) {
-            _bf(source.p(ssx, ssy), 0, _dt.p(x + dx, y + dy), 1);
+    color_t *pd = _dt.p(dx, dy);
+    color_t *ps = src.p(sx, sy);
+
+    for(int32_t y = dy; y < dy + dh; y++) {
+      if(y >= _cy && y < _cy + _ch) {
+        ssx = 0;
+        for(int32_t x = dx; x < dx + dw; x++) {
+          if(x >= _cx && x < _cx + _cw) {
+            _bf(ps + (ssx >> 16), 0, pd, 1);
           }
+          pd++;
+          ssx += ssxs;
         }
+      }else{
+        pd+=dw;
       }
+
+      ssy += ssys;
+      pd += _dt.w - dw;
+      ps += src.w * (ssy >> 16);
+      ssy &= 0xffff;
     }
   }
 
