@@ -199,7 +199,7 @@ namespace picosystem {
     poly(pts.begin(), pts.size() / 2);
   }
 
-  void blit(const buffer_t &src, int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t dx, int32_t dy) {
+  void blit(buffer_t &src, int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t dx, int32_t dy) {
     _camera_offset(dx, dy);
 
     if(!intersects(dx, dy, w, h, _cx, _cy, _cw, _ch)) {
@@ -218,7 +218,7 @@ namespace picosystem {
     if(dx + w >= _cx + _cw) {w -= (dx + w) - (_cx + _cw);}
     if(dy + h >= _cy + _ch) {h -= (dy + h) - (_cy + _ch);}
 
-    if(w < 0 || h < 0) {
+    if(w <= 0 || h <= 0) {
       return;
     }
 
@@ -229,6 +229,33 @@ namespace picosystem {
       _bf(ps, 1, pd, w); // draw row
       pd += _dt.w;
       ps += src.w;
+    }
+  }
+
+  void blit(buffer_t &source, int32_t sx, int32_t sy, int32_t sw, int32_t sh, int32_t dx, int32_t dy, int32_t dw, int32_t dh) {
+    _camera_offset(dx, dy);
+
+    if(!intersects(dx, dy, dw, dh, _cx, _cy, _cw, _ch)) {
+      return;
+    }
+
+    if(sw <= 0 || sh <= 0 || dw <= 0 || dh <= 0) {
+      return;
+    }
+
+    // loop over destination y
+    for(int32_t y = 0; y < dh; y++) {
+      int32_t ssy = sy + ((y * sh) / dh); // calculate source sample y
+
+      for(int32_t x = 0; x < dw; x++) {
+        int32_t ssx = sx + ((x * sw) / dw); // calculate source sample y
+
+        if(contains(ssx, ssy, 0, 0, source.w, source.h)) {
+          if(contains(x + dx, y + dy, _cx, _cy, _cw, _ch)) {
+            _bf(source.p(ssx, ssy), 0, _dt.p(x + dx, y + dy), 1);
+          }
+        }
+      }
     }
   }
 

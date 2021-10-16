@@ -1,8 +1,7 @@
-
+#include <math.h>
 
 #include "picosystem.hpp"
-#include "hardware/pwm.h"
-#include "math.h"
+
 
 using namespace picosystem;
 

@@ -83,9 +83,13 @@ namespace picosystem {
   void        fpoly(const std::initializer_list<int32_t> &pts);
   void        line(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
   void        blit(
-                const buffer_t &source,
+                buffer_t &source,
                 int32_t x, int32_t y, int32_t w, int32_t h,
                 int32_t dx, int32_t dy);
+  void        blit(
+                buffer_t &source,
+                int32_t sx, int32_t sy, int32_t sw, int32_t sh,
+                int32_t dx, int32_t dy, int32_t dw, int32_t dh);
   void        sprite(uint32_t i, int32_t x, int32_t y, uint8_t flags = 0);
   void        text(const char &c, int32_t x, int32_t y);
   void        text(const char &c);
