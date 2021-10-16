@@ -239,32 +239,41 @@ namespace picosystem {
       return;
     }
 
-    // loop over destination y
-    int32_t ssy = 0;
-    int32_t ssys = (sh << 16) / dh;
-
-    int32_t ssx = 0;
-    int32_t ssxs = (sw << 16) / dw;
+    // source sample x/y and step
+    int32_t ssy = 0, ssys = (sh << 16) / dh;
+    int32_t ssx = 0, ssxs = (sw << 16) / dw;
 
     color_t *pd = _dt.p(dx, dy);
     color_t *ps = src.p(sx, sy);
 
-    for(int32_t y = dy; y < dy + dh; y++) {
-      if(y >= _cy && y < _cy + _ch) {
-        ssx = 0;
-        for(int32_t x = dx; x < dx + dw; x++) {
-          if(x >= _cx && x < _cx + _cw) {
-            _bf(ps + (ssx >> 16), 0, pd, 1);
-          }
-          pd++;
-          ssx += ssxs;
-        }
-      }else{
-        pd+=dw;
+    // if we need to offset our start to the clip area then we need to jump
+    // ahead in the source
+    if(dy < _cy) {
+      ssy = ssys * (_cy - dy);
+      pd += _dt.w * (_cy - dy); ps += src.w * (ssy >> 16);
+      ssy &= 0xffff;
+      dh -= (_cy - dy); dy = _cy;
+    }
+    int32_t maxy = std::min(dy + dh, _cy + _ch);
+
+    int32_t start_ssx = 0;
+    if(dx < _cx) {
+      start_ssx = ssxs * (_cx - dx); pd += (_cx - dx);
+      dw -= (_cx - dx); dx = _cx;
+    }
+    int32_t maxx = std::min(dx + dw, _cx + _cw);
+
+    // loop for all visible scanlines
+    for(int32_t y = dy; y < maxy; y++) {
+      ssx = start_ssx;
+      for(int32_t x = dx; x < maxx; x++) {
+        _bf(ps + (ssx >> 16), 0, pd, 1);
+        pd++;
+        ssx += ssxs;
       }
 
       ssy += ssys;
-      pd += _dt.w - dw;
+      pd += _dt.w - (maxx - dx);
       ps += src.w * (ssy >> 16);
       ssy &= 0xffff;
     }

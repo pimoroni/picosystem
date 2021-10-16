@@ -74,22 +74,25 @@ namespace picosystem {
     uint8_t sa = (*source &0xf0) >> 4;
 
     while(count--) {
-      // unpack dest into 32 bits with space for alpha multiplication
-      // we start with ggggbbbbaaaarrrr and end up with
-      // ------------gggg----bbbb----rrrr
-      uint32_t d = (*dest | ((*dest & 0xf000) << 4)) & 0xf0f0f;
-      uint8_t da = (*dest & 0xf0); // extract alpha to add back later
-
       if(sa == 15) {
-        // no blend needed, just copy source pixel data
-        d = s;
-      }else{
+        // full alpha, copy pixel
+        *dest = *source;
+      } else if(sa == 0) {
+        // zero alpha, do nothing...
+      } else {
+        // unpack dest into 32 bits with space for alpha multiplication
+        // we start with ggggbbbbaaaarrrr and end up with
+        // ------------gggg----bbbb----rrrr
+        uint32_t d = (*dest | ((*dest & 0xf000) << 4)) & 0xf0f0f;
+        uint8_t da = (*dest & 0xf0); // extract alpha to add back later
+
         // blend the three channels in one go
         d = d + ((sa * (s - d) + 0x070707) >> 4);
+
+        // reconstruct blended colour components into original format
+        *dest = (d & 0x0f0f) | ((d & 0xf0000) >> 4) | da;
       }
 
-      // reconstruct blended colour components into original format
-      *dest = (d & 0x0f0f) | ((d & 0xf0000) >> 4) | da;
       dest++;
 
       if(source_step == 1) {
