@@ -28,7 +28,7 @@ voice_t blip;
 
 // initialise the world
 void init() {
-  blip = voice(1800, 50, 50, 20, 20, 30, 50, 40, 5);
+  blip = voice(1800, 30, 100, 10, 10, 10, 10, 40, 2);
 }
 
 // process user input and update the world state
@@ -98,7 +98,6 @@ void draw() {
   frect(60 - label_width / 2 - 3, 102 - 3, label_width + 6, 13);
   pen(0, 0, 0);
   text(weapons[selected].name, 60 - (label_width / 2), 102);
-
 }
 
 
