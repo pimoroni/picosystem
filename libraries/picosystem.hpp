@@ -67,6 +67,7 @@ namespace picosystem {
   void        target(buffer_t &dt);
   void        camera(int32_t x, int32_t y);
   void        spritesheet(buffer_t &ss);
+  void        cursor(int32_t x, int32_t y);
 
   // primitives
   void        clear();
@@ -90,7 +91,12 @@ namespace picosystem {
                 buffer_t &source,
                 int32_t sx, int32_t sy, int32_t sw, int32_t sh,
                 int32_t dx, int32_t dy, int32_t dw, int32_t dh);
-  void        sprite(uint32_t i, int32_t x, int32_t y, uint8_t flags = 0);
+  void        sprite(uint32_t i, int32_t x, int32_t y);
+  void        sprite(uint32_t i, int32_t x, int32_t y, int32_t cx, int32_t cy);
+  void        sprite(
+                uint32_t i,
+                int32_t x, int32_t y, int32_t cx, int32_t cy,
+                int32_t dw, int32_t dh);
   void        text(const char &c, int32_t x, int32_t y);
   void        text(const char &c);
   void        text(const std::string &t, int32_t x, int32_t y);
@@ -182,4 +188,17 @@ namespace picosystem {
   const extern uint8_t _picosystem_logo[550];
   const extern color_t _default_sprite_sheet[16384];
 
+  #ifndef NO_SPRITESHEET
+  enum _sprites_ids {
+    CHERRY, APPLE, BANANA, ORANGE, AUBERGINE, CARROT, POTATO, LEAF,
+    PARSNIP, MEAT, BEAN, RADISH, STRAWBERRY, PUMPKIN, CUCUMBER, SALT,
+    SWORD1, SWORD2, SWORD3, AXE, DAGGER, MACE, BOW, ARROW1,
+    ARROW2, ARROW3, TRIDENT1, SPEAR, TRIDENT2, MACHINEGUN, PISTOL, SHOTGUN,
+    GEM1, GEM2, GEM3, GEM4, GEM5, GEM6, AMULET, FOLDER,
+    COIN, SKULL, TICK, CROSS, IDOL1, IDOL2, IDOL3, IDOL4,
+    SWEETCORN, BROCCOLI, BISCUIT, BERRIES, SCEPTRE, FIRE, LASERGUN1, LASERGUN2,
+    HELMET1, HELMET2, HELMET3, HELMET4,
+    // etc... can we name all 256 built in sprites?!
+  };
+  #endif
 }

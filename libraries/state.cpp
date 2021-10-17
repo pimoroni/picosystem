@@ -38,4 +38,9 @@ namespace picosystem {
     y -= _camy;
   }
 
+  void cursor(int32_t x, int32_t y) {
+    _tx = x;
+    _ty = y;
+  }
+
 }
