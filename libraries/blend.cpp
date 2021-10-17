@@ -25,14 +25,17 @@ namespace picosystem {
     }
   }
 
-  // blends the source and destination based on the source alpha
+  // blends the source and destination
   void BLEND(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
     while(c--) {
+      // fetch next source pixel
       uint32_t ts = *(ps + (so >> 16));
-      uint8_t sa = (ts & 0x00f0) >> 4; // extract source alpha
 
-      // add one to source alpha so that we can get away with >> 4 to
-      // scale our channels back down (instead of expensive / 15) this
+      // extract source alpha
+      uint8_t sa = (ts & 0x00f0) >> 4;
+
+      // add one to source alpha so that we can get away with >>4 when
+      // scaling our channels back down (instead of expensive /15) this
       // is accurate enough...
       sa++;
 
