@@ -117,55 +117,41 @@ void update(uint32_t tick) {
 void draw_dial(std::string name, int32_t x, int32_t y) {
   dial_t *d = get_dial(name);
 
-  pen(0, 2, 3, 2);
-  frect(x, y, 60, 60);
+  pen(0, 0, 0, 2);
   rect(x, y, 60, 60);
 
-  pen(15, 15, 15, 8);
-  fcircle(x + 4, y + 4, 1);
-  fcircle(x + 60 - 4, y + 4, 1);
-  fcircle(x + 4, y + 60 - 4, 1);
-  fcircle(x + 60 - 4, y + 60 - 4, 1);
-
-  pen(0, 2, 3, 8);
+  pen(0, 0, 0, 2);
   fcircle(x + 3, y + 3, 1);
   fcircle(x + 60 - 3, y + 3, 1);
   fcircle(x + 3, y + 60 - 3, 1);
   fcircle(x + 60 - 3, y + 60 - 3, 1);
 
-  pen(0, 2, 3, 2);
-  fcircle(x + 33, y + 23, 18);
+  pen(0, 0, 0, 4);
+  fcircle(x + 30, y + 20, 16);
 
-  pen(0, 2, 3);
-  fcircle(x + 30, y + 20, 18);
+  pen(15, 15, 15, 12);
+  fcircle(x + 30, y + 20, 13);
 
-  pen(14, 14, 14);
-  fcircle(x + 30, y + 20, 14);
 
-  // draw ticks of the dial
-  pen(4, 6, 7);
-  for(int i = 0; i <= 5; i++) {
-    float fv = float(i) / 5.0f;
-    int32_t tickx = -sin(3.1415927 * 0.2f + fv * 3.1415927 * 1.6f) * 12;
-    int32_t ticky = cos(3.1415927 * 0.2f + fv * 3.1415927 * 1.6f) * 12;
-    fcircle(x + 30 + tickx, y + 20 + ticky, 1);
-  }
+  // pen(15, 15, 15, 2);
+  // fcircle(x + 30, y + 20, 18);
+
+  // pen(15, 15, 15, 2);
+  // fcircle(x + 30, y + 20, 14);
 
   // draw dot of the dial
   float fv = float(d->value + abs(d->min)) / (d->max - d->min);
-  int32_t dotx = -sin(3.1415927 * 0.2f + fv * 3.1415927 * 1.6f) * 10;
-  int32_t doty = cos(3.1415927 * 0.2f + fv * 3.1415927 * 1.6f) * 10;
+  int32_t dotx = -sin(3.1415927 * 0.2f + fv * 3.1415927 * 1.6f) * 9;
+  int32_t doty = cos(3.1415927 * 0.2f + fv * 3.1415927 * 1.6f) * 9;
 
-  pen(0, 2, 3);
+  pen(0, 0, 0, 4);
   fcircle(dotx + x + 30, doty + y + 20, 3);
 
   uint32_t lw = text_width(d->name);
   text(d->name, x + 30 - (lw / 2), y + 60 - 20);
-  text(d->name, x + 31 - (lw / 2), y + 60 - 20);
   std::string unit_label = str(d->value) + d->unit;
   lw = text_width(unit_label);
   text(unit_label, x + 30 - (lw / 2), y + 60 - 10);
-  text(unit_label, x + 31 - (lw / 2), y + 60 - 10);
 
   if(d == &dials[active_dial]) {
     pen(0, 15, 0);
@@ -176,21 +162,21 @@ void draw_dial(std::string name, int32_t x, int32_t y) {
 
 // draw the world
 void draw() {
-  pen(12, 12, 0);
+  pen(12, 12, 8);
   frect(0, 60, 240, 60);
   draw_dial("frequency", 0, 60);
   draw_dial("volume", 60, 60);
   draw_dial("sustain", 120, 60);
   draw_dial("distort", 180, 60);
 
-  pen(0, 12, 12);
+  pen(8, 12, 12);
   frect(0, 120, 240, 60);
   draw_dial("attack", 0, 120);
   draw_dial("decay", 60, 120);
   draw_dial("hold", 120, 120);
   draw_dial("release", 180, 120);
 
-  pen(13, 0, 13);
+  pen(12, 8, 12);
   frect(0, 180, 240, 60);
   draw_dial("reverb", 0, 180);
   draw_dial("bend", 60, 180);
@@ -198,7 +184,7 @@ void draw() {
   draw_dial("noise", 180, 180);
 
   // draw waveform graph
-  pen(0, 0, 0, 8);
+  pen(0, 0, 0, 2);
   frect(0, 0, 240, 60);
 
   uint32_t duration = v.attack + v.decay + v.hold + v.release + v.reverb;
