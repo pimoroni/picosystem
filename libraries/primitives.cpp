@@ -345,7 +345,7 @@ namespace picosystem {
   }
 
   void _logo() {
-    uint8_t *s = _picosystem_logo;
+    const uint8_t *s = _picosystem_logo;
 
     for(int y = 35; y < 85; y++) {
       for(int x = 19; x < 101; x+=8) {
