@@ -12,7 +12,7 @@ namespace picosystem {
   void pixel(int32_t x, int32_t y) {
     _camera_offset(x, y);
     if(contains(x, y, _cx, _cy, _cw, _ch)) {
-      _bf(&_pen, 0, _dt.p(x, y), 1);
+      _bf(&_pen, 0, 0, _dt.p(x, y), 1);
     }
   }
 
@@ -22,7 +22,7 @@ namespace picosystem {
     if(x < _cx) {c -= (_cx - x); x = _cx;}
     if(x + c >= _cx + _cw) {c -= (x + c) - (_cx + _cw);}
     if(c > 0) {
-      _bf(&_pen, 0, _dt.p(x, y), c);
+      _bf(&_pen, 0, 0, _dt.p(x, y), c);
     }
   }
 
@@ -33,7 +33,7 @@ namespace picosystem {
     if(y + c >= _cy + _ch) {c -= (y + c) - (_cy + _ch);}
     color_t *dest = _dt.p(x, y);
     while(c-- > 0) {
-      _bf(&_pen, 0, dest, 1);
+      _bf(&_pen, 0, 0, dest, 1);
       dest += _dt.w;
     }
   }
@@ -51,7 +51,7 @@ namespace picosystem {
     intersection(x, y, w, h, _cx, _cy, _cw, _ch);
     color_t *dest = _dt.p(x, y);
     while(h--) {
-      _bf(&_pen, 0, dest, w);
+      _bf(&_pen, 0, 0, dest, w);
       dest += _dt.w;
     }
   }
@@ -226,7 +226,7 @@ namespace picosystem {
     color_t *pd = _dt.data + (dx + dy * _dt.w);
 
     while(h--) {
-      _bf(ps, 1, pd, w); // draw row
+      _bf(ps, 0, 1 << 16, pd, w); // draw row
       pd += _dt.w;
       ps += src.w;
     }
@@ -256,24 +256,18 @@ namespace picosystem {
     }
     int32_t maxy = std::min(dy + dh, _cy + _ch);
 
-    int32_t start_ssx = 0;
     if(dx < _cx) {
-      start_ssx = ssxs * (_cx - dx); pd += (_cx - dx);
+      ssx += ssxs * (_cx - dx); pd += (_cx - dx);
       dw -= (_cx - dx); dx = _cx;
     }
-    int32_t maxx = std::min(dx + dw, _cx + _cw);
+    int32_t w = std::min(dw, _cw);
 
     // loop for all visible scanlines
     for(int32_t y = dy; y < maxy; y++) {
-      ssx = start_ssx;
-      for(int32_t x = dx; x < maxx; x++) {
-        _bf(ps + (ssx >> 16), 0, pd, 1);
-        pd++;
-        ssx += ssxs;
-      }
+      _bf(ps, ssx, ssxs, pd, w);
 
       ssy += ssys;
-      pd += _dt.w - (maxx - dx);
+      pd += _dt.w;
       ps += src.w * (ssy >> 16);
       ssy &= 0xffff;
     }
@@ -302,7 +296,7 @@ namespace picosystem {
       if(pr && y >= _cy && y < _cy + _ch) {
         for(uint8_t x = _tx; x < _tx + w; x++) {
           if(x >= _cx && x < _cx + _cw && pr & 0x80) {
-            _bf(&_pen, 0, dest, 1);
+            _bf(&_pen, 0, 0, dest, 1);
           }
           pr <<= 1; dest++;
         }

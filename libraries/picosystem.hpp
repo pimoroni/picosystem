@@ -41,7 +41,7 @@ namespace picosystem {
   };
 
   using blend_func_t =
-    void(*)(color_t* source, uint32_t source_step,
+    void(*)(color_t* source, uint32_t so, int32_t ss,
             color_t*   dest, uint32_t count);
 
   // drawing state
@@ -98,14 +98,14 @@ namespace picosystem {
 
   // blend functions
   void        COPY(
-                color_t* source, uint32_t source_step,
-                color_t* dest, uint32_t count);
+                color_t* ps, uint32_t so, int32_t ss,
+                color_t* pd, uint32_t c);
   void        BLEND(
-                color_t* source, uint32_t source_step,
-                color_t* dest, uint32_t count);
+                color_t* ps, uint32_t so, int32_t ss,
+                color_t* pd, uint32_t c);
   void        MASK(
-                color_t* source, uint32_t source_step,
-                color_t* dest, uint32_t count);
+                color_t* ps, uint32_t so, int32_t ss,
+                color_t* pd, uint32_t c);
 
   // utility
   std::string str(float v, uint8_t precision = 2);
