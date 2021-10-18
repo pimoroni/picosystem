@@ -64,6 +64,7 @@ namespace picosystem {
   constexpr float       _PI = 3.1415927f;
 
   // state
+  void        pen();
   void        pen(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 15);
   void        pen(color_t p);
   void        alpha();
