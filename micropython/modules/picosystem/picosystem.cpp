@@ -121,7 +121,7 @@ void PicosystemVoice_print(const mp_print_t *print, mp_obj_t self_in, mp_print_k
     _PicosystemVoice_obj_t *self = MP_OBJ_TO_PTR2(self_in, _PicosystemVoice_obj_t);
     mp_print_str(print, "Voice(");
 
-    mp_print_str(print, "envelope: ");
+    mp_print_str(print, "\nenvelope: ");
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->attack), PRINT_REPR);
     mp_print_str(print, "ms, ");
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->decay), PRINT_REPR);
@@ -129,17 +129,17 @@ void PicosystemVoice_print(const mp_print_t *print, mp_obj_t self_in, mp_print_k
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->sustain), PRINT_REPR);
     mp_print_str(print, "%, ");
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->release), PRINT_REPR);
-    mp_print_str(print, "ms");
+    mp_print_str(print, "ms,");
 
-    mp_print_str(print, ", effects: Reverb ");
+    mp_print_str(print, "\neffects: Reverb ");
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->reverb), PRINT_REPR);
     mp_print_str(print, "ms, Noise ");
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->noise), PRINT_REPR);
     mp_print_str(print, "%, Distort ");
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->distort), PRINT_REPR);
-    mp_print_str(print, "%");
+    mp_print_str(print, "%,");
 
-    mp_print_str(print, ", bend: ");
+    mp_print_str(print, "\nbend: ");
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->bend), PRINT_REPR);
     mp_print_str(print, "Hz, ");
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->bend_ms), PRINT_REPR);
@@ -151,20 +151,20 @@ mp_obj_t PicosystemVoice_envelope(size_t n_args, const mp_obj_t *pos_args, mp_ma
     
     enum { ARG_attack, ARG_decay, ARG_sustain, ARG_release };
     static const mp_arg_t allowed_args[] = {
-        { MP_QSTR_attack, MP_ARG_INT, {.u_int = 0} },
-        { MP_QSTR_decay, MP_ARG_INT, {.u_int = 0} },
-        { MP_QSTR_sustain, MP_ARG_INT, {.u_int = 0} },
-        { MP_QSTR_release, MP_ARG_INT, {.u_int = 0} }
+        { MP_QSTR_attack, MP_ARG_INT, {.u_int = -1} },
+        { MP_QSTR_decay, MP_ARG_INT, {.u_int = -1} },
+        { MP_QSTR_sustain, MP_ARG_INT, {.u_int = -1} },
+        { MP_QSTR_release, MP_ARG_INT, {.u_int = -1} }
     };
 
     // Parse args.
     mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
     mp_arg_parse_all(n_args - 1, pos_args + 1, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 
-    self->voice->attack    = args[ARG_attack].u_int;
-    self->voice->decay     = args[ARG_decay].u_int;
-    self->voice->sustain   = args[ARG_sustain].u_int;
-    self->voice->release   = args[ARG_release].u_int;
+    if(args[ARG_attack].u_int > -1) self->voice->attack = args[ARG_attack].u_int;
+    if(args[ARG_decay].u_int > -1) self->voice->decay  = args[ARG_decay].u_int;
+    if(args[ARG_sustain].u_int > -1) self->voice->sustain = args[ARG_sustain].u_int;
+    if(args[ARG_release].u_int > -1) self->voice->release = args[ARG_release].u_int;
 
     return mp_const_none;
 }
@@ -174,18 +174,18 @@ mp_obj_t PicosystemVoice_effects(size_t n_args, const mp_obj_t *pos_args, mp_map
     
     enum { ARG_reverb, ARG_noise, ARG_distort };
     static const mp_arg_t allowed_args[] = {
-        { MP_QSTR_reverb, MP_ARG_INT, {.u_int = 0} },
-        { MP_QSTR_noise, MP_ARG_INT, {.u_int = 0} },
-        { MP_QSTR_distort, MP_ARG_INT, {.u_int = 0} },
+        { MP_QSTR_reverb, MP_ARG_INT, {.u_int = -1} },
+        { MP_QSTR_noise, MP_ARG_INT, {.u_int = -1} },
+        { MP_QSTR_distort, MP_ARG_INT, {.u_int = -1} },
     };
 
     // Parse args.
     mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
     mp_arg_parse_all(n_args - 1, pos_args + 1, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 
-    self->voice->reverb    = args[ARG_reverb].u_int;
-    self->voice->noise     = args[ARG_noise].u_int;
-    self->voice->distort   = args[ARG_distort].u_int;
+    if(args[ARG_reverb].u_int > -1) self->voice->reverb = args[ARG_reverb].u_int;
+    if(args[ARG_noise].u_int > -1) self->voice->noise = args[ARG_noise].u_int;
+    if(args[ARG_distort].u_int > -1) self->voice->distort = args[ARG_distort].u_int;
 
     return mp_const_none;
 }
@@ -195,8 +195,8 @@ mp_obj_t PicosystemVoice_bend(size_t n_args, const mp_obj_t *pos_args, mp_map_t 
     
     enum { ARG_amount, ARG_speed };
     static const mp_arg_t allowed_args[] = {
-        { MP_QSTR_amount, MP_ARG_INT, {.u_int = 0} },
-        { MP_QSTR_speed, MP_ARG_INT, {.u_int = 0} },
+        { MP_QSTR_amount, MP_ARG_INT | MP_ARG_REQUIRED, {.u_int = 0} },
+        { MP_QSTR_speed, MP_ARG_INT, {.u_int = -1} },
     };
 
     // Parse args.
@@ -204,7 +204,7 @@ mp_obj_t PicosystemVoice_bend(size_t n_args, const mp_obj_t *pos_args, mp_map_t 
     mp_arg_parse_all(n_args - 1, pos_args + 1, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 
     self->voice->bend    = args[ARG_amount].u_int;
-    self->voice->bend_ms = args[ARG_speed].u_int;
+    if(args[ARG_speed].u_int > -1) self->voice->bend_ms = args[ARG_speed].u_int;
 
     return mp_const_none;
 }
