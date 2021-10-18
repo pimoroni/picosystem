@@ -64,7 +64,7 @@ namespace picosystem {
   void        pen(color_t p);
   void        clip(int32_t x, int32_t y, uint32_t w, uint32_t h);
   void        blend(blend_func_t bf);
-  void        target(buffer_t &dt);
+  void        target(buffer_t *dt);
   void        camera(int32_t x, int32_t y);
   void        spritesheet(buffer_t &ss);
   void        cursor(int32_t x, int32_t y);
@@ -119,6 +119,7 @@ namespace picosystem {
   std::string str(uint32_t v);
   color_t     rgb(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 15);
   color_t     hsv(float h, float s, float v, float a = 1.0f);
+  buffer_t*   buffer(uint32_t w, uint32_t h, void *data = nullptr);
   voice_t     voice(
                 uint32_t frequency, uint32_t hold, uint32_t volume = 100,
                 uint32_t attack = 100, uint32_t decay = 50,

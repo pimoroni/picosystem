@@ -51,6 +51,14 @@ namespace picosystem {
     return rgb(0, 0, 0);
   }
 
+  buffer_t* buffer(uint32_t w, uint32_t h, void *data) {
+    buffer_t *b = new buffer_t();
+    b->w = w;
+    b->h = h;
+    b->data = data ? (color_t *)data : new color_t[w * h];
+    return b;
+  }
+
   voice_t voice(uint32_t frequency, uint32_t hold, uint32_t volume,
                 uint32_t attack, uint32_t decay, uint32_t sustain,
                 uint32_t release, int32_t bend,  uint32_t bend_ms,

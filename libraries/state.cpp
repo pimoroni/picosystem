@@ -19,9 +19,9 @@ namespace picosystem {
     _bf = bf;
   }
 
-  void target(buffer_t &dt) {
-    _dt = dt;
-    _cx = 0; _cy = 0; _cw = dt.w; _ch = dt.h; // reset clip rect
+  void target(buffer_t *dt) {
+    _dt = *dt;
+    _cx = 0; _cy = 0; _cw = _dt.w; _ch = _dt.h; // reset clip rect
   }
 
   void camera(int32_t x, int32_t y) {

@@ -96,6 +96,8 @@ void draw() {
   clear();
 
   // draw title
+  // draw titleZZZZ
+  // draw title
   pen(15, 15, 15);
   frect(0, 0, 120, 11);
   pen(1, 1, 1);
