@@ -108,7 +108,6 @@ void draw() {
     frect(60 + x - (sw / 2), 55 + y + (scale / 1.2) - (sh / 2), sw, sh);
     frect(60 + x - (sw / 2) + 1, 55 + y + (scale / 1.2) - (sh / 2) - 1, sw - 2, (sh) + 2);
 
-
     // draw the weapon sprite
     alpha(a);
     sprite(

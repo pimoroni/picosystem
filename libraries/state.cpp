@@ -70,7 +70,7 @@ namespace picosystem {
   }
 
   void spritesheet() {
-    _ss = DEFAULT_SPRITES;
+    _ss = SPRITESHEET;
   }
 
   void spritesheet(buffer_t *ss) {
