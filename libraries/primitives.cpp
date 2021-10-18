@@ -296,7 +296,6 @@ namespace picosystem {
     blit(_ss, sx * 8, sy * 8, cx * 8, cy * 8, x, y, dw, dh);
   }
 
-
   // draws a character at the current cursor position
   void text(const char &c) {
     if(!intersects(_tx, _ty, 8, 8, _cx, _cy, _cw, _ch)) {

@@ -10,11 +10,12 @@ namespace picosystem {
   uint32_t _debug;
 
   color_t _pen;
+  uint8_t _a = 15;
 
   int32_t _tx = 0, _ty = 0;
   int32_t _camx = 0, _camy = 0;
   uint32_t _io = 0, _lio = 0;
-  blend_func_t _bf = BLEND;
+  blend_func_t _bf = ALPHA;
 
   #ifdef PIXEL_DOUBLE
     color_t _fb[120 * 120];

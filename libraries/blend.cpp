@@ -39,7 +39,7 @@ namespace picosystem {
   }
 
   // blends the source and destination
-  void BLEND(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+  void ALPHA(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
     if(!ss) {
       // optimised for no source step
 
@@ -56,6 +56,9 @@ namespace picosystem {
       // scaling our channels back down (instead of expensive /15) this
       // is accurate enough...
       sa++;
+
+      sa *= (_a + 1);
+      sa >>= 4;
 
       // unpack source into 32 bits with space for alpha multiplication
       // we start with 16-bits (GBAR) and end up with 32bits (-G---B-R)
@@ -91,6 +94,9 @@ namespace picosystem {
         // scaling our channels back down (instead of expensive /15) this
         // is accurate enough...
         if(sa != 0) sa++;
+
+        sa *= (_a + 1);
+        sa >>= 4;
 
         // unpack source into 32 bits with space for alpha multiplication
         // we start with 16-bits (GBAR) and end up with 32bits (-G---B-R)

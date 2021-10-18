@@ -11,6 +11,10 @@ namespace picosystem {
     _pen = p;
   }
 
+  void alpha(uint8_t a) {
+    _a = a;
+  }
+
   void clip(int32_t x, int32_t y, uint32_t w, uint32_t h) {
     _cx = x; _cy = y; _cw = w; _ch = h;
   }

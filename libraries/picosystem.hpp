@@ -43,6 +43,7 @@ namespace picosystem {
 
   // drawing state
   extern color_t        _pen;                 // pen
+  extern uint8_t        _a;                   // global alpha
   extern int32_t        _cx, _cy, _cw, _ch;   // clip rect
   extern int32_t        _tx, _ty;             // text cursor position
   extern uint32_t       _io, _lio;            // io state and last io state
@@ -64,6 +65,7 @@ namespace picosystem {
   // state
   void        pen(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 15);
   void        pen(color_t p);
+  void        alpha(uint8_t a);
   void        clip(int32_t x, int32_t y, uint32_t w, uint32_t h);
   void        blend(blend_func_t bf);
   void        target(buffer_t *dt);
@@ -108,7 +110,7 @@ namespace picosystem {
   void        COPY(
                 color_t* ps, uint32_t so, int32_t ss,
                 color_t* pd, uint32_t c);
-  void        BLEND(
+  void        ALPHA(
                 color_t* ps, uint32_t so, int32_t ss,
                 color_t* pd, uint32_t c);
   void        MASK(
