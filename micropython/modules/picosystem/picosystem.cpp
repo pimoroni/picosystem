@@ -41,7 +41,7 @@ mp_obj_t draw_callback_obj = mp_const_none;
 
 typedef struct _PicosystemBuffer_obj_t {
     mp_obj_base_t base;
-    buffer_t buffer;
+    buffer_t *buffer;
 } _PicosystemBuffer_obj_t;
 
 /***** Print *****/
@@ -51,10 +51,10 @@ void PicosystemBuffer_print(const mp_print_t *print, mp_obj_t self_in, mp_print_
     mp_print_str(print, "Buffer(");
 
     mp_print_str(print, "w = ");
-    mp_obj_print_helper(print, mp_obj_new_int(self->buffer.w), PRINT_REPR);
+    mp_obj_print_helper(print, mp_obj_new_int(self->buffer->w), PRINT_REPR);
 
     mp_print_str(print, ", h = ");
-    mp_obj_print_helper(print, mp_obj_new_int(self->buffer.h), PRINT_REPR);
+    mp_obj_print_helper(print, mp_obj_new_int(self->buffer->h), PRINT_REPR);
 
     mp_print_str(print, ")");
 }
@@ -62,8 +62,9 @@ void PicosystemBuffer_print(const mp_print_t *print, mp_obj_t self_in, mp_print_
 /***** Destructor ******/
 mp_obj_t PicosystemBuffer___del__(mp_obj_t self_in) {
     _PicosystemBuffer_obj_t *self = MP_OBJ_TO_PTR2(self_in, _PicosystemBuffer_obj_t);
-    uint32_t size = self->buffer.w * self->buffer.h;
-    m_del(color_t, self->buffer.data, size);
+    uint32_t size = self->buffer->w * self->buffer->h;
+    m_del(color_t, self->buffer->data, size);
+    m_del(buffer_t, self->buffer, 1);
     return mp_const_none;
 }
 
@@ -91,11 +92,12 @@ mp_obj_t PicosystemBuffer_make_new(const mp_obj_type_t *type, size_t n_args, siz
     self = m_new_obj_with_finaliser(_PicosystemBuffer_obj_t);
     self->base.type = &PicosystemBuffer_type;
 
-    self->buffer.w = w;
-    self->buffer.h = h;
+    self->buffer = m_new(buffer_t, 1);
+    self->buffer->w = w;
+    self->buffer->h = h;
     uint32_t size = w * h;
-    self->buffer.data = m_new(color_t, size);
-    memset(self->buffer.data, 0, sizeof(color_t));
+    self->buffer->data = m_new(color_t, size);
+    //memset(self->buffer.data, 0, sizeof(color_t) * size);
 
     return MP_OBJ_FROM_PTR(self);
 }
@@ -103,8 +105,8 @@ mp_obj_t PicosystemBuffer_make_new(const mp_obj_type_t *type, size_t n_args, siz
 mp_int_t PicosystemBuffer_get_buffer(mp_obj_t self_in, mp_buffer_info_t *bufinfo, mp_uint_t flags) {
     (void)flags;
     _PicosystemBuffer_obj_t *self = MP_OBJ_TO_PTR2(self_in, _PicosystemBuffer_obj_t);;
-    bufinfo->buf = (void *)(self->buffer.data);
-    bufinfo->len = self->buffer.w * self->buffer.h * sizeof(color_t);
+    bufinfo->buf = (void *)(self->buffer->data);
+    bufinfo->len = self->buffer->w * self->buffer->h * sizeof(color_t);
     bufinfo->typecode = 'B'; // view PicosystemBuffer as bytes
     return 0;
 }
@@ -129,9 +131,7 @@ void PicosystemVoice_print(const mp_print_t *print, mp_obj_t self_in, mp_print_k
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->release), PRINT_REPR);
     mp_print_str(print, "ms");
 
-    mp_print_str(print, ", effects: Vol ");
-    mp_obj_print_helper(print, mp_obj_new_int(self->voice->volume), PRINT_REPR);
-    mp_print_str(print, "%, Reverb ");
+    mp_print_str(print, ", effects: Reverb ");
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->reverb), PRINT_REPR);
     mp_print_str(print, "ms, Noise ");
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->noise), PRINT_REPR);
@@ -139,7 +139,11 @@ void PicosystemVoice_print(const mp_print_t *print, mp_obj_t self_in, mp_print_k
     mp_obj_print_helper(print, mp_obj_new_int(self->voice->distort), PRINT_REPR);
     mp_print_str(print, "%");
 
-    mp_print_str(print, ")");
+    mp_print_str(print, ", bend: ");
+    mp_obj_print_helper(print, mp_obj_new_int(self->voice->bend), PRINT_REPR);
+    mp_print_str(print, "Hz, ");
+    mp_obj_print_helper(print, mp_obj_new_int(self->voice->bend_ms), PRINT_REPR);
+    mp_print_str(print, "ms )");
 }
 
 mp_obj_t PicosystemVoice_envelope(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
@@ -168,9 +172,8 @@ mp_obj_t PicosystemVoice_envelope(size_t n_args, const mp_obj_t *pos_args, mp_ma
 mp_obj_t PicosystemVoice_effects(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     _PicosystemVoice_obj_t *self = MP_OBJ_TO_PTR2(pos_args[0], _PicosystemVoice_obj_t);
     
-    enum { ARG_volume, ARG_reverb, ARG_noise, ARG_distort };
+    enum { ARG_reverb, ARG_noise, ARG_distort };
     static const mp_arg_t allowed_args[] = {
-        { MP_QSTR_volume, MP_ARG_INT, {.u_int = 0} },
         { MP_QSTR_reverb, MP_ARG_INT, {.u_int = 0} },
         { MP_QSTR_noise, MP_ARG_INT, {.u_int = 0} },
         { MP_QSTR_distort, MP_ARG_INT, {.u_int = 0} },
@@ -180,10 +183,28 @@ mp_obj_t PicosystemVoice_effects(size_t n_args, const mp_obj_t *pos_args, mp_map
     mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
     mp_arg_parse_all(n_args - 1, pos_args + 1, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 
-    self->voice->volume    = args[ARG_volume].u_int;
     self->voice->reverb    = args[ARG_reverb].u_int;
     self->voice->noise     = args[ARG_noise].u_int;
     self->voice->distort   = args[ARG_distort].u_int;
+
+    return mp_const_none;
+}
+
+mp_obj_t PicosystemVoice_bend(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    _PicosystemVoice_obj_t *self = MP_OBJ_TO_PTR2(pos_args[0], _PicosystemVoice_obj_t);
+    
+    enum { ARG_amount, ARG_speed };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_amount, MP_ARG_INT, {.u_int = 0} },
+        { MP_QSTR_speed, MP_ARG_INT, {.u_int = 0} },
+    };
+
+    // Parse args.
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all(n_args - 1, pos_args + 1, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
+    self->voice->bend    = args[ARG_amount].u_int;
+    self->voice->bend_ms = args[ARG_speed].u_int;
 
     return mp_const_none;
 }
@@ -401,56 +422,49 @@ uint32_t note_to_freq(const char *note) {
 mp_obj_t PicosystemVoice_play(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     _PicosystemVoice_obj_t *self = MP_OBJ_TO_PTR2(pos_args[0], _PicosystemVoice_obj_t);
     
-    enum { ARG_note, ARG_hold, ARG_bend, ARG_bend_ms };
+    enum { ARG_note, ARG_duration, ARG_volume };
     static const mp_arg_t allowed_args[] = {
         { MP_QSTR_note, MP_ARG_OBJ | MP_ARG_REQUIRED },
-        { MP_QSTR_hold, MP_ARG_INT, {.u_int = 0} },
-        { MP_QSTR_bend, MP_ARG_INT, {.u_int = 0} },
-        { MP_QSTR_bend_ms, MP_ARG_INT, {.u_int = -1} },
+        { MP_QSTR_duration, MP_ARG_INT, {.u_int = 500} },
+        { MP_QSTR_volume, MP_ARG_INT, {.u_int = 100} },
     };
 
     // Parse args.
     mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
     mp_arg_parse_all(n_args - 1, pos_args + 1, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 
-    self->voice->bend = args[ARG_bend].u_int;
-    self->voice->hold = args[ARG_hold].u_int;
+    uint32_t freq = 0;
 
     mp_obj_t dt_obj = args[ARG_note].u_obj;
     if(mp_obj_is_small_int(dt_obj)) {
-        self->voice->frequency = mp_obj_get_int(dt_obj);
+        freq = mp_obj_get_int(dt_obj);
     } else if (mp_obj_is_str_or_bytes(dt_obj)) {
         GET_STR_DATA_LEN(dt_obj, str, str_len);
-        self->voice->frequency = note_to_freq((const char*)str);
+        freq = note_to_freq((const char*)str);
     }
 
-    if(args[ARG_bend_ms].u_int == -1) {
-        uint32_t step = self->voice->frequency / abs(self->voice->bend);
-        step = (self->voice->attack + self->voice->decay + self->voice->hold + self->voice->release) / step;
-        self->voice->bend_ms = step;
-    } else {
-        self->voice->bend_ms = args[ARG_bend_ms].u_int;
+    if(freq == 0) {
+        mp_raise_TypeError("play: note must be a frequency (int) or note name (eg: G8)");
     }
     
-    play(*(self->voice));
+    play(*(self->voice), freq, args[ARG_duration].u_int, args[ARG_volume].u_int);
     return mp_const_none;
 }
 
 mp_obj_t PicosystemVoice_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args) {
     _PicosystemVoice_obj_t *self = nullptr;
 
-    enum { ARG_frequency, ARG_bend, ARG_bend_ms, ARG_attack, ARG_decay, ARG_hold, ARG_release, ARG_reverb, ARG_sustain, ARG_volume, ARG_noise, ARG_distort };
+    enum {ARG_attack, ARG_decay, ARG_sustain, ARG_release, ARG_bend, ARG_bend_ms, ARG_reverb, ARG_noise, ARG_distort };
     static const mp_arg_t allowed_args[] = {
-        { MP_QSTR_frequency, MP_ARG_INT, {.u_int = 0} },
+        { MP_QSTR_attack, MP_ARG_INT, {.u_int = 100} },
+        { MP_QSTR_decay, MP_ARG_INT, {.u_int = 50} },
+        { MP_QSTR_sustain, MP_ARG_INT, {.u_int = 80} },
+        { MP_QSTR_release, MP_ARG_INT, {.u_int = 100} },
+
         { MP_QSTR_bend, MP_ARG_INT, {.u_int = 0} },
         { MP_QSTR_bend_ms, MP_ARG_INT, {.u_int = 0} },
-        { MP_QSTR_attack, MP_ARG_INT, {.u_int = 50} },
-        { MP_QSTR_decay, MP_ARG_INT, {.u_int = 150} },
-        { MP_QSTR_hold, MP_ARG_INT, {.u_int = 0} },
-        { MP_QSTR_release, MP_ARG_INT, {.u_int = 50} },
+    
         { MP_QSTR_reverb, MP_ARG_INT, {.u_int = 0} },
-        { MP_QSTR_sustain, MP_ARG_INT, {.u_int = 100} },
-        { MP_QSTR_volume, MP_ARG_INT, {.u_int = 100} },
         { MP_QSTR_noise, MP_ARG_INT, {.u_int = 0} },
         { MP_QSTR_distort, MP_ARG_INT, {.u_int = 0} },
     };
@@ -463,17 +477,15 @@ mp_obj_t PicosystemVoice_make_new(const mp_obj_type_t *type, size_t n_args, size
     self->base.type = &PicosystemVoice_type;
 
     self->voice = m_new(voice_t, 1);
-    self->voice->ms        = 0;
-    self->voice->frequency = args[ARG_frequency].u_int;
-    self->voice->bend      = args[ARG_bend].u_int;
-    self->voice->bend_ms   = args[ARG_bend_ms].u_int;
     self->voice->attack    = args[ARG_attack].u_int;
     self->voice->decay     = args[ARG_decay].u_int;
-    self->voice->hold      = args[ARG_hold].u_int;
-    self->voice->release   = args[ARG_release].u_int;
-    self->voice->reverb    = args[ARG_reverb].u_int;
     self->voice->sustain   = args[ARG_sustain].u_int;
-    self->voice->volume    = args[ARG_volume].u_int;
+    self->voice->release   = args[ARG_release].u_int;
+
+    self->voice->bend      = args[ARG_bend].u_int;
+    self->voice->bend_ms   = args[ARG_bend_ms].u_int;
+
+    self->voice->reverb    = args[ARG_reverb].u_int;
     self->voice->noise     = args[ARG_noise].u_int;
     self->voice->distort   = args[ARG_distort].u_int;
 
@@ -491,7 +503,8 @@ mp_obj_t pimoroni_mp_load_global(qstr qst) {
 mp_obj_t picosystem_init() {
 
     MP_STATE_PORT(picosystem_framebuffer) = m_new(color_t, 120 * 120);
-    SCREEN.data = MP_STATE_PORT(picosystem_framebuffer);
+    SCREEN = buffer(120, 120, MP_STATE_PORT(picosystem_framebuffer));
+    target(SCREEN);
 
     update_callback_obj = mp_const_none;
     draw_callback_obj = mp_const_none;
@@ -692,24 +705,51 @@ mp_obj_t picosystem_blend(mp_obj_t bf_obj) {
     return mp_const_none;
 }
 
-mp_obj_t picosystem_audio_play(mp_obj_t dt_obj) {
-    if(mp_obj_is_type(dt_obj, &PicosystemVoice_type)) {
-        _PicosystemVoice_obj_t *voice_obj = MP_OBJ_TO_PTR2(dt_obj, _PicosystemVoice_obj_t);
-        play(*(voice_obj->voice));
-    }
-    else {
+mp_obj_t picosystem_audio_play(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    if(!mp_obj_is_type(pos_args[0], &PicosystemVoice_type)) {
         mp_raise_TypeError("play: not a valid Voice. Expected a Voice class");
     }
+
+    enum { ARG_duration, ARG_volume };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_duration, MP_ARG_INT, {.u_int = 500} },
+        { MP_QSTR_volume, MP_ARG_INT, {.u_int = 100} },
+    };
+
+    // Parse args.
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all(n_args - 1, pos_args + 1, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
+    uint32_t freq = 0;
+
+    mp_obj_t dt_obj = pos_args[1];
+    if(mp_obj_is_small_int(dt_obj)) {
+        freq = mp_obj_get_int(dt_obj);
+    } else if (mp_obj_is_str_or_bytes(dt_obj)) {
+        GET_STR_DATA_LEN(dt_obj, str, str_len);
+        freq = note_to_freq((const char*)str);
+    }
+
+    if(freq == 0) {
+        mp_raise_TypeError("play: note must be a frequency (int) or note name (eg: G8)");
+    }
+
+    _PicosystemVoice_obj_t *voice = MP_OBJ_TO_PTR2(pos_args[0], _PicosystemVoice_obj_t);
+
+    play(*(voice->voice), freq, args[ARG_duration].u_int, args[ARG_volume].u_int);
+
     return mp_const_none;
 }
 
-mp_obj_t picosystem_target(mp_obj_t dt_obj) {
-    if(mp_obj_is_type(dt_obj, &PicosystemBuffer_type)) {
-        _PicosystemBuffer_obj_t *buffer_obj = MP_OBJ_TO_PTR2(dt_obj, _PicosystemBuffer_obj_t);
-        target(buffer_obj->buffer);
+mp_obj_t picosystem_target(mp_uint_t n_args, const mp_obj_t *args) {
+    if (n_args == 1) {
+        if(mp_obj_is_type(args[0], &PicosystemBuffer_type)) {
+            _PicosystemBuffer_obj_t *buffer_obj = MP_OBJ_TO_PTR2(args[0], _PicosystemBuffer_obj_t);
+            target(buffer_obj->buffer);
+        }
     }
     else {
-        mp_raise_TypeError("target: not a valid Buffer. Expected a Buffer class");
+        target(SCREEN);
     }
     return mp_const_none;
 }
@@ -916,17 +956,25 @@ mp_obj_t picosystem_blit(mp_uint_t n_args, const mp_obj_t *args) {
     return mp_const_none;
 }
 
+// TODO cx, cy, dw and dh should probably be kwargs now?
 mp_obj_t picosystem_sprite(mp_uint_t n_args, const mp_obj_t *args) {
     int i = mp_obj_get_int(args[0]);
     int x = mp_obj_get_int(args[1]);
     int y = mp_obj_get_int(args[2]);
-
-    if(n_args == 4) {
-        int flags = mp_obj_get_int(args[3]);
-        sprite(i, x, y, flags);
-    }
-    else {
+    if(n_args == 3) {
         sprite(i, x, y);
+    }
+    else if(n_args == 5) {
+        int cx = mp_obj_get_int(args[3]);
+        int cy = mp_obj_get_int(args[4]);
+        sprite(i, x, y, cx, cy);
+    }
+    else if(n_args == 7){
+        int cx = mp_obj_get_int(args[3]);
+        int cy = mp_obj_get_int(args[4]);
+        int dw = mp_obj_get_int(args[5]);
+        int dh = mp_obj_get_int(args[6]);
+        sprite(i, x, y, cx, cy, dw, dh);
     }
     return mp_const_none;
 }
@@ -953,6 +1001,30 @@ mp_obj_t picosystem_text(mp_uint_t n_args, const mp_obj_t *args) {
         mp_raise_TypeError("can't convert 'int' object to str implicitly");
     }
     else if(mp_obj_is_bool(args[0])) {
+        mp_raise_TypeError("can't convert 'bool' object to str implicitly");
+    }
+    else {
+        mp_raise_TypeError("can't convert object to str implicitly");
+    }
+
+    return mp_const_none;
+}
+
+mp_obj_t picosystem_text_width(mp_obj_t str_obj) {
+    if(mp_obj_is_str_or_bytes(str_obj)) {
+        GET_STR_DATA_LEN(str_obj, str, str_len);
+
+        std::string t((const char*)str);
+
+        return mp_obj_new_int(text_width(t));
+    }
+    else if(mp_obj_is_float(str_obj)) {
+        mp_raise_TypeError("can't convert 'float' object to str implicitly");
+    }
+    else if(mp_obj_is_int(str_obj)) {
+        mp_raise_TypeError("can't convert 'int' object to str implicitly");
+    }
+    else if(mp_obj_is_bool(str_obj)) {
         mp_raise_TypeError("can't convert 'bool' object to str implicitly");
     }
     else {

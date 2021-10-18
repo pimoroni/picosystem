@@ -25,6 +25,7 @@ target_include_directories(usermod_${MOD_NAME} INTERFACE
 target_compile_definitions(usermod_${MOD_NAME} INTERFACE
     MODULE_${MOD_NAME_UPPER}_ENABLED=1
     DYNAMIC_BUFFER=1
+    PIXEL_DOUBLE=1
 )
 
 target_link_libraries(usermod INTERFACE usermod_${MOD_NAME})

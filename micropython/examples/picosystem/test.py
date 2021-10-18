@@ -1,8 +1,7 @@
-from picosystem import *
-
-h = 0
+fh = 0
 col = 0
- 
+
+
 def update(ticks):
     global h
     global col
@@ -19,22 +18,27 @@ def update(ticks):
         g = 100
     if button(X):
         b = 100
+
     led(r, g, b)
+
     if button(Y):
         backlight(50)
     else:
         backlight(100)
+
     col = hsv(h, 1, 1)
     h += 0.001
     if h > 1.0:
         h -= 1.0
-        
+
+
 def draw():
     pen(col)
     frect(10, 10, 100, 100)
     pen(15, 15, 15)
     line(10, 10, 110, 110)
     line(110, 10, 10, 110)
+
 
 while True:
     tick()
