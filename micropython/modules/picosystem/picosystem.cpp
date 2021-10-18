@@ -699,14 +699,14 @@ mp_obj_t picosystem_blend(mp_obj_t bf_obj) {
         case MODE_COPY:
             blend(COPY);
             break;
-        case MODE_BLEND:
-            blend(BLEND);
+        case MODE_ALPHA:
+            blend(ALPHA);
             break;
         case MODE_MASK:
             blend(MASK);
             break;
         default:
-            mp_raise_ValueError("not a valid blend mode. Expected COPY (0), BLEND (1), or MASK (2)");
+            mp_raise_ValueError("not a valid blend mode. Expected COPY (0), ALPHA (1), or MASK (2)");
     }
     return mp_const_none;
 }
