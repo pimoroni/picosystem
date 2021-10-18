@@ -51,7 +51,7 @@ namespace picosystem {
   extern blend_func_t   _bf;                  // blend function
   extern buffer_t      * SCREEN;              // framebuffer
   extern buffer_t      *_dt;                  // drawing target
-  extern buffer_t      * DEFAULT_SPRITES;     // inbuilt spritesheet
+  extern buffer_t      * SPRITESHEET;         // inbuilt spritesheet
   extern buffer_t      *_ss;                  // sprite sheet
   extern uint8_t       *_font;                // font data
 
