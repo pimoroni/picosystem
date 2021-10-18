@@ -30,7 +30,7 @@ namespace picosystem {
     return (r & 0xf) | ((a & 0xf) << 4) | ((b & 0xf) << 8) | ((g & 0xf) << 12);
   }
 
-  color_t hsv(float h, float s, float v, float a) {
+   color_t hsv(float h, float s, float v, float a) {
     float i = floor(h * 6.0f);
     float f = h * 6.0f - i;
     v *= 15.0f;
