@@ -68,7 +68,7 @@ void draw_rgb_palette(int32_t x, int32_t y) {
   }
 
   // calculate a brightness for the cursor that pulses over time
-  uint8_t cursor_pulse = (sin(time() / 250.0f) + 1.0f) * 7.5f;
+  uint8_t cursor_pulse = (sin(time() / 100.0f) + 1.0f) * 7.5f;
   pen(cursor_pulse, cursor_pulse, cursor_pulse);
 
   // draw cursor
@@ -84,6 +84,7 @@ void draw_slider(slider_t &slider, int32_t x, int32_t y) {
   // draw outline rectangle
   pen(slider.c);
   rect(x, y, w, h);
+
   // draw proportional filled value rectangle
   uint32_t sh = ((h - 4) * slider.v) / 15;
   frect(x + 2, y + h - sh - 2, w - 4, sh);
