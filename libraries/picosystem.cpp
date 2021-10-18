@@ -32,8 +32,8 @@ namespace picosystem {
   #ifdef NO_SPRITESHEET
     buffer_t *_ss = nullptr;
   #else
-    buffer_t SPRITESHEET{.w = 128, .h = 128, .data = (color_t *)_default_sprite_sheet};
-    buffer_t *_ss = &SPRITESHEET;
+    buffer_t *DEFAULT_SPRITES = buffer(128, 128, _default_sprite_sheet);
+    buffer_t *_ss = DEFAULT_SPRITES;
   #endif
 
   #ifdef NO_FONT

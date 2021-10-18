@@ -51,6 +51,7 @@ namespace picosystem {
   extern blend_func_t   _bf;                  // blend function
   extern buffer_t      * SCREEN;              // framebuffer
   extern buffer_t      *_dt;                  // drawing target
+  extern buffer_t      * DEFAULT_SPRITES;     // inbuilt spritesheet
   extern buffer_t      *_ss;                  // sprite sheet
   extern uint8_t       *_font;                // font data
 
@@ -65,12 +66,19 @@ namespace picosystem {
   // state
   void        pen(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 15);
   void        pen(color_t p);
+  void        alpha();
   void        alpha(uint8_t a);
+  void        clip();
   void        clip(int32_t x, int32_t y, uint32_t w, uint32_t h);
+  void        blend();
   void        blend(blend_func_t bf);
+  void        target();
   void        target(buffer_t *dt);
+  void        camera();
   void        camera(int32_t x, int32_t y);
+  void        spritesheet();
   void        spritesheet(buffer_t *ss);
+  void        cursor();
   void        cursor(int32_t x, int32_t y);
 
   // primitives
@@ -192,9 +200,9 @@ namespace picosystem {
   };
 
   // assets
-  const extern uint8_t _default_font[96][9];
   const extern uint8_t _picosystem_logo[550];
-  const extern color_t _default_sprite_sheet[16384];
+  extern uint8_t _default_font[96][9];
+  extern color_t _default_sprite_sheet[16384];
 
   #ifndef NO_SPRITESHEET
   enum _sprites_ids {
