@@ -6,6 +6,7 @@
 using namespace picosystem;
 
 voice_t blip;
+buffer_t *colour_picker = buffer(68, 68);
 
 // a place to store our current selected colour along with slider attributes
 struct slider_t {
@@ -30,9 +31,38 @@ void colour_from_xy(int32_t x, int32_t y, uint32_t &r, uint32_t &g, uint32_t &b)
   b = x % 16;
 }
 
+void prepare_rgb_palette() {
+  uint32_t r, g, b;
+
+  target(colour_picker);
+  blend(COPY);
+
+  // clear
+  pen(0, 0, 0);
+  clear();
+
+  // draw outline
+  pen(8, 8, 8);
+  rect(0, 0, 68, 68);
+
+  // draw the full palette grid of 64 x 64 pixels, this covers every single
+  // colour in the picosystem 4096 colour (4 bits per channel) palette.
+  for(int py = 0; py < 64; py++) {
+    for(int px = 0; px < 64; px++) {
+      colour_from_xy(px, py, r, g, b);
+      pen(r, g, b);
+      pixel(px + 2, py + 2);
+    }
+  }
+
+  blend(BLEND);
+  target(SCREEN);
+}
+
 void init() {
   // a brief chirp for when user input is processed
   blip = voice(10, 0, 80, 0, 0, 0, 0, 100);
+  prepare_rgb_palette();
 }
 
 void update(uint32_t tick) {
@@ -51,21 +81,8 @@ void update(uint32_t tick) {
 
 void draw_rgb_palette(int32_t x, int32_t y) {
   int32_t cx, cy;
-  uint32_t r, g, b;
 
-  // draw outline
-  pen(8, 8, 8);
-  rect(x, y, 68, 68);
-
-  // draw the full palette grid of 64 x 64 pixels, this covers every single
-  // colour in the picosystem 4096 colour (4 bits per channel) palette.
-  for(int py = 0; py < 64; py++) {
-    for(int px = 0; px < 64; px++) {
-      colour_from_xy(px, py, r, g, b);
-      pen(r, g, b);
-      pixel(px + x + 2, py + y + 2);
-    }
-  }
+  blit(colour_picker, 0, 0, 69, 69, x, y);
 
   // calculate a brightness for the cursor that pulses over time
   uint8_t cursor_pulse = (sin(time() / 100.0f) + 1.0f) * 7.5f;
@@ -77,6 +94,7 @@ void draw_rgb_palette(int32_t x, int32_t y) {
   vline(sx + x + 2, sy - 5 + y + 2, 3);
   vline(sx + x + 2, sy + 2 + y + 2, 3);
 }
+
 
 void draw_slider(slider_t &slider, int32_t x, int32_t y) {
   static uint32_t w = 10, h = 68;

@@ -5,9 +5,6 @@
 
 #include "picosystem.hpp"
 
-#ifdef MICROPY_BUILD_TYPE
-  #define PIXEL_DOUBLE
-#endif
 
 namespace picosystem {
 
@@ -32,7 +29,7 @@ namespace picosystem {
     int32_t _cx = 0, _cy = 0, _cw = 240, _ch = 240;
   #endif
   #else
-    buffer_t SCREEN{.w = 120, .h = 120, .data = nullptr};
+    buffer_t *SCREEN = nullptr;
     int32_t _cx = 0, _cy = 0, _cw = 120, _ch = 120;
   #endif
 

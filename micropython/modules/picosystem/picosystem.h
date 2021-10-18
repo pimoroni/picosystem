@@ -38,7 +38,7 @@ extern void PicosystemVoice_attr(mp_obj_t self_in, qstr attr, mp_obj_t *dest);
 extern mp_obj_t PicosystemVoice_play(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t PicosystemVoice_envelope(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t PicosystemVoice_effects(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
-
+extern mp_obj_t PicosystemVoice_bend(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 
 // Declare the functions we'll make available in Python
 //extern mp_obj_t picosystem_init();
@@ -49,13 +49,13 @@ extern mp_obj_t picosystem_init();
 extern mp_obj_t picosystem_tick();
 
 // audio
-extern mp_obj_t picosystem_audio_play(mp_obj_t dt_obj);
+extern mp_obj_t picosystem_audio_play(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 
 // state
 extern mp_obj_t picosystem_pen(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_clip(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_blend(mp_obj_t bf_obj);
-extern mp_obj_t picosystem_target(mp_obj_t dt_obj);
+extern mp_obj_t picosystem_target(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_camera(mp_obj_t camx_obj, mp_obj_t camy_obj);
 extern mp_obj_t picosystem_spritesheet(mp_obj_t ss_obj);
 
@@ -74,6 +74,7 @@ extern mp_obj_t picosystem_line(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_blit(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_sprite(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_text(mp_uint_t n_args, const mp_obj_t *args);
+extern mp_obj_t picosystem_text_width(mp_obj_t str_obj);
 
 //void        COPY(
 //              color_t* source, uint32_t source_step,
