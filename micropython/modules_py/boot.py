@@ -4,4 +4,4 @@ from picosystem import *
 init()
 
 if button(A):
-    import shapes
+    import launcher

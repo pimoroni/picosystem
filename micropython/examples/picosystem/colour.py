@@ -1,6 +1,8 @@
 import math
 import time
 
+from picosystem import *
+
 
 blip = Voice(10, 0, 80, 0, 0, 0, 0, 100)
 picker = Buffer(68, 68)

@@ -74,6 +74,7 @@ enum _sprites_ids {
 
 /***** Module Functions *****/
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_init_obj, picosystem_init);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_reset_obj, picosystem_reset);
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_tick_obj, picosystem_tick);
 
 STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_play_obj, 2, picosystem_audio_play);
@@ -121,6 +122,7 @@ STATIC const mp_map_elem_t picosystem_globals_table[] = {
     { MP_OBJ_NEW_QSTR(MP_QSTR_Voice), (mp_obj_t)&PicosystemVoice_type },
 
     { MP_ROM_QSTR(MP_QSTR_init), MP_ROM_PTR(&picosystem_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_reset), MP_ROM_PTR(&picosystem_reset_obj) },
     { MP_ROM_QSTR(MP_QSTR_tick), MP_ROM_PTR(&picosystem_tick_obj) },
 
     { MP_ROM_QSTR(MP_QSTR_play), MP_ROM_PTR(&picosystem_play_obj) },

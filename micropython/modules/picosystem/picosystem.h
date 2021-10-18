@@ -47,6 +47,7 @@ extern mp_obj_t PicosystemVoice_bend(size_t n_args, const mp_obj_t *pos_args, mp
 
 extern mp_obj_t picosystem_init();
 extern mp_obj_t picosystem_tick();
+extern mp_obj_t picosystem_reset();
 
 // audio
 extern mp_obj_t picosystem_audio_play(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);

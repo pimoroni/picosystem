@@ -1,6 +1,8 @@
 import math
 import time
 
+from picosystem import *
+
 
 weapons = [
     (TRIDENT1, "Trident"),
