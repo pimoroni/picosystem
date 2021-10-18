@@ -123,10 +123,10 @@ void draw() {
 
   // centre name of weapon at bottom of screen
   int label_width = text_width(weapons[selected].name);
-  pen(11, 11, 8);
-  frect(60 - label_width / 2 - 3, 102 - 3, label_width + 6, 13);
+  pen(8, 11, 11);
+  frect(60 - label_width / 2 - 3, 104 - 3, label_width + 6, 13);
   pen(0, 0, 0);
-  text(weapons[selected].name, 60 - (label_width / 2), 102);
+  text(weapons[selected].name, 60 - (label_width / 2), 104);
 }
 
 

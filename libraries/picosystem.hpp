@@ -202,8 +202,8 @@ namespace picosystem {
 
   // assets
   const extern uint8_t _picosystem_logo[550];
-  extern uint8_t _default_font[96][9];
-  extern color_t _default_sprite_sheet[16384];
+  const extern uint8_t _default_font[96][9];
+  const extern color_t _default_sprite_sheet[16384];
 
   #ifndef NO_SPRITESHEET
   enum _sprites_ids {
