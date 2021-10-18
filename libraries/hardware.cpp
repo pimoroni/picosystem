@@ -12,6 +12,7 @@
 #include "pico/stdlib.h"
 #include "pico/time.h"
 
+
 #ifdef PIXEL_DOUBLE
   #include "screen_double.pio.h"
 #else
@@ -284,6 +285,10 @@ namespace picosystem {
     return true;
   }
 
+  void _start_audio() {
+    add_repeating_timer_ms(-1, _audio_update_callback, NULL, &_audio_update_timer);
+  }
+
   void _init_hardware() {
     // configure backlight pwm and disable backlight while setting up
     pwm_config cfg = pwm_get_default_config();
@@ -394,7 +399,7 @@ namespace picosystem {
 
     // initialise dma channel for transmitting pixel data to screen
     // via the screen updating pio program
-    dma_channel = dma_claim_unused_channel(true);
+    dma_channel = 0; //dma_claim_unused_channel(true); // avoid MicroPython soft-reset timebomb
     dma_channel_config config = dma_channel_get_default_config(dma_channel);
     channel_config_set_bswap(&config, true);
     channel_config_set_dreq(&config, pio_get_dreq(screen_pio, screen_sm, true));
@@ -412,8 +417,6 @@ namespace picosystem {
     pwm_init(audio_pwm_slice_number, &audio_pwm_cfg, true);
     gpio_set_function(AUDIO, GPIO_FUNC_PWM);
     pwm_set_gpio_level(AUDIO, 0);
-
-    add_repeating_timer_ms(-1, _audio_update_callback, NULL, &_audio_update_timer);
   }
 
 }
