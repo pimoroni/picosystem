@@ -5,12 +5,14 @@ namespace picosystem {
   voice_t  _voice;
   uint32_t _ms;
   uint32_t _frequency;
+  uint32_t _start_frequency;
   uint32_t _duration;
   uint32_t _volume = 100;
 
   void play(voice_t voice,
     uint32_t frequency, uint32_t duration, uint32_t volume) {
     _frequency = frequency;
+    _start_frequency = frequency;
     _duration = duration;
     _volume = volume;
     _voice = voice;
@@ -67,7 +69,7 @@ namespace picosystem {
   void _update_audio() {
     // pitch bend
     if(_voice.bend && _voice.bend_ms) {
-      _frequency += _voice.bend * (_ms / _voice.bend_ms);
+      _frequency = _start_frequency + (_voice.bend * (_ms / _voice.bend_ms));
     }
     uint32_t sample = audio_sample(_ms++);
     _play_note(_frequency, sample);
