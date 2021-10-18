@@ -18,15 +18,15 @@ namespace picosystem {
 
   #ifdef PIXEL_DOUBLE
     color_t _fb[120 * 120];
-    buffer_t SCREEN{.w = 120, .h = 120, .data = _fb};
+    buffer_t *SCREEN = buffer(120, 120, _fb);
     int32_t _cx = 0, _cy = 0, _cw = 120, _ch = 120;
   #else
     color_t _fb[240 * 240];
-    buffer_t SCREEN{.w = 240, .h = 240, .data = _fb};
+    buffer_t *SCREEN = buffer(240, 240, _fb);
     int32_t _cx = 0, _cy = 0, _cw = 240, _ch = 240;
   #endif
 
-  buffer_t &_dt = SCREEN;
+  buffer_t *_dt = SCREEN;
 
   #ifdef NO_SPRITESHEET
     buffer_t *_ss = nullptr;

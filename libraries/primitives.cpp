@@ -12,7 +12,7 @@ namespace picosystem {
   void pixel(int32_t x, int32_t y) {
     _camera_offset(x, y);
     if(contains(x, y, _cx, _cy, _cw, _ch)) {
-      _bf(&_pen, 0, 0, _dt.p(x, y), 1);
+      _bf(&_pen, 0, 0, _dt->p(x, y), 1);
     }
   }
 
@@ -22,7 +22,7 @@ namespace picosystem {
     if(x < _cx) {c -= (_cx - x); x = _cx;}
     if(x + c >= _cx + _cw) {c -= (x + c) - (_cx + _cw);}
     if(c > 0) {
-      _bf(&_pen, 0, 0, _dt.p(x, y), c);
+      _bf(&_pen, 0, 0, _dt->p(x, y), c);
     }
   }
 
@@ -31,10 +31,10 @@ namespace picosystem {
     if(x < _cx || x >= _cx + _cw) {return;}
     if(y < _cy) {c -= (_cy - y); y = _cy;}
     if(y + c >= _cy + _ch) {c -= (y + c) - (_cy + _ch);}
-    color_t *dest = _dt.p(x, y);
+    color_t *dest = _dt->p(x, y);
     while(c-- > 0) {
       _bf(&_pen, 0, 0, dest, 1);
-      dest += _dt.w;
+      dest += _dt->w;
     }
   }
 
@@ -49,10 +49,10 @@ namespace picosystem {
   void frect(int32_t x, int32_t y, int32_t w, int32_t h) {
     _camera_offset(x, y);
     intersection(x, y, w, h, _cx, _cy, _cw, _ch);
-    color_t *dest = _dt.p(x, y);
+    color_t *dest = _dt->p(x, y);
     while(h--) {
       _bf(&_pen, 0, 0, dest, w);
-      dest += _dt.w;
+      dest += _dt->w;
     }
   }
 
@@ -223,11 +223,11 @@ namespace picosystem {
     }
 
     color_t *ps = src.data + (sx + sy * src.w);
-    color_t *pd = _dt.data + (dx + dy * _dt.w);
+    color_t *pd = _dt->data + (dx + dy * _dt->w);
 
     while(h--) {
       _bf(ps, 0, 1 << 16, pd, w); // draw row
-      pd += _dt.w;
+      pd += _dt->w;
       ps += src.w;
     }
   }
@@ -243,14 +243,14 @@ namespace picosystem {
     int32_t ssy = 0, ssys = (sh << 16) / dh;
     int32_t ssx = 0, ssxs = (sw << 16) / dw;
 
-    color_t *pd = _dt.p(dx, dy);
+    color_t *pd = _dt->p(dx, dy);
     color_t *ps = src.p(sx, sy);
 
     // if we need to offset our start to the clip area then we need to jump
     // ahead in the source
     if(dy < _cy) {
       ssy = ssys * (_cy - dy);
-      pd += _dt.w * (_cy - dy); ps += src.w * (ssy >> 16);
+      pd += _dt->w * (_cy - dy); ps += src.w * (ssy >> 16);
       ssy &= 0xffff;
       dh -= (_cy - dy); dy = _cy;
     }
@@ -267,7 +267,7 @@ namespace picosystem {
       _bf(ps, ssx, ssxs, pd, w);
 
       ssy += ssys;
-      pd += _dt.w;
+      pd += _dt->w;
       ps += src.w * (ssy >> 16);
       ssy &= 0xffff;
     }
@@ -308,7 +308,7 @@ namespace picosystem {
     uint8_t w = *p++;
 
     for(int32_t y = _ty; y < _ty + 8; y++) {
-      color_t *dest = _dt.p(_tx, y);
+      color_t *dest = _dt->p(_tx, y);
       uint8_t pr = *p;
       if(pr && y >= _cy && y < _cy + _ch) {
         for(uint8_t x = _tx; x < _tx + w; x++) {

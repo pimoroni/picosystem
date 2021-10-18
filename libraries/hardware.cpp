@@ -136,7 +136,7 @@ namespace picosystem {
   // scanlines 0 and 120 which are sent on their own.)
   void transmit_scanline() {
     // start of data to transmit
-    uint32_t *s = (uint32_t *)&_dt.data[
+    uint32_t *s = (uint32_t *)&SCREEN->data[
       ((dma_scanline - 1) < 0 ? 0 : (dma_scanline - 1)) * 120
     ];
     // number of 32-bit words to transmit
@@ -174,8 +174,8 @@ namespace picosystem {
         transmit_scanline();
       #else
         // if dma transfer already in process then skip
-        uint32_t c = SCREEN.w * SCREEN.h / 2;
-        dma_channel_transfer_from_buffer_now(dma_channel, SCREEN.data, c);
+        uint32_t c = SCREEN->w * SCREEN->h / 2;
+        dma_channel_transfer_from_buffer_now(dma_channel, SCREEN->data, c);
       #endif
     }
   }

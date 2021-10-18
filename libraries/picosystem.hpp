@@ -51,8 +51,8 @@ namespace picosystem {
   extern uint32_t _io, _lio;              // io state and last io state
   extern int32_t _camx, _camy;            // camera
   extern blend_func_t _bf;                // blend function
-  extern buffer_t SCREEN;                 // framebuffer
-  extern buffer_t &_dt;                   // drawing target
+  extern buffer_t *SCREEN;                // framebuffer
+  extern buffer_t *_dt;                   // drawing target
   extern buffer_t *_ss;                   // sprite sheet
   extern uint8_t *_font;                  // font data
   extern voice_t _v;                      // audio channels
