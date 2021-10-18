@@ -15,7 +15,7 @@ std::array<weapon_t, 9> weapons = {{
   {TRIDENT1, "Trident"},
   {SWORD1, "Sword"},
   {LASERGUN1, "Laser Gun"},
-  {MACE, "Mace"},
+  {MACE1, "Mace"},
   {DAGGER, "Dagger"},
   {SPEAR, "Spear"},
   {BOW, "Bow"},
