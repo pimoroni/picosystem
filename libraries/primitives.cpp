@@ -199,7 +199,7 @@ namespace picosystem {
     poly(pts.begin(), pts.size() / 2);
   }
 
-  void blit(buffer_t &src, int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t dx, int32_t dy) {
+  void blit(buffer_t *src, int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t dx, int32_t dy) {
     _camera_offset(dx, dy);
 
     if(!intersects(dx, dy, w, h, _cx, _cy, _cw, _ch)) {
@@ -209,8 +209,8 @@ namespace picosystem {
     // clip source coordinates
     if(sx < 0) {dx += -sx; w += sx; sx = 0;}
     if(sy < 0) {dy += -sy; h += sy; sy = 0;}
-    if(sx + w >= src.w) {w -= (sx + w) - src.w;}
-    if(sy + h >= src.h) {h -= (sy + h) - src.h;}
+    if(sx + w >= src->w) {w -= (sx + w) - src->w;}
+    if(sy + h >= src->h) {h -= (sy + h) - src->h;}
 
     // clip destination coordinates
     if(dx < _cx) {sx += (_cx - dx); w += (_cx - dx); dx = _cx;}
@@ -222,17 +222,17 @@ namespace picosystem {
       return;
     }
 
-    color_t *ps = src.data + (sx + sy * src.w);
+    color_t *ps = src->data + (sx + sy * src->w);
     color_t *pd = _dt->data + (dx + dy * _dt->w);
 
     while(h--) {
       _bf(ps, 0, 1 << 16, pd, w); // draw row
       pd += _dt->w;
-      ps += src.w;
+      ps += src->w;
     }
   }
 
-  void blit(buffer_t &src, int32_t sx, int32_t sy, int32_t sw, int32_t sh, int32_t dx, int32_t dy, int32_t dw, int32_t dh) {
+  void blit(buffer_t *src, int32_t sx, int32_t sy, int32_t sw, int32_t sh, int32_t dx, int32_t dy, int32_t dw, int32_t dh) {
     _camera_offset(dx, dy);
 
     if(!intersects(dx, dy, dw, dh, _cx, _cy, _cw, _ch)) {
@@ -244,13 +244,13 @@ namespace picosystem {
     int32_t ssx = 0, ssxs = (sw << 16) / dw;
 
     color_t *pd = _dt->p(dx, dy);
-    color_t *ps = src.p(sx, sy);
+    color_t *ps = src->p(sx, sy);
 
     // if we need to offset our start to the clip area then we need to jump
     // ahead in the source
     if(dy < _cy) {
       ssy = ssys * (_cy - dy);
-      pd += _dt->w * (_cy - dy); ps += src.w * (ssy >> 16);
+      pd += _dt->w * (_cy - dy); ps += src->w * (ssy >> 16);
       ssy &= 0xffff;
       dh -= (_cy - dy); dy = _cy;
     }
@@ -268,7 +268,7 @@ namespace picosystem {
 
       ssy += ssys;
       pd += _dt->w;
-      ps += src.w * (ssy >> 16);
+      ps += src->w * (ssy >> 16);
       ssy &= 0xffff;
     }
   }
@@ -277,14 +277,14 @@ namespace picosystem {
     uint32_t sx = i % (_ss->w / 8);
     uint32_t sy = i / (_ss->w / 8);
 
-    blit(*_ss, sx * 8, sy * 8, 8, 8, x, y);
+    blit(_ss, sx * 8, sy * 8, 8, 8, x, y);
   }
 
   void sprite(uint32_t i, int32_t x, int32_t y, int32_t cx, int32_t cy) {
     uint32_t sx = i % (_ss->w / 8);
     uint32_t sy = i / (_ss->w / 8);
 
-    blit(*_ss, sx * 8, sy * 8, cx * 8, cy * 8, x, y);
+    blit(_ss, sx * 8, sy * 8, cx * 8, cy * 8, x, y);
   }
 
   void sprite(
@@ -293,7 +293,7 @@ namespace picosystem {
     int32_t dw, int32_t dh) {
     uint32_t sx = i % (_ss->w / 8);
     uint32_t sy = i / (_ss->w / 8);
-    blit(*_ss, sx * 8, sy * 8, cx * 8, cy * 8, x, y, dw, dh);
+    blit(_ss, sx * 8, sy * 8, cx * 8, cy * 8, x, y, dw, dh);
   }
 
 

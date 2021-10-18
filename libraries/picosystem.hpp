@@ -68,7 +68,7 @@ namespace picosystem {
   void        blend(blend_func_t bf);
   void        target(buffer_t *dt);
   void        camera(int32_t x, int32_t y);
-  void        spritesheet(buffer_t &ss);
+  void        spritesheet(buffer_t *ss);
   void        cursor(int32_t x, int32_t y);
 
   // primitives
@@ -86,11 +86,11 @@ namespace picosystem {
   void        fpoly(const std::initializer_list<int32_t> &pts);
   void        line(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
   void        blit(
-                buffer_t &source,
+                buffer_t *source,
                 int32_t x, int32_t y, int32_t w, int32_t h,
                 int32_t dx, int32_t dy);
   void        blit(
-                buffer_t &source,
+                buffer_t *source,
                 int32_t sx, int32_t sy, int32_t sw, int32_t sh,
                 int32_t dx, int32_t dy, int32_t dw, int32_t dh);
   void        sprite(uint32_t i, int32_t x, int32_t y);

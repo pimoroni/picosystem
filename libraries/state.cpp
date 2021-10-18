@@ -29,8 +29,8 @@ namespace picosystem {
     _camy = y;
   }
 
-  void spritesheet(buffer_t &ss) {
-    _ss = &ss;
+  void spritesheet(buffer_t *ss) {
+    _ss = ss;
   }
 
   void _camera_offset(int32_t &x, int32_t &y) {
