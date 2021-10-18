@@ -60,17 +60,6 @@ const mp_obj_type_t PicosystemVoice_type = {
 // picosystem Module
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-enum _sprites_ids {
-    CHERRY, APPLE, BANANA, ORANGE, AUBERGINE, CARROT, POTATO, LEAF,
-    PARSNIP, MEAT, BEAN, RADISH, STRAWBERRY, PUMPKIN, CUCUMBER, SALT,
-    SWORD1, SWORD2, SWORD3, AXE, DAGGER, MACE, BOW, ARROW1,
-    ARROW2, ARROW3, TRIDENT1, SPEAR, TRIDENT2, MACHINEGUN, PISTOL, SHOTGUN,
-    GEM1, GEM2, GEM3, GEM4, GEM5, GEM6, AMULET, FOLDER,
-    COIN, SKULL, TICK, CROSS, IDOL1, IDOL2, IDOL3, IDOL4,
-    SWEETCORN, BROCCOLI, BISCUIT, BERRIES, SCEPTRE, FIRE, LASERGUN1, LASERGUN2,
-    HELMET1, HELMET2, HELMET3, HELMET4,
-    // TODO etc... can we name all 256 built in sprites?!
-};
 
 /***** Module Functions *****/
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_init_obj, picosystem_init);
@@ -172,7 +161,7 @@ STATIC const mp_map_elem_t picosystem_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_X), MP_ROM_INT(X) },
     { MP_ROM_QSTR(MP_QSTR_Y), MP_ROM_INT(Y) },
     { MP_ROM_QSTR(MP_QSTR_COPY), MP_ROM_INT(MODE_COPY) },
-    { MP_ROM_QSTR(MP_QSTR_BLEND), MP_ROM_INT(MODE_BLEND) },
+    { MP_ROM_QSTR(MP_QSTR_ALPHA), MP_ROM_INT(MODE_ALPHA) },
     { MP_ROM_QSTR(MP_QSTR_MASK), MP_ROM_INT(MODE_MASK) },
 
     { MP_ROM_QSTR(MP_QSTR_CHERRY), MP_ROM_INT(CHERRY) },

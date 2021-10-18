@@ -91,7 +91,7 @@ def prepare_rgb_palette():
             pixel(px + 2, py + 2)
 
     target()
-    blend(BLEND)
+    blend(ALPHA)
 
 
 def draw_slider(slider, x, y):

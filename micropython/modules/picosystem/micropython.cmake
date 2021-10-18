@@ -35,3 +35,8 @@ set_source_files_properties(
     PROPERTIES COMPILE_FLAGS
     "-Wno-discarded-qualifiers -Wno-implicit-int"
 )
+set_source_files_properties(
+    ${CMAKE_CURRENT_LIST_DIR}/picosystem.cpp
+    PROPERTIES COMPILE_FLAGS
+    "-DDYNAMIC_BUFFER=1 -DPIXEL_DOUBLE=1"
+)

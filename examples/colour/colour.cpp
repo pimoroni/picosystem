@@ -55,7 +55,7 @@ void prepare_rgb_palette() {
     }
   }
 
-  blend(BLEND);
+  blend(ALPHA);
   target(SCREEN);
 }
 
