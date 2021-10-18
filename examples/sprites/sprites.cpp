@@ -28,7 +28,7 @@ voice_t blip;
 
 // initialise the world
 void init() {
-  blip = voice(1800, 30, 100, 10, 10, 10, 10, 40, 2);
+  blip = voice(10, 10, 10, 10, 40, 2);
 }
 
 // process user input and update the world state
@@ -38,12 +38,12 @@ void update(uint32_t tick) {
   if(pressed(LEFT)) {
     selected = selected == 0 ? weapons.size() - 1 : selected - 1;
     target_angle += 360.0f / weapons.size();
-    play(blip);
+    play(blip, 1800, 30, 100);
   }
   if(pressed(RIGHT)) {
     selected = selected == weapons.size() - 1 ? 0 : selected + 1;
     target_angle -= 360.0f / weapons.size();
-    play(blip);
+    play(blip, 1800, 30, 100);
   }
 }
 

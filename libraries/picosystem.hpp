@@ -30,14 +30,11 @@ namespace picosystem {
   };
 
   struct voice_t {
-    uint32_t ms = 0; // ms counter
-    uint32_t frequency; // pitch (hz)
     int32_t  bend; // pitch bend (hz)
     uint32_t bend_ms; // bend speed (ms)
     uint32_t attack, decay, sustain, release; // envelope (ms, ms, %, ms)
-    uint32_t hold; // duration to hold sustain level (ms)
     uint32_t reverb; // effects (ms)
-    uint32_t volume, noise, distort; // effects (strength 0..100)
+    uint32_t noise, distort; // effects (strength 0..100)
   };
 
   using blend_func_t =
@@ -45,19 +42,24 @@ namespace picosystem {
             color_t*   dest, uint32_t count);
 
   // drawing state
-  extern color_t _pen;                    // pen
-  extern int32_t _cx, _cy, _cw, _ch;      // clip rect
-  extern int32_t _tx, _ty;                // text cursor position
-  extern uint32_t _io, _lio;              // io state and last io state
-  extern int32_t _camx, _camy;            // camera
-  extern blend_func_t _bf;                // blend function
-  extern buffer_t *SCREEN;                // framebuffer
-  extern buffer_t *_dt;                   // drawing target
-  extern buffer_t *_ss;                   // sprite sheet
-  extern uint8_t *_font;                  // font data
-  extern voice_t _v;                      // audio channels
-  extern float _fsin_lut[256];            // fast sin lut
-  constexpr float _PI = 3.1415927f;
+  extern color_t        _pen;                 // pen
+  extern int32_t        _cx, _cy, _cw, _ch;   // clip rect
+  extern int32_t        _tx, _ty;             // text cursor position
+  extern uint32_t       _io, _lio;            // io state and last io state
+  extern int32_t        _camx, _camy;         // camera
+  extern blend_func_t   _bf;                  // blend function
+  extern buffer_t      * SCREEN;              // framebuffer
+  extern buffer_t      *_dt;                  // drawing target
+  extern buffer_t      *_ss;                  // sprite sheet
+  extern uint8_t       *_font;                // font data
+
+  // audio state
+  extern voice_t        _v;                   // current voice
+  extern uint32_t       _bpm;                 // beats per minute
+
+  // helpers
+  extern float          _fsin_lut[256];       // fast sin lut
+  constexpr float       _PI = 3.1415927f;
 
   // state
   void        pen(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 15);
@@ -113,6 +115,13 @@ namespace picosystem {
                 color_t* ps, uint32_t so, int32_t ss,
                 color_t* pd, uint32_t c);
 
+  // audio
+  void        play(
+                voice_t voice, uint32_t frequency,
+                uint32_t duration = 500, uint32_t volume = 100);
+  uint8_t     audio_sample(uint32_t ms);
+  uint32_t    audio_position();
+
   // utility
   std::string str(float v, uint8_t precision = 2);
   std::string str(int32_t v);
@@ -121,7 +130,6 @@ namespace picosystem {
   color_t     hsv(float h, float s, float v, float a = 1.0f);
   buffer_t*   buffer(uint32_t w, uint32_t h, void *data = nullptr);
   voice_t     voice(
-                uint32_t frequency, uint32_t hold, uint32_t volume = 100,
                 uint32_t attack = 100, uint32_t decay = 50,
                 uint32_t sustain = 80, uint32_t release = 100,
                 int32_t bend = 0, uint32_t bend_ms = 0, uint32_t reverb = 0,
@@ -154,9 +162,6 @@ namespace picosystem {
   uint32_t    battery();
   void        led(uint8_t r, uint8_t g, uint8_t b);
   void        backlight(uint8_t b);
-  void        play(voice_t v);
-  uint8_t     audio_sample(uint32_t ms);
-  uint32_t    audio_position();
 
 
   // internal methods - do not call directly, will change!

@@ -18,7 +18,7 @@ std::array<dial_t, 12> dials = {{
   {  "distort",  "%",    0,  100,   0, 10},
   {   "attack", "ms",    0, 1000, 100, 50},
   {    "decay", "ms",    0, 1000,  50, 50},
-  {     "hold", "ms",    0, 1000, 500, 50},
+  { "duration", "ms",    0, 1000, 500, 50},
   {  "release", "ms",    0, 1000, 250, 50},
   {   "reverb", "ms",    0, 2000,   0, 50},
   {     "bend", "hz", -100,  100,   0, 10},
@@ -56,9 +56,6 @@ voice_t v;
 // update and play the voice
 void set_voice() {
   v = voice(
-    get_dial_value("frequency"),
-    get_dial_value(     "hold"),
-    get_dial_value(   "volume"),
     get_dial_value(   "attack"),
     get_dial_value(    "decay"),
     get_dial_value(  "sustain"),
@@ -69,7 +66,7 @@ void set_voice() {
     get_dial_value(    "noise"),
     get_dial_value(  "distort"));
 
-  play(v);
+  play(v, get_dial_value("frequency"), get_dial_value("duration"), get_dial_value("volume"));
 }
 
 // initialise the world
@@ -105,8 +102,8 @@ void update(uint32_t tick) {
 
   // if the current sound has finished playing, or we changed a dial value
   // then restart the sound
-  uint32_t duration = v.attack + v.decay + v.hold + v.release + v.reverb;
-  if(change || audio_position() > duration) {
+  uint32_t full_duration = get_dial_value("duration") + get_dial_value("release") + get_dial_value("reverb");
+  if(change || audio_position() > full_duration) {
     set_voice();
   }
 }
@@ -168,7 +165,7 @@ void draw() {
   frect(0, 120, 240, 60);
   draw_dial("attack", 0, 120);
   draw_dial("decay", 60, 120);
-  draw_dial("hold", 120, 120);
+  draw_dial("duration", 120, 120);
   draw_dial("release", 180, 120);
 
   // draw bottom row of dials
@@ -182,15 +179,15 @@ void draw() {
   // draw waveform graph
   pen(0, 0, 0, 2);
   frect(0, 0, 240, 60);
-  uint32_t duration = v.attack + v.decay + v.hold + v.release + v.reverb;
+  uint32_t full_duration = get_dial_value("duration") + get_dial_value("release") + get_dial_value("reverb");
   pen(15, 15, 15);
   for(int i = 0; i < 230; i+=6) {
-    uint8_t s = audio_sample((i * duration) / 230);
+    uint8_t s = audio_sample((i * full_duration) / 230);
     frect(i + 2, 52 - s / 2, 5, 5);
   }
 
   // draw current playback marker
   pen(0, 15, 15);
-  uint32_t pos = (audio_position() * 230) / duration;
+  uint32_t pos = (audio_position() * 230) / full_duration;
   frect(pos + 5, 5, 2, 50);
 }

@@ -32,17 +32,17 @@ void colour_from_xy(int32_t x, int32_t y, uint32_t &r, uint32_t &g, uint32_t &b)
 
 void init() {
   // a brief chirp for when user input is processed
-  blip = voice(1800, 10, 100, 10, 0, 80, 0, 0, 0, 0, 100);
+  blip = voice(10, 0, 80, 0, 0, 0, 0, 100);
 }
 
 void update(uint32_t tick) {
   if(!(tick % 5)) {
     // every 5th tick (every 50ms) check for user input and move/clamp the
     // cursor position accordingly
-    if(button(   UP)) { sy--; sy = sy <  0 ?  0 : sy; play(blip); }
-    if(button( DOWN)) { sy++; sy = sy > 63 ? 63 : sy; play(blip); }
-    if(button( LEFT)) { sx--; sx = sx <  0 ?  0 : sx; play(blip); }
-    if(button(RIGHT)) { sx++; sx = sx > 63 ? 63 : sx; play(blip); }
+    if(button(   UP)) { sy--; sy = sy <  0 ?  0 : sy; play(blip, 1800, 10, 100); }
+    if(button( DOWN)) { sy++; sy = sy > 63 ? 63 : sy; play(blip, 1800, 10, 100); }
+    if(button( LEFT)) { sx--; sx = sx <  0 ?  0 : sx; play(blip, 1800, 10, 100); }
+    if(button(RIGHT)) { sx++; sx = sx > 63 ? 63 : sx; play(blip, 1800, 10, 100); }
 
     // update our selected colour from the new cursor position
     colour_from_xy(sx, sy, sliders[0].v, sliders[1].v, sliders[2].v);
