@@ -500,6 +500,12 @@ mp_obj_t pimoroni_mp_load_global(qstr qst) {
     return elem->value;
 }
 
+mp_obj_t picosystem_reset() {
+    update_callback_obj = mp_const_none;
+    draw_callback_obj = mp_const_none;
+    return mp_const_none;
+}
+
 mp_obj_t picosystem_init() {
 
     MP_STATE_PORT(picosystem_framebuffer) = m_new(color_t, 120 * 120);
