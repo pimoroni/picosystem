@@ -29,7 +29,6 @@ void move() {
     s.y += std::rand() % 3 - 1;
     s.w += std::rand() % 3 - 1;
     s.h += std::rand() % 3 - 1;
-    //s.r += std::rand() % 11 - 5;
     s.r += 3;
   }
 }
@@ -85,10 +84,15 @@ void draw() {
     } break;
     case 3: {
       uint32_t i = 0;
+      for(auto &s : shapes) {pen(s.p); ellipse(s.x, s.y, s.w / 2, s.h / 2);}
+      label("Ellipses");
+    } break;
+    case 4: {
+      uint32_t i = 0;
       for(auto &s : shapes) {sprite(i++, s.x, s.y);}
       label("Sprites");
     } break;
-    case 4: {
+    case 5: {
       for(auto &s : shapes) {
         pen(s.p);
         int32_t rx = sin(s.r * (3.1415927f / 180.0f)) * (s.w / 2);
@@ -100,19 +104,24 @@ void draw() {
       }
       label("Filled polygons");
     } break;
-    case 5: {
+    case 6: {
       for(auto &s : shapes) {pen(s.p); circle(s.x, s.y, s.w / 2);}
       label("Circles");
     } break;
-    case 6: {
+    case 7: {
+      uint32_t i = 0;
+      for(auto &s : shapes) {pen(s.p); fellipse(s.x, s.y, s.w / 2, s.h / 2);}
+      label("Filled Ellipses");
+    } break;
+    case 8: {
       for(auto &s : shapes) {pen(s.p); rect(s.x, s.y, s.w, s.h);}
       label("Rectangles");
     } break;
-    case 7: {
+    case 9: {
       for(auto &s : shapes) {pen(s.p); fcircle(s.x, s.y, s.w / 2);}
       label("Filled circles");
     } break;
-    case 8: {
+    case 10: {
       for(auto &s : shapes) {
         pen(s.p);
         int32_t rx = sin(s.r * (3.1415927f / 180.0f)) * (s.w / 2);
@@ -124,7 +133,7 @@ void draw() {
       }
       label("Polygons");
     } break;
-    case 9: {
+    case 11: {
       for(auto &s : shapes) {
         pen(s.p);
         pixel(s.x, s.y);
@@ -135,12 +144,7 @@ void draw() {
 
   // draw title
   pen(15, 15, 15);
-
   frect(0, 0, 120, 11);
   pen(0, 0, 0);
   text("Shapes Test", 2, 2);
-
-
-
-
 }

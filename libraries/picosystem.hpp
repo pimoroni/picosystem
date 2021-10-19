@@ -87,14 +87,16 @@ namespace picosystem {
   void        pixel(int32_t x, int32_t y);
   void        hline(int32_t x, int32_t y, int32_t c);
   void        vline(int32_t x, int32_t y, int32_t c);
-  void        rect(int32_t x, int32_t y, int32_t w, int32_t h);
-  void        circle(int32_t x, int32_t y, int32_t r);
   void        poly(const int32_t *p, uint32_t l);
   void        poly(const std::initializer_list<int32_t> &pts);
-  void        frect(int32_t x, int32_t y, int32_t w, int32_t h);
-  void        fcircle(int32_t x, int32_t y, int32_t r);
   void        fpoly(const int32_t *p, uint32_t l);
   void        fpoly(const std::initializer_list<int32_t> &pts);
+  void        rect(int32_t x, int32_t y, int32_t w, int32_t h);
+  void        frect(int32_t x, int32_t y, int32_t w, int32_t h);
+  void        circle(int32_t x, int32_t y, int32_t r);
+  void        fcircle(int32_t x, int32_t y, int32_t r);
+  void        ellipse(int32_t x, int32_t y, int32_t rx, int32_t ry);
+  void        fellipse(int32_t x, int32_t y, int32_t rx, int32_t ry);
   void        line(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
   void        blit(
                 buffer_t *source,

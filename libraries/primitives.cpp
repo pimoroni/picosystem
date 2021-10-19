@@ -111,6 +111,77 @@ namespace picosystem {
     }
   }
 
+  void ellipse(int32_t x, int32_t y, int32_t rx, int32_t ry) {
+    _camera_offset(x, y);
+    if(!intersects(x - rx, y - ry, rx + rx, ry + ry, _cx, _cy, _cw, _ch)) {
+      return;
+    }
+
+    if(rx <= 0 || ry <= 0) {
+      return;
+    }
+
+    int ryy = ry * ry;
+    int rxx = rx * rx;
+    int ryyxx = ryy * rxx;
+    int x0 = rx;
+    int dx = 0;
+
+    pixel(x + -rx, y);
+    pixel(x + rx - 1, y);
+
+    for (uint32_t py = 1; py <= ry; py++) {
+      int x1 = x0 - (dx - 1);  // try slopes of dx - 1 or more
+      for( ; x1 > 0; x1--) {
+        if(x1 * x1 * ryy + py * py * rxx <= ryyxx)
+          break;
+      }
+      dx = x0 - x1;  // current approximation of the slope
+      x0 = x1;
+
+      int dxw = std::max(1, dx);
+      // upper
+      hline(x + -x0 - dx, y - py, dxw);
+      hline(x + x0, y - py, dxw);
+
+      // lower
+      hline(x + -x0 - dx, y + py, dxw);
+      hline(x + x0, y + py, dxw);
+    }
+  }
+
+  void fellipse(int32_t x, int32_t y, int32_t rx, int32_t ry) {
+    _camera_offset(x, y);
+    if(!intersects(x - rx, y - ry, rx + rx, ry + ry, _cx, _cy, _cw, _ch)) {
+      return;
+    }
+
+    if(rx <= 0 || ry <= 0) {
+      return;
+    }
+
+    int ryy = ry * ry;
+    int rxx = rx * rx;
+    int ryyxx = ryy * rxx;
+    int x0 = rx;
+    int dx = 0;
+
+    hline(x + -rx, y, rx + rx);
+
+    for (uint32_t py = 1; py <= ry; py++) {
+      int x1 = x0 - (dx - 1);  // try slopes of dx - 1 or more
+      for( ; x1 > 0; x1--) {
+        if(x1 * x1 * ryy + py * py * rxx <= ryyxx)
+          break;
+      }
+      dx = x0 - x1;  // current approximation of the slope
+      x0 = x1;
+
+      hline(x + -x0, y - py, x0 * 2);
+      hline(x + -x0, y + py, x0 * 2);
+    }
+  }
+
   void line(int32_t x1, int32_t y1, int32_t x2, int32_t y2) {
     int32_t	x = x1, y = y1, dx, dy, incx, incy, balance;
 
