@@ -79,10 +79,10 @@ void draw_note_shape(note_t n, int32_t x, int32_t y) {
   if(n.f != 0) {
     if(n.d == 1) {
       fcircle(x, y, 3);
-      vline(x + 4, y - 14, 14);
+      vline(x + 3, y - 14, 14);
     } else if(n.d == 2) {
       circle(x, y, 3);
-      vline(x + 4, y - 14, 14);
+      vline(x + 3, y - 14, 14);
     } else if(n.d == 4) {
       ellipse(x, y, 4, 3);
     }
