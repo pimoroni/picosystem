@@ -24,7 +24,7 @@ LiPo battery so you can take your homebrew games on the bus.
 ## MicroPython
 
 We also provide a custom MicroPython image for PicoSystem which
-provides support for this API. Visit our [MicroPython PicoSystem page](#)
+provides support for this API. Visit our [MicroPython PicoSystem documentation](micropython/README.md)
 for more details.
 
 ## C++ API
