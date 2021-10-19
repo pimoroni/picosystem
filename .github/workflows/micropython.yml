@@ -19,7 +19,7 @@ jobs:
       matrix:
         include:
           - os: ubuntu-20.04
-            name: Linux
+            name: MicroPython Build (Linux)
             cache-key: linux
             apt-packages: clang-tidy gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
 

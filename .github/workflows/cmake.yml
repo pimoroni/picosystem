@@ -18,7 +18,7 @@ jobs:
         include:
           - os: ubuntu-20.04
             pico-sdk: true
-            name: PicoSystem
+            name: PicoSystem Build (Linux)
             cache-key: picosystem
             release-suffix: PicoSystem
             cmake-args: -DPICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk -DPICO_BOARD=pimoroni_picosystem -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
