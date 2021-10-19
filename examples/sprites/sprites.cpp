@@ -101,12 +101,11 @@ void draw() {
     a = a > 15 ? 15 : a;
 
     // draw the shadow
-    alpha(a / 4);
+    alpha(a / 8);
     pen(1, 1, 1);
-    int32_t sw = ((scale) + (bounce / 3)) / 1.4;
-    int32_t sh = sw / 5;
-    frect(60 + x - (sw / 2), 55 + y + (scale / 1.2) - (sh / 2), sw, sh);
-    frect(60 + x - (sw / 2) + 1, 55 + y + (scale / 1.2) - (sh / 2) - 1, sw - 2, (sh) + 2);
+    int32_t sw = scale + (bounce / 3);
+    int32_t sh = sw / 3;
+    fellipse(60 + x, 55 + y + (scale / 1.2), sw / 2, sh / 2);
 
     // draw the weapon sprite
     alpha(a);
