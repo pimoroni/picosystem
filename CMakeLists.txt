@@ -14,3 +14,8 @@ pico_sdk_init()
 include(${CMAKE_CURRENT_LIST_DIR}/libraries/picosystem.cmake REQUIRED)
 
 add_subdirectory(examples)
+
+# setup release packages
+set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
+set(CPACK_GENERATOR "ZIP" "TGZ")
+include(CPack)

@@ -88,3 +88,32 @@ jobs:
         ccache --zero-stats || true
         cmake --build . --config $BUILD_TYPE -j 2
         ccache --show-stats || true
+
+    - name: Package (Examples)
+      if: github.event_name == 'release' && matrix.release-suffix != ''
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: |
+        cmake --build . --config $BUILD_TYPE --target package
+
+    - name: Upload .tar (Examples)
+      if: github.event_name == 'release' && matrix.release-suffix != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        asset_path: ${{runner.workspace}}/build/${{env.RELEASE_FILE}}.tar.gz
+        upload_url: ${{github.event.release.upload_url}}
+        asset_name: ${{env.RELEASE_FILE}}.tar.gz
+        asset_content_type: application/octet-stream #??
+
+    - name: Upload .zip (Examples)
+      if: github.event_name == 'release' && matrix.release-suffix != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        asset_path: ${{runner.workspace}}/build/${{env.RELEASE_FILE}}.zip
+        upload_url: ${{github.event.release.upload_url}}
+        asset_name: ${{env.RELEASE_FILE}}.zip
+        asset_content_type: application/zip

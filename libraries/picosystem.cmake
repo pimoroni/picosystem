@@ -30,6 +30,8 @@ function(picosystem_executable NAME SOURCES)
 
   # create map/bin/hex file etc.
   pico_add_extra_outputs(${NAME})
+
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${NAME}.uf2 DESTINATION .)
 endfunction()
 
 function(pixel_double NAME)
