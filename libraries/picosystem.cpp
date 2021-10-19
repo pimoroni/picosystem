@@ -91,8 +91,6 @@ int main() {
     backlight(75);
   #endif
 
-  sleep(300);
-
   pen(0, 0, 0); clear();
 
   // call users init() function so they can perform any needed
