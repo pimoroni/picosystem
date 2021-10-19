@@ -61,6 +61,17 @@ namespace picosystem {
     y -= _camy;
   }
 
+  void _camera_offset(bool enable) {
+    static uint32_t __camx, __camy;
+
+    if(enable) {
+      _camx = __camx; _camy = __camy;
+    } else {
+      __camx = _camx; __camy = _camy;
+      _camx = 0; _camy = 0;
+    }
+  }
+
   void cursor() {
     _tx = 0; _ty = 0;
   }

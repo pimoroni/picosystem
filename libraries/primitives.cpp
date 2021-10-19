@@ -40,10 +40,12 @@ namespace picosystem {
 
   void rect(int32_t x, int32_t y, int32_t w, int32_t h) {
     _camera_offset(x, y);
+    _camera_offset(false);
     hline(x, y, w);
     vline(x, y + 1, h - 1);
     hline(x + 1, y + h - 1, w - 1);
     vline(x + w - 1, y, h - 1);
+    _camera_offset(true);
   }
 
   void frect(int32_t x, int32_t y, int32_t w, int32_t h) {
@@ -61,6 +63,8 @@ namespace picosystem {
     if(!intersects(x - r, y - r, r + r, r + r, _cx, _cy, _cw, _ch)) {
       return;
     }
+
+    _camera_offset(false);
 
     int32_t p = 3 - 2 * r;
     int32_t xc = 0, yc = r;
@@ -89,6 +93,7 @@ namespace picosystem {
       pixel(x + yc, y - xc);
       pixel(x - yc, y - xc);
     }
+    _camera_offset(true);
   }
 
   void fcircle(int32_t x, int32_t y, int32_t r) {
@@ -96,6 +101,8 @@ namespace picosystem {
     if(!intersects(x - r, y - r, r + r, r + r, _cx, _cy, _cw, _ch)) {
       return;
     }
+
+    _camera_offset(false);
 
     int ox = r, oy = 0, err = -r;
     while (ox >= oy)
@@ -109,6 +116,7 @@ namespace picosystem {
         err -= ox; ox--; err -= ox;
       }
     }
+    _camera_offset(true);
   }
 
   void ellipse(int32_t x, int32_t y, int32_t rx, int32_t ry) {
@@ -120,6 +128,8 @@ namespace picosystem {
     if(rx <= 0 || ry <= 0) {
       return;
     }
+
+    _camera_offset(false);
 
     int ryy = ry * ry;
     int rxx = rx * rx;
@@ -148,6 +158,8 @@ namespace picosystem {
       hline(x + -x0 - dx, y + py, dxw);
       hline(x + x0, y + py, dxw);
     }
+
+    _camera_offset(true);
   }
 
   void fellipse(int32_t x, int32_t y, int32_t rx, int32_t ry) {
@@ -159,6 +171,8 @@ namespace picosystem {
     if(rx <= 0 || ry <= 0) {
       return;
     }
+
+    _camera_offset(false);
 
     int ryy = ry * ry;
     int rxx = rx * rx;
@@ -180,9 +194,14 @@ namespace picosystem {
       hline(x + -x0, y - py, x0 * 2);
       hline(x + -x0, y + py, x0 * 2);
     }
+
+    _camera_offset(true);
   }
 
   void line(int32_t x1, int32_t y1, int32_t x2, int32_t y2) {
+    _camera_offset(x1, y1);
+    _camera_offset(x2, y2);
+    _camera_offset(false);
     int32_t	x = x1, y = y1, dx, dy, incx, incy, balance;
 
     if(x2 >= x1) {dx = x2 - x1; incx = 1;} else {dx = x1 - x2; incx = -1;}
@@ -203,6 +222,7 @@ namespace picosystem {
         balance += dx; y += incy;
       }
     }
+    _camera_offset(true);
   }
 
   void fpoly(const int32_t *p, uint32_t l) {
