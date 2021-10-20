@@ -62,9 +62,16 @@ const mp_obj_type_t PicosystemVoice_type = {
 
 
 /***** Module Functions *****/
+
+// picosystem.cpp
+
 MP_DEFINE_CONST_FUN_OBJ_0(picosystem_init_obj, picosystem_init);
 MP_DEFINE_CONST_FUN_OBJ_0(picosystem_reset_obj, picosystem_reset);
 MP_DEFINE_CONST_FUN_OBJ_0(picosystem_tick_obj, picosystem_tick);
+
+// stats.cpp
+
+MP_DEFINE_CONST_FUN_OBJ_0(picosystem_stats_obj, picosystem_stats);
 
 // voice.cpp
 

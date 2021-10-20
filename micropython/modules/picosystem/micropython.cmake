@@ -11,6 +11,7 @@ target_sources(usermod_${MOD_NAME} INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/primitives.cpp
     ${CMAKE_CURRENT_LIST_DIR}/utility.cpp
     ${CMAKE_CURRENT_LIST_DIR}/hardware.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/stats.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/picosystem.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/audio.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/blend.cpp
