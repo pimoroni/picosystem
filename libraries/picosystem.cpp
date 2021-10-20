@@ -20,11 +20,11 @@ namespace picosystem {
 
   #ifndef DYNAMIC_BUFFER
   #ifdef PIXEL_DOUBLE
-    color_t _fb[120 * 120];
+    color_t _fb[120 * 120] = { };
     buffer_t *SCREEN = buffer(120, 120, _fb);
     int32_t _cx = 0, _cy = 0, _cw = 120, _ch = 120;
   #else
-    color_t _fb[240 * 240];
+    color_t _fb[240 * 240] = { };
     buffer_t *SCREEN = buffer(240, 240, _fb);
     int32_t _cx = 0, _cy = 0, _cw = 240, _ch = 240;
   #endif
@@ -88,12 +88,18 @@ int main() {
       sleep(20);
     }
   #else
+    // Keep the screen off...
+    backlight(0);
+    // Screen buffer is initialized clear; just flip it.
+    _flip();
+    // Wait for the DMA transfer to finish
+    while (_is_flipping());
+    // wait for the screen to update
+    _wait_vsync();
+    _wait_vsync();
+    // Turn the screen on
     backlight(75);
   #endif
-
-  sleep(300);
-
-  pen(0, 0, 0); clear();
 
   // call users init() function so they can perform any needed
   // setup for world state etc
