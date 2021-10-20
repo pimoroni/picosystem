@@ -91,12 +91,12 @@ int main() {
     // Keep the screen off...
     backlight(0);
     // Screen buffer is initialized clear; just flip it.
-    _wait_vsync();
     _flip();
     // Wait for the DMA transfer to finish
     while (_is_flipping());
     // wait for the screen to update
-    sleep(20);
+    _wait_vsync();
+    _wait_vsync();
     // Turn the screen on
     backlight(75);
   #endif
