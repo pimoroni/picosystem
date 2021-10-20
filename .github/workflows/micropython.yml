@@ -31,7 +31,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: pimoroni/micropython
-        ref: board/rp2/pimoroni_picosystem #${{env.MICROPYTHON_VERSION}}
+        ref: experimental/picosystem #${{env.MICROPYTHON_VERSION}}
         submodules: false  # MicroPython submodules are hideously broken
         path: micropython
 
@@ -74,16 +74,18 @@ jobs:
       working-directory: micropython/ports/rp2
       run: make USER_C_MODULES=../../../picosystem-${GITHUB_SHA}/micropython/modules/micropython.cmake BOARD=${BOARD_TYPE} -j2
 
-    - name: Rename .uf2 for artifact
+    - name: Rename .uf2 for artifact & release
       shell: bash
       working-directory: micropython/ports/rp2/build-${{env.BOARD_TYPE}}
-      run: cp firmware.uf2 ${{github.event.repository.name}}-${{github.event.release.tag_name}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
+      run: |
+        cp firmware.uf2 ${{github.event.repository.name}}-${{github.sha}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
+        cp firmware.uf2 ${{github.event.repository.name}}-${{github.event.release.tag_name}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
 
     - name: Store .uf2 as artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ${{github.event.repository.name}}-${{ github.sha }}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
-        path: micropython/ports/rp2/build-${{env.BOARD_TYPE}}/${{github.event.repository.name}}-${{github.event.release.tag_name}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
+        name: ${{github.event.repository.name}}-${{github.sha}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
+        path: micropython/ports/rp2/build-${{env.BOARD_TYPE}}/${{github.event.repository.name}}-${{github.sha}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
 
     - name: Upload .uf2
       if: github.event_name == 'release'

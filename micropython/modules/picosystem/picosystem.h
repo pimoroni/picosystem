@@ -20,6 +20,7 @@ enum blend_mode {
     MODE_MASK
 };
 
+/*
 enum _sprites_ids {
     CHERRY, APPLE, BANANA, ORANGE, AUBERGINE, CARROT, POTATO, LEAF,
     PARSNIP, MEAT, BEAN, RADISH, STRAWBERRY, PUMPKIN, CUCUMBER, SALT1,
@@ -43,7 +44,7 @@ enum _sprites_ids {
     VIAL5, VIAL6, DOT, HELMET6, SWORD9, SWORD10, SWORD11, CROWN2
         // etc... can we name all 256 built in sprites?!
 };
-
+*/
 
 /***** Extern of Class Definition *****/
 extern const mp_obj_type_t PicosystemBuffer_type;
