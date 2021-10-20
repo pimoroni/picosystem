@@ -54,7 +54,7 @@ float deg_to_rad(float d) {
 }
 
 // draw the world
-void draw() {
+void draw(uint32_t tick) {
   // clear the background
   pen(2, 3, 4);
   clear();

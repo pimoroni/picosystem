@@ -61,7 +61,7 @@ void label(std::string s) {
   text(s + ":", 2, 15);
 }
 
-void draw() {
+void draw(uint32_t tick) {
   pen(0, 0, 0);
   clear();
 
@@ -147,4 +147,14 @@ void draw() {
   frect(0, 0, 120, 11);
   pen(0, 0, 0);
   text("Shapes Test", 2, 2);
+
+  pen(0, 0, 0, 8);
+  frect(0, 60, 120, 60);
+
+  pen(15, 15, 15);
+  text("fps: " + str(stats.fps), 10, 70);
+  text("draw us: " + str(stats.draw_us), 10, 80);
+  text("update us: " + str(stats.update_us), 10, 90);
+  text("tick us: " + str(stats.tick_us), 10, 100);
+  text("idle: " + str(stats.idle) + "%", 10, 110);
 }

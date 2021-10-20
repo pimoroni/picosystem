@@ -8,7 +8,7 @@
 
 namespace picosystem {
 
-  uint32_t _debug;
+  stat_t stats;
 
   color_t _pen;
   uint8_t _a = 15;
@@ -99,45 +99,60 @@ int main() {
   // setup for world state etc
   init();
 
-  uint32_t update_rate_ms = 10;
-  uint32_t pending_update_ms = 0;
-  uint32_t last_ms = time();
-
   uint32_t tick = 0;
+  uint32_t last_frame_ms = 0;
 
   _io = _gpio_get();
 
   while(true) {
-    uint32_t ms = time();
+    uint32_t start_tick_us = time_us();
 
-    // work out how many milliseconds of updates we're waiting
-    // to process and then call the users update() function as
-    // many times as needed to catch up
-    pending_update_ms += (ms - last_ms);
-    while(pending_update_ms >= update_rate_ms) {
-      _lio = _io;
-      _io = _gpio_get();
+    // store previous io state and get new io state
+    _lio = _io;
+    _io = _gpio_get();
 
-      update(tick++);
-      pending_update_ms -= update_rate_ms;
-    }
+    // call users update() function
+    uint32_t start_update_us = time_us();
+    update(tick++);
+    stats.update_us = time_us() - start_update_us;
 
-    // if current flipping the framebuffer in the background
-    // then wait until that is complete before allow the user
-    // to render
+    // if we're currently transferring the the framebuffer to the screen then
+    // wait until that is complete before allowing the user to do their drawing
+    uint32_t wait_us = 0;
+    uint32_t start_wait_flip_us = time_us();
     while(_is_flipping()) {}
+    wait_us += time_us() - start_wait_flip_us;
 
     // call user render function to draw world
-    draw();
+    uint32_t start_draw_us = time_us();
+    draw(tick);
+    stats.draw_us = time_us() - start_draw_us;
 
     // wait for the screen to vsync before triggering flip
     // to ensure no tearing
+    uint32_t start_wait_vsync_us = time_us();
     _wait_vsync();
+    wait_us += time_us() - start_wait_vsync_us;
+
+    uint32_t frame_ms = time();
+    stats.fps = 1000 / (frame_ms - last_frame_ms);
+    last_frame_ms = frame_ms;
 
     // flip the framebuffer to the screen
     _flip();
 
-    last_ms = ms;
+    tick++;
+
+    stats.tick_us = time_us() - start_tick_us;
+
+    if(stats.fps > 40) {
+      // if fps is high enough then we definitely didn't miss vsync
+      stats.idle = (wait_us * 100) / stats.tick_us;
+    }else{
+      // if we missed vsync then we overran the frame time and hence had
+      // no idle time
+      stats.idle = 0;
+    }
   }
 
 }

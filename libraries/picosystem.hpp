@@ -11,14 +11,24 @@
 #include "pico/stdlib.h"
 
 void init();
-void update(uint32_t time_ms);
-void draw();
+void update(uint32_t tick);
+void draw(uint32_t tick);
 
 namespace picosystem {
 
   extern uint32_t _debug;
 
   typedef uint16_t color_t;
+
+  struct stat_t {
+    uint32_t fps;       // current frames per second
+    uint32_t idle;      // cpu idle time percentage
+    uint32_t tick_us;   // last full tick time in microseconds
+    uint32_t update_us; // last update() call time in microseconds
+    uint32_t draw_us;   // last draw() call time in microseconds
+  };
+
+  extern stat_t stats;
 
   struct buffer_t {
     int32_t w, h;
