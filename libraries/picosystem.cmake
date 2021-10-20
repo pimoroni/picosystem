@@ -34,6 +34,21 @@ function(picosystem_executable NAME SOURCES)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${NAME}.uf2 DESTINATION .)
 endfunction()
 
+function(picosystem_asset NAME PATH)
+  get_filename_component(PATH ${PATH} ABSOLUTE)
+  get_filename_component(ASSET ${PATH} NAME)
+  get_filename_component(PATH ${PATH} DIRECTORY)
+  set(OBJNAME ${ASSET}.o)
+  message("Building ${OBJNAME}")
+  add_custom_command(OUTPUT ${OBJNAME}
+    WORKING_DIRECTORY ${PATH}
+    COMMAND ${CMAKE_LINKER} -r -b binary -o ${CMAKE_CURRENT_BINARY_DIR}/${OBJNAME} ${ASSET})
+  # TODO figure out how to make static resources work
+    ## COMMAND ${CMAKE_OBJCOPY} --rename-section .data=.rodata,alloc,load,readonly,data,contents ${CMAKE_CURRENT_BINARY_DIR}/${OBJNAME} ${CMAKE_CURRENT_BINARY_DIR}/${OBJNAME})
+
+  target_sources(${NAME} PRIVATE ${OBJNAME})
+endfunction()
+
 function(pixel_double NAME)
   target_compile_options(${NAME} PRIVATE -DPIXEL_DOUBLE)
 endfunction()
