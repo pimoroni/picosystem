@@ -88,10 +88,18 @@ int main() {
       sleep(20);
     }
   #else
+    // Keep the screen off...
+    backlight(0);
+    // Fill both of the screen buffers with black
+    pen(0, 0, 0); clear();  _flip();
+    // Wait for the DMA transfer to finish
+    while (_is_flipping());
+    // Fill the other buffer and wait.
+    clear(); _flip();
+    while (_is_flipping());
+    // Turn the screen on
     backlight(75);
   #endif
-
-  pen(0, 0, 0); clear();
 
   // call users init() function so they can perform any needed
   // setup for world state etc
