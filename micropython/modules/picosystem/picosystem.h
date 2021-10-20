@@ -56,6 +56,7 @@ extern const mp_obj_type_t PicosystemVoice_type;
 extern mp_obj_t picosystem_init();
 extern mp_obj_t picosystem_tick();
 extern mp_obj_t picosystem_reset();
+extern mp_obj_t picosystem_logo();
 
 // stats.cpp
 extern mp_obj_t picosystem_stats();
