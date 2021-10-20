@@ -1,7 +1,9 @@
-import os
-import math
-import time
-import gc
+backlight(0)
+
+import os    # noqa: E402
+import math  # noqa: E402
+import time  # noqa: E402
+import gc    # noqa: E402
 
 
 last_note = 0
@@ -11,7 +13,7 @@ intro_melody = True
 
 
 notes = [
-    (None, 100), ("G6", 10), ("E6", 30), ("A6", 10), ("G6", 30), (None, 100), ("B7", 1), ("C7", 1)
+    (None, 100), ("G6", 10), ("E6", 30), ("A6", 10), ("G6", 30), (None, 50), ("B7", 1), ("C7", 1)
 ]
 intro = Voice()
 intro.envelope(attack=50, decay=10, sustain=70, release=2000)
@@ -76,6 +78,9 @@ def update(tick):
     selected %= filecount
     target_angle = -get_item_angle(selected)
 
+    if tick <= 75:
+        backlight(tick)
+
 
 def draw(tick):
     global current_angle, intro_melody
@@ -86,9 +91,10 @@ def draw(tick):
 
     if intro_melody:
         pen(15, 15, 15)
+        _logo()
         label = "".join(["", "Pi", "co", "Sys", "tem"][0:min(note_idx, 5)])
         label_width = text_width(label)
-        text(label, int(60 - (label_width / 2)), 60)
+        text(label, int(60 - (label_width / 2)), 90)
         return
 
     pen(10, 10, 10)
@@ -134,5 +140,5 @@ for k in locals().keys():
         del locals()[k]
 
 gc.collect()
-reset()
+_reset()
 __import__(__launch_file__)

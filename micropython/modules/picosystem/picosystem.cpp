@@ -33,7 +33,7 @@ uint32_t last_ms = time();
 
 uint32_t tick = 0;
 
-static bool done_splash = false;
+static bool done_audio_init = false;
 
 mp_obj_t update_callback_obj = mp_const_none;
 mp_obj_t draw_callback_obj = mp_const_none;
@@ -62,6 +62,23 @@ mp_obj_t picosystem_reset() {
     return mp_const_none;
 }
 
+mp_obj_t picosystem_logo() {
+    const uint8_t *s = _picosystem_logo;
+
+    for(int y = 35; y < 85; y++) {
+        for(int x = 19; x < 101; x+=8) {
+            for(int bit = 0; bit < 8; bit++) {
+                if(*s & (0b10000000 >> bit)) {
+                    pixel(x + bit, y);
+                }
+            }
+            s++;
+        }
+    }
+
+    return mp_const_none;
+}
+
 mp_obj_t picosystem_init() {
 
     MP_STATE_PORT(picosystem_framebuffer) = m_new(color_t, 120 * 120);
@@ -78,41 +95,27 @@ mp_obj_t picosystem_init() {
         _fsin_lut[i] = sin((_PI * 2.0f) * (float(i) / 256.0f));
     }
 
-    if(!done_splash) { // Squash splash on soft-reset. It's painful!
+    if(!done_audio_init) {
         _start_audio(); // HACK! we really should figure out *what* soft-reset rp2_pio_deinit and machine_pin_deinit is breaking
 
         // Set the LED to green, just for gentle reassurance
-        led(0, 128, 0);
-
-#ifndef NO_STARTUP_LOGO
-        // fade in logo by ramping up backlight
-        pen(0, 0, 0); clear();
-        pen(15, 15, 15); _logo();
-        for(int i = 0; i < 75; i++) {
-            backlight(i);
-            _wait_vsync();
-            _flip();
-        }
-
-        sleep(300); // ...and breathe out...
-
-        // fade out logo in 16 colour steps
-        for(int i = 15; i >= 0; i--) {
-            pen(0, 0, 0); clear();
-            pen(i, i, i); _logo();
-            _wait_vsync();
-            _flip();
-
-            sleep(20);
-        }
-#endif
-        done_splash = true;
+        led(0, 64, 0);
+    
+        done_audio_init = true;
     }
+
+    // Keep the screen off...
+    backlight(0);
+    // Screen buffer is initialized clear; just flip it.
+    _flip();
+    // Wait for the DMA transfer to finish
+    while (_is_flipping());
+    // wait for the screen to update
+    _wait_vsync();
+    _wait_vsync();
+
+    // Turn the screen on
     backlight(75);
-
-    sleep(300);
-
-    pen(0, 0, 0); clear();
 
     // call users init() function so they can perform any needed
     // setup for world state etc
