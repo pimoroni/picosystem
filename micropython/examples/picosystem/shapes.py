@@ -1,6 +1,6 @@
-from picosystem import *
 from math import sin, cos
 from random import randrange
+
 
 view = -1
 shapes = []
@@ -41,12 +41,12 @@ def move():
         s.r += 3
 
 
-def update(ticks):
+def update(tick):
     global view
 
     move()
 
-    if not (ticks % 250):
+    if not (tick % 250):
         reset()
         view += 1
 
@@ -63,7 +63,7 @@ def label(s):
     text(s + ":", 2, 15)
 
 
-def draw():
+def draw(tick):
     global view
     global shapes
 

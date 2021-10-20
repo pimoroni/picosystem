@@ -1,5 +1,3 @@
-from picosystem import *
-
 spritesheets = [
     "s4m_ur4i-dingbads.16bpp",
     "s4m_ur4i-pirate-characters.16bpp",
@@ -16,17 +14,17 @@ last_update = 0
 current_sheet = 0
 
 
-def update(ticks):
+def update(tick):
     global last_update, current_sheet
-    if ticks - last_update > 100:
-        last_update = ticks
+    if tick - last_update > 100:
+        last_update = tick
         open(spritesheets[current_sheet], "rb").readinto(buffer)
         current_sheet += 1
         if current_sheet >= len(spritesheets):
             current_sheet = 0
 
 
-def draw():
+def draw(tick):
     pen(0, 0, 0)
     clear()
     for x in range(int(120 / 8)):
