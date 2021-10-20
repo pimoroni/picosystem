@@ -1,8 +1,6 @@
 import math
 import time
 
-from picosystem import *
-
 
 blip = Voice(10, 0, 80, 0, 0, 0, 0, 100)
 picker = Buffer(68, 68)
@@ -107,7 +105,7 @@ def draw_slider(slider, x, y):
     frect(x + 2, y + h - sh - 2, w - 4, sh)
 
 
-def draw():
+def draw(tick):
     # clear the screen
     pen(1, 1, 1)
     clear()

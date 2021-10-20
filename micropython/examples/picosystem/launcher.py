@@ -3,7 +3,18 @@ import math
 import time
 import gc
 
-from picosystem import *
+
+last_note = 0
+note_duration = 0
+note_idx = 0
+intro_melody = True
+
+
+notes = [
+    (None, 100), ("G6", 10), ("E6", 30), ("A6", 10), ("G6", 30), (None, 100), ("B7", 1), ("C7", 1)
+]
+intro = Voice()
+intro.envelope(attack=50, decay=10, sustain=70, release=2000)
 
 
 files = [file for file in os.listdir() if file.endswith(".py") and file not in ("main.py", "launcher.py")]
@@ -32,8 +43,23 @@ def get_item_angle(index):
     return 360.0 / filecount * index
 
 
+def update_melody(tick):
+    global last_note, note_idx, note_duration, intro_melody
+    if tick - last_note > note_duration:
+        last_note = tick
+        note, note_duration = notes[note_idx]
+        if note:
+            intro.play(note, note_duration * 4)
+        note_idx += 1
+    if note_idx >= len(notes):
+        intro_melody = False
+
+
 def update(tick):
     global selected, target_angle, running
+
+    if intro_melody:
+        update_melody(tick)
 
     if pressed(LEFT):
         selected -= 1
@@ -51,12 +77,19 @@ def update(tick):
     target_angle = -get_item_angle(selected)
 
 
-def draw():
-    global current_angle
+def draw(tick):
+    global current_angle, intro_melody
 
     # clear the background
     pen(1, 1, 1)
     clear()
+
+    if intro_melody:
+        pen(15, 15, 15)
+        label = "".join(["", "Pi", "co", "Sys", "tem"][0:min(note_idx, 5)])
+        label_width = text_width(label)
+        text(label, int(60 - (label_width / 2)), 60)
+        return
 
     pen(10, 10, 10)
     text("Run a file:", 10, 10)
@@ -93,11 +126,13 @@ def draw():
 
 while running:
     tick()
-    time.sleep(1.0 / 500)
 
 
 __launch_file__ = files[selected]
-del get_item_angle, selected, draw, update, blip, ding, current_angle, target_angle, running
+for k in locals().keys():
+    if k not in ("gc", "__launch_file__"):
+        del locals()[k]
+
 gc.collect()
 reset()
 __import__(__launch_file__)

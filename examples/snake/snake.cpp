@@ -124,7 +124,7 @@ void update(uint32_t tick) {
 }
 
 // draw the world
-void draw() {
+void draw(uint32_t tick) {
   // clear the screen in noxious 3310 backlight green and draw everything in
   // a faint blended black to get that cheap 90s LCD feel
   pen(10, 12, 0);

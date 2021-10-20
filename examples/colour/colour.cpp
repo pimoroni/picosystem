@@ -108,7 +108,7 @@ void draw_slider(slider_t &slider, int32_t x, int32_t y) {
   frect(x + 2, y + h - sh - 2, w - 4, sh);
 }
 
-void draw() {
+void draw(uint32_t tick) {
   // clear the screen
   pen(1, 1, 1);
   clear();

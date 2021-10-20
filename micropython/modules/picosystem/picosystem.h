@@ -57,6 +57,9 @@ extern mp_obj_t picosystem_init();
 extern mp_obj_t picosystem_tick();
 extern mp_obj_t picosystem_reset();
 
+// stats.cpp
+extern mp_obj_t picosystem_stats();
+
 // buffer.cpp
 extern void PicosystemBuffer_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind);
 extern mp_obj_t PicosystemBuffer_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args);

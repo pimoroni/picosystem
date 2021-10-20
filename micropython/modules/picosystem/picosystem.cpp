@@ -130,55 +130,69 @@ mp_obj_t picosystem_init() {
 }
 
 mp_obj_t picosystem_tick() {
+    uint32_t start_tick_us = time_us();
 
     if(update_callback_obj == mp_const_none) {
         update_callback_obj = pimoroni_mp_load_global(qstr_from_str("update"));
         if(update_callback_obj == mp_const_none) {
             //TODO switch out this URL for the final one
-            mp_raise_msg(&mp_type_NameError, "a function named 'update(ticks)' is not defined. Check out https://github.com/pimoroni/picosystem-micropython/README.md for instructions");
+            mp_raise_msg(&mp_type_NameError, "a function named 'update(ticks)' is not defined. Check out https://github.com/pimoroni/picosystem/blob/main/micropython/README.md for instructions");
         }
     }
+
     if(draw_callback_obj == mp_const_none) {
         draw_callback_obj = mp_load_global(qstr_from_str("draw"));
         if(draw_callback_obj == mp_const_none) {
             //TODO switch out this URL for the final one
-            mp_raise_msg(&mp_type_NameError, "a function named 'draw()' is not defined. Check out https://github.com/pimoroni/picosystem-micropython/README.md for instructions");
+            mp_raise_msg(&mp_type_NameError, "a function named 'draw()' is not defined. Check out https://github.com/pimoroni/picosystem/blob/main/micropython/README.md for instructions");
         }
     }
 
-    //while(true) {
-    uint32_t ms = time();
+    // store previous io state and get new io state
+    _lio = _io;
+    _io = _gpio_get();
 
-    // work out how many milliseconds of updates we're waiting
-    // to process and then call the users update() function as
-    // many times as needed to catch up
-    pending_update_ms += (ms - last_ms);
-    while(pending_update_ms >= update_rate_ms) {
-        _lio = _io;
-        _io = _gpio_get();
+    // call users update() function
+    uint32_t start_update_us = time_us();
+    mp_call_function_1(update_callback_obj, mp_obj_new_int(tick++));
+    stats.update_us = time_us() - start_update_us;
 
-        mp_call_function_1(update_callback_obj, mp_obj_new_int(tick++));
-        pending_update_ms -= update_rate_ms;
-    }
-
-    // if current flipping the framebuffer in the background
-    // then wait until that is complete before allow the user
-    // to render
+    // if we're currently transferring the the framebuffer to the screen then
+    // wait until that is complete before allowing the user to do their drawing
+    uint32_t wait_us = 0;
+    uint32_t start_wait_flip_us = time_us();
     while(_is_flipping()) {}
+    wait_us += time_us() - start_wait_flip_us;
 
     // call user render function to draw world
-    mp_call_function_0(draw_callback_obj);
+    uint32_t start_draw_us = time_us();
+    mp_call_function_1(draw_callback_obj, mp_obj_new_int(tick));
+    stats.draw_us = time_us() - start_draw_us;
 
     // wait for the screen to vsync before triggering flip
     // to ensure no tearing
+    uint32_t start_wait_vsync_us = time_us();
     _wait_vsync();
+    wait_us += time_us() - start_wait_vsync_us;
 
     // flip the framebuffer to the screen
     _flip();
 
-    last_ms = ms;
-    //}
+    tick++;
 
+    stats.tick_us = time_us() - start_tick_us;
+
+    // calculate fps and round to nearest value (instead of truncating/floor)
+    stats.fps = (1000000 - 1) / stats.tick_us + 1;
+
+    if(stats.fps > 40) {
+      // if fps is high enough then we definitely didn't miss vsync
+      stats.idle = (wait_us * 100) / stats.tick_us;
+    }else{
+      // if we missed vsync then we overran the frame time and hence had
+      // no idle time
+      stats.idle = 0;
+    }
 
     return mp_const_none;
 }

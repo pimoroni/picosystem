@@ -133,7 +133,7 @@ void update(uint32_t tick) {
 }
 
 // draw the world
-void draw() {
+void draw(uint32_t tick) {
   // reset the camera and clear the framebuffer
   camera();
   pen(1, 2, 3);

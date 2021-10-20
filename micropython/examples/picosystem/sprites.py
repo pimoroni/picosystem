@@ -1,14 +1,12 @@
 import math
 import time
 
-from picosystem import *
-
 
 weapons = [
     (TRIDENT1, "Trident"),
     (SWORD1, "Sword"),
     (LASERGUN1, "Laser Gun"),
-    (MACE, "Mace"),
+    (MACE1, "Mace"),
     (DAGGER, "Dagger"),
     (SPEAR, "Spear"),
     (BOW, "Bow"),
@@ -45,7 +43,7 @@ def update(tick):
 
 
 # draw the world
-def draw():
+def draw(tick):
     global current_angle
 
     # clear the background

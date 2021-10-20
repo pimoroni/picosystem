@@ -11,7 +11,7 @@ void update(uint32_t tick) {
   wrap_width = (fsin(time() / 1000.0f) * 40.0f) + 76;
 }
 
-void draw() {
+void draw(uint32_t tick) {
   pen(0, 0, 0);
   clear();
 

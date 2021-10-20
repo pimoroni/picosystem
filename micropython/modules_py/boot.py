@@ -1,7 +1,6 @@
 # PicoSystem boot script
-# Imports the whole PicoSystem API and runs init()
-from picosystem import *
+# Runs the PicoSystem init() and launches the launcher if A is held.
 init()
 
 if button(A):
-    import launcher
+    import launcher  # noqa: F401

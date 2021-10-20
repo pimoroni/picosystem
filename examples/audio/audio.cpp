@@ -151,7 +151,7 @@ void draw_dial(std::string name, int32_t x, int32_t y) {
 }
 
 // draw the world
-void draw() {
+void draw(uint32_t tick) {
   // draw top row of dials
   pen(10, 12, 4);
   frect(0, 60, 240, 60);

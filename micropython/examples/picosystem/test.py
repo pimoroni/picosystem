@@ -1,10 +1,8 @@
-from picosystem import *
-
 fh = 0
 col = 0
 
 
-def update(ticks):
+def update(tick):
     global h
     global col
     print("UP: ", button(UP), end=", ")
@@ -34,7 +32,7 @@ def update(ticks):
         h -= 1.0
 
 
-def draw():
+def draw(tick):
     pen(col)
     frect(10, 10, 100, 100)
     pen(15, 15, 15)
