@@ -134,16 +134,15 @@ int main() {
     _wait_vsync();
     wait_us += time_us() - start_wait_vsync_us;
 
-    uint32_t frame_ms = time();
-    stats.fps = 1000 / (frame_ms - last_frame_ms);
-    last_frame_ms = frame_ms;
-
     // flip the framebuffer to the screen
     _flip();
 
     tick++;
 
     stats.tick_us = time_us() - start_tick_us;
+
+    // calculate fps and round to nearest value (instead of truncating/floor)
+    stats.fps = (1000000 - 1) / stats.tick_us + 1;
 
     if(stats.fps > 40) {
       // if fps is high enough then we definitely didn't miss vsync
