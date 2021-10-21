@@ -20,11 +20,15 @@ typedef struct _PicosystemBuffer_obj_t {
 
 mp_obj_t picosystem_pen(mp_uint_t n_args, const mp_obj_t *args) {
     switch(n_args) {
+        case 0: {
+            pen();
+        } break;
+
         case 1: {
             int p = mp_obj_get_int(args[0]);
 
             if(p < 0 || p > 0xffff) {
-                mp_raise_ValueError("p is not a valid pen.");
+                mp_raise_ValueError("pen(): p is not a valid pen.");
             }
             else {
                 pen(p);
@@ -38,19 +42,19 @@ mp_obj_t picosystem_pen(mp_uint_t n_args, const mp_obj_t *args) {
             int b = mp_obj_get_int(args[2]);
 
             if(r < 0 || r > 15) {
-                mp_raise_ValueError("r out of range. Expected 0 to 15");
+                mp_raise_ValueError("pen(): r out of range. Expected 0 to 15");
             }
             else if(g < 0 || g > 15) {
-                mp_raise_ValueError("g out of range. Expected 0 to 15");
+                mp_raise_ValueError("pen(): g out of range. Expected 0 to 15");
             }
             else if(b < 0 || b > 15) {
-                mp_raise_ValueError("b out of range. Expected 0 to 15");
+                mp_raise_ValueError("pen(): b out of range. Expected 0 to 15");
             }
             else {
                 if(n_args == 4) {
                     int a = mp_obj_get_int(args[3]);
                     if(a < 0 || a > 15) {
-                        mp_raise_ValueError("a out of range. Expected 0 to 15");
+                        mp_raise_ValueError("pen(): a out of range. Expected 0 to 15");
                     }
                     else {
                         pen(r, g, b, a);
@@ -63,40 +67,69 @@ mp_obj_t picosystem_pen(mp_uint_t n_args, const mp_obj_t *args) {
         } break;
 
         default: {
-            char *buffer;
-            buffer = (char*)malloc(100);
-            sprintf(buffer, "function takes 1 (color), 3 (r,g,b), or 4 (r,g,b,a) positional arguments but %d were given", n_args);
-            mp_raise_TypeError(buffer);
-            free(buffer);
-        } break;
+            __builtin_unreachable();
+            break;
+        }
     }
 
     return mp_const_none;
 }
 
-mp_obj_t picosystem_clip(mp_uint_t n_args, const mp_obj_t *args) {
-    int x = mp_obj_get_int(args[0]);
-    int y = mp_obj_get_int(args[1]);
-    int w = mp_obj_get_int(args[2]);
-    int h = mp_obj_get_int(args[3]);
-    clip(x, y, w, h);
+mp_obj_t picosystem_alpha(mp_uint_t n_args, const mp_obj_t *args) {
+    if (n_args == 1) {
+        int a = mp_obj_get_int(args[0]);
+        if(a < 0 || a > 15) {
+            mp_raise_ValueError("alpha(): a out of range. Expected 0 to 15");
+        } else {
+            alpha(a);
+        }
+    } else {
+        alpha();
+    }
     return mp_const_none;
 }
 
-mp_obj_t picosystem_blend(mp_obj_t bf_obj) {
-    int bf = mp_obj_get_int(bf_obj);
-    switch(bf) {
-        case MODE_COPY:
-            blend(COPY);
-            break;
-        case MODE_ALPHA:
-            blend(ALPHA);
-            break;
-        case MODE_MASK:
-            blend(MASK);
-            break;
-        default:
-            mp_raise_ValueError("not a valid blend mode. Expected COPY (0), ALPHA (1), or MASK (2)");
+mp_obj_t picosystem_clip(mp_uint_t n_args, const mp_obj_t *args) {
+    switch(n_args) {
+        case 4: {
+            int x = mp_obj_get_int(args[0]);
+            int y = mp_obj_get_int(args[1]);
+            int w = mp_obj_get_int(args[2]);
+            int h = mp_obj_get_int(args[3]);
+            clip(x, y, w, h);
+        } break;
+        case 0: {
+            clip();
+        } break;
+        default: {
+            char *buffer;
+            buffer = (char*)malloc(256);
+            snprintf(buffer, 256, "clip() takes 0 (reset) or 4 (x, y, w, h) positional arguments but %d were given", n_args);
+            mp_raise_TypeError(buffer);
+            free(buffer);
+        } break;
+    }
+    return mp_const_none;
+}
+
+mp_obj_t picosystem_blend(mp_uint_t n_args, const mp_obj_t *args) {
+    if(n_args == 1) {
+        int bf = mp_obj_get_int(args[0]);
+        switch(bf) {
+            case MODE_COPY:
+                blend(COPY);
+                break;
+            case MODE_ALPHA:
+                blend(ALPHA);
+                break;
+            case MODE_MASK:
+                blend(MASK);
+                break;
+            default:
+                mp_raise_ValueError("blend(): not a valid blend mode. Expected COPY (0), ALPHA (1), or MASK (2)");
+        }
+    } else {
+        blend();
     }
     return mp_const_none;
 }
@@ -109,25 +142,48 @@ mp_obj_t picosystem_target(mp_uint_t n_args, const mp_obj_t *args) {
         }
     }
     else {
-        target(SCREEN);
+        target();
     }
     return mp_const_none;
 }
 
-mp_obj_t picosystem_camera(mp_obj_t camx_obj, mp_obj_t camy_obj) {
-    int camx = mp_obj_get_int(camx_obj);
-    int camy = mp_obj_get_int(camy_obj);
-    camera(camx, camy);
+mp_obj_t picosystem_camera(mp_uint_t n_args, const mp_obj_t *args) {
+    if (n_args == 2) {
+        int x = mp_obj_get_int(args[0]);
+        int y = mp_obj_get_int(args[1]);
+        camera(x, y);
+    } else if (n_args == 1) {
+        mp_raise_TypeError("camera() takes 0 (reset) or 2 (x, y) positional arguments.");
+    } else {
+        camera();
+    }
     return mp_const_none;
 }
 
-mp_obj_t picosystem_spritesheet(mp_obj_t ss_obj) {
-    if(mp_obj_is_type(ss_obj, &PicosystemBuffer_type)) {
-        _PicosystemBuffer_obj_t *buffer_obj = MP_OBJ_TO_PTR2(ss_obj, _PicosystemBuffer_obj_t);
-        spritesheet(buffer_obj->buffer);
+mp_obj_t picosystem_cursor(mp_uint_t n_args, const mp_obj_t *args) {
+    if (n_args == 2) {
+        int x = mp_obj_get_int(args[0]);
+        int y = mp_obj_get_int(args[1]);
+        cursor(x, y);
+    } else if (n_args == 1) {
+        mp_raise_TypeError("cursor() takes 0 (reset) or 2 (x, y) positional arguments.");
+    } else {
+        cursor();
     }
-    else {
-        mp_raise_TypeError("spritesheet: not a valid Buffer. Expected a Buffer class");
+    return mp_const_none;
+}
+
+mp_obj_t picosystem_spritesheet(mp_uint_t n_args, const mp_obj_t *args)  {
+    if (n_args == 1) {
+        if(mp_obj_is_type(args[0], &PicosystemBuffer_type)) {
+            _PicosystemBuffer_obj_t *buffer_obj = MP_OBJ_TO_PTR2(args[0], _PicosystemBuffer_obj_t);
+            spritesheet(buffer_obj->buffer);
+        }
+        else {
+            mp_raise_TypeError("spritesheet(): not a valid Buffer. Expected a Buffer class");
+        }
+    } else {
+        spritesheet();
     }
     return mp_const_none;
 }

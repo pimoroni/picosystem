@@ -81,7 +81,7 @@ def draw(tick):
         )
 
     # centre name of weapon at bottom of screen
-    label_width = text_width(weapons[selected][1])
+    label_width, _ = measure(weapons[selected][1])
     pen(11, 11, 8)
     frect(int(60 - label_width / 2 - 3), 102 - 3, label_width + 6, 13)
     pen(0, 0, 0)

@@ -9,6 +9,7 @@ target_sources(usermod_${MOD_NAME} INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/buffer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/state.cpp
     ${CMAKE_CURRENT_LIST_DIR}/primitives.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/text.cpp
     ${CMAKE_CURRENT_LIST_DIR}/utility.cpp
     ${CMAKE_CURRENT_LIST_DIR}/hardware.cpp
     ${CMAKE_CURRENT_LIST_DIR}/stats.cpp
@@ -17,6 +18,7 @@ target_sources(usermod_${MOD_NAME} INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/blend.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/state.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/primitives.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/text.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/utility.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/hardware.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/assets.cpp
@@ -51,6 +53,11 @@ set_source_files_properties(
 # TODO fix sign compare issues in codebase
 set_source_files_properties(
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/primitives.cpp
+    PROPERTIES COMPILE_FLAGS
+    "-Wno-error=sign-compare"
+)
+set_source_files_properties(
+    ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/text.cpp
     PROPERTIES COMPILE_FLAGS
     "-Wno-error=sign-compare"
 )
