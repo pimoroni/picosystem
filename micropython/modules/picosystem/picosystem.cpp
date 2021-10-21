@@ -85,8 +85,8 @@ mp_obj_t picosystem_logo() {
 
 mp_obj_t picosystem_init() {
 
-    MP_STATE_PORT(picosystem_framebuffer) = m_new(color_t, 120 * 120);
-    SCREEN = buffer(120, 120, MP_STATE_PORT(picosystem_framebuffer));
+    //MP_STATE_PORT(picosystem_framebuffer) = m_new(color_t, 120 * 120);
+    //SCREEN = buffer(120, 120, MP_STATE_PORT(picosystem_framebuffer));
     target(SCREEN);
 
     update_callback_obj = mp_const_none;
