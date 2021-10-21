@@ -20,11 +20,11 @@ namespace picosystem {
 
   #ifndef DYNAMIC_BUFFER
   #ifdef PIXEL_DOUBLE
-    color_t _fb[120 * 120] = { };
+    color_t _fb[120 * 120] __attribute__ ((aligned (4))) = { };
     buffer_t *SCREEN = buffer(120, 120, _fb);
     int32_t _cx = 0, _cy = 0, _cw = 120, _ch = 120;
   #else
-    color_t _fb[240 * 240] = { };
+    color_t _fb[240 * 240] __attribute__ ((aligned (4))) = { };
     buffer_t *SCREEN = buffer(240, 240, _fb);
     int32_t _cx = 0, _cy = 0, _cw = 240, _ch = 240;
   #endif
