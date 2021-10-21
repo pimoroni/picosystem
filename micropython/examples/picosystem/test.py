@@ -40,5 +40,4 @@ def draw(tick):
     line(110, 10, 10, 110)
 
 
-while True:
-    tick()
+start()

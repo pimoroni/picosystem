@@ -143,6 +143,4 @@ def draw(tick):
 
 prepare_rgb_palette()
 
-
-while True:
-    tick()
+start()

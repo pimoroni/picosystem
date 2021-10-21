@@ -9,6 +9,8 @@ builtins =
     pen,
     tick,
     init,
+    start,
+    quit,
     _reset,
     _logo,
     play,

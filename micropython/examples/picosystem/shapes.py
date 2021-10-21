@@ -147,5 +147,4 @@ def draw(tick):
 
 reset()
 
-while True:
-    tick()
+start()

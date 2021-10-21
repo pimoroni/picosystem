@@ -88,6 +88,4 @@ def draw(tick):
     text(weapons[selected][1], int(60 - (label_width / 2)), 102)
 
 
-while True:
-    tick()
-    time.sleep(1.0 / 50)
+start()
