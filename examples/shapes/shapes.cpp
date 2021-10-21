@@ -10,14 +10,14 @@ struct shape_t {
   color_t p;
 };
 
-std::array<shape_t, 200> shapes;
+std::array<shape_t, 250> shapes;
 
 void reset() {
   for(auto &s : shapes) {
-    s.x = std::rand() % 120;
-    s.y = std::rand() % 120;
-    s.w = std::rand() % 20;
-    s.h = std::rand() % 20;
+    s.x = std::rand() % SCREEN->w;
+    s.y = std::rand() % SCREEN->h;
+    s.w = std::rand() % 40;
+    s.h = std::rand() % 40;
     s.r = std::rand() % 360;
     s.p = hsv((std::rand() % 100) / 100.0f, 1.0f, 1.0f);
   }
@@ -39,6 +39,7 @@ void init() {
 
 int32_t view = -1;
 
+
 void update(uint32_t tick) {
   move();
 
@@ -53,8 +54,9 @@ void update(uint32_t tick) {
 }
 
 void label(std::string s) {
-  pen(0, 0, 0, 8);
-  frect(0, 11, 120, 15);
+  blend(ALPHA);
+  pen(1, 2, 3, 8);
+  frect(0, 11, SCREEN->w, 15);
   pen(0, 0, 0);
   text(s + ":", 3, 16);
   pen(15, 15, 15);
@@ -62,8 +64,11 @@ void label(std::string s) {
 }
 
 void draw(uint32_t tick) {
+  uint32_t start = time_us();
   pen(0, 0, 0);
   clear();
+
+  blend(COPY);
 
   switch(view) {
     case 0: {
@@ -78,7 +83,7 @@ void draw(uint32_t tick) {
       uint32_t i = 0;
       for(auto &s : shapes) {
         pen(s.p);
-        text(char((i++ % 96) + 32), s.x, s.y);
+        text(std::string(1, char((i++ % 96) + 32)), s.x, s.y);
       }
       label("Text");
     } break;
@@ -88,6 +93,7 @@ void draw(uint32_t tick) {
       label("Ellipses");
     } break;
     case 4: {
+      blend(MASK);
       uint32_t i = 0;
       for(auto &s : shapes) {sprite(i++, s.x, s.y);}
       label("Sprites");
@@ -142,19 +148,25 @@ void draw(uint32_t tick) {
     } break;
   }
 
+  blend(ALPHA);
+
   // draw title
   pen(15, 15, 15);
-  frect(0, 0, 120, 11);
+  frect(0, 0, SCREEN->w, 11);
   pen(0, 0, 0);
   text("Shapes Test", 2, 2);
 
-  pen(0, 0, 0, 8);
-  frect(0, 60, 120, 60);
+  // draw stats
+  pen(1, 2, 3, 8);
+  frect(0, SCREEN->h - 74, 80, 74);
 
   pen(15, 15, 15);
-  text("fps: " + str(stats.fps), 10, 70);
-  text("draw us: " + str(stats.draw_us), 10, 80);
-  text("update us: " + str(stats.update_us), 10, 90);
-  text("tick us: " + str(stats.tick_us), 10, 100);
-  text("idle: " + str(stats.idle) + "%", 10, 110);
+  cursor(2, SCREEN->h - 70);
+  text("shapes: " + str(shapes.size()));
+  text("fps: " + str(stats.fps));
+  text("draw us: " + str(stats.draw_us));
+  text("update us: " + str(stats.update_us));
+  text("tick us: " + str(stats.tick_us));
+  text("idle: " + str(stats.idle) + "%");
+  text("flip us: " + str(stats.flip_us));
 }

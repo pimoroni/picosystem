@@ -26,6 +26,7 @@ namespace picosystem {
     uint32_t tick_us;   // last full tick time in microseconds
     uint32_t update_us; // last update() call time in microseconds
     uint32_t draw_us;   // last draw() call time in microseconds
+    uint32_t flip_us;   // last flip time in microseconds
   };
 
   extern stat_t stats;
@@ -52,18 +53,20 @@ namespace picosystem {
             color_t*   dest, uint32_t count);
 
   // drawing state
-  extern color_t        _pen;                 // pen
-  extern uint8_t        _a;                   // global alpha
-  extern int32_t        _cx, _cy, _cw, _ch;   // clip rect
-  extern int32_t        _tx, _ty;             // text cursor position
-  extern uint32_t       _io, _lio;            // io state and last io state
-  extern int32_t        _camx, _camy;         // camera
-  extern blend_func_t   _bf;                  // blend function
-  extern buffer_t      * SCREEN;              // framebuffer
-  extern buffer_t      *_dt;                  // drawing target
-  extern buffer_t      * SPRITESHEET;         // inbuilt spritesheet
-  extern buffer_t      *_ss;                  // sprite sheet
-  extern uint8_t       *_font;                // font data
+  extern color_t        _pen;                // pen
+  extern uint8_t        _a;                  // global alpha
+  extern int32_t        _cx, _cy, _cw, _ch;  // clip rect
+  extern int32_t        _tx, _ty;            // text cursor position
+  extern int32_t        _tlh, _tls;          // text letter height and spacing
+  extern int32_t        _tlw;                // text letter width (-1: variable)
+  extern uint32_t       _io, _lio;           // io state and last io state
+  extern int32_t        _camx, _camy;        // camera
+  extern blend_func_t   _bf;                 // blend function
+  extern buffer_t      * SCREEN;             // framebuffer
+  extern buffer_t      *_dt;                 // drawing target
+  extern buffer_t      * SPRITESHEET;        // inbuilt spritesheet
+  extern buffer_t      *_ss;                 // sprite sheet
+  extern uint8_t       *_font;               // font data
 
   // audio state
   extern voice_t        _v;                   // current voice
@@ -91,6 +94,9 @@ namespace picosystem {
   void        spritesheet(buffer_t *ss);
   void        cursor();
   void        cursor(int32_t x, int32_t y);
+  void        font(
+                int32_t w = -1, int32_t h = 8, int32_t s = 1,
+                uint8_t *data = nullptr);
 
   // primitives
   void        clear();
@@ -124,8 +130,13 @@ namespace picosystem {
                 int32_t dw, int32_t dh);
   void        text(const char &c, int32_t x, int32_t y);
   void        text(const char &c);
-  void        text(const std::string &t, int32_t x, int32_t y);
-  void        text(const std::string &t);
+  void        text(
+                const std::string &t,
+                int32_t x, int32_t y,
+                int32_t wrap = -1);
+  void        text(
+                const std::string &t,
+                int32_t wrap = -1);
 
   // blend functions
   void        COPY(
@@ -148,6 +159,7 @@ namespace picosystem {
   // utility
   std::string str(float v, uint8_t precision = 2);
   std::string str(int32_t v);
+  std::string str(std::size_t v);
   std::string str(uint32_t v);
   color_t     rgb(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 15);
   color_t     hsv(float h, float s, float v, float a = 1.0f);
@@ -160,7 +172,6 @@ namespace picosystem {
   uint32_t    time();
   uint32_t    time_us();
   void        sleep(uint32_t d);
-  void        sleep_us(uint32_t d);
   bool        intersects(
                 int32_t  x, int32_t  y, int32_t  w, int32_t  h,
                 int32_t cx, int32_t cy, int32_t cw, int32_t ch);
@@ -173,8 +184,11 @@ namespace picosystem {
   bool        contains(
                 int32_t  x, int32_t  y, int32_t  w, int32_t  h,
                 int32_t cx, int32_t cy, int32_t cw, int32_t ch);
-  void        wrap(std::string &t, std::size_t chars);
-  uint32_t    text_width(std::string &t);
+  uint32_t    wrap(std::string &t, uint32_t w);
+  void        measure(
+                const std::string &t,
+                int32_t &w, int32_t &h,
+                int32_t wrap = -1);
   std::vector<std::string> split(const std::string& t, char d = '\n');
   float       fsin(float v);
   float       fcos(float v);

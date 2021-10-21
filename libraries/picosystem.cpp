@@ -14,6 +14,9 @@ namespace picosystem {
   uint8_t _a = 15;
 
   int32_t _tx = 0, _ty = 0;
+  int32_t _tlh = 8, _tls = 1;
+  int32_t _tlw = -1;
+
   int32_t _camx = 0, _camy = 0;
   uint32_t _io = 0, _lio = 0;
   blend_func_t _bf = ALPHA;
@@ -107,6 +110,7 @@ int main() {
 
   uint32_t tick = 0;
   uint32_t last_frame_ms = 0;
+  uint32_t start_flip = 0;
 
   _io = _gpio_get();
 
@@ -127,6 +131,7 @@ int main() {
     uint32_t wait_us = 0;
     uint32_t start_wait_flip_us = time_us();
     while(_is_flipping()) {}
+    stats.flip_us = time_us() - start_flip;
     wait_us += time_us() - start_wait_flip_us;
 
     // call user render function to draw world
@@ -141,6 +146,7 @@ int main() {
     wait_us += time_us() - start_wait_vsync_us;
 
     // flip the framebuffer to the screen
+    start_flip = time_us();
     _flip();
 
     tick++;
