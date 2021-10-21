@@ -19,6 +19,10 @@ namespace picosystem {
     return b;
   }
 
+  std::string str(std::size_t v) {
+    return str(int32_t(v));
+  }
+
   std::string str(uint32_t v) {
     static char b[32];
     snprintf(b, 32, "%lu", v);
@@ -102,63 +106,6 @@ namespace picosystem {
   bool contains(int32_t x, int32_t y, int32_t w, int32_t h,
     int32_t cx, int32_t cy, int32_t cw, int32_t ch) {
     return x >= cx && y >= cy && x + w <= cx + cw && y + h <= cy + ch;
-  }
-
-  uint32_t text_width(std::string &t) {
-    // add up length of characters
-    uint32_t l = 0;
-    for(auto c : t) {
-      l += _font[(c - 32) * 9] + 1;
-    }
-    return l;
-  }
-
-  uint32_t _word_length(std::string &t, std::size_t &i) {
-    // skip past any spaces if present
-    i = t.find_first_not_of(' ', i);
-
-    if(i == std::string::npos) {
-      return std::string::npos;
-    }
-
-    // find next space after current word
-    std::size_t n = t.find(' ', i);
-
-    if(n == std::string::npos) {
-      n = t.length();
-    }
-
-    // add up length of characters
-    uint32_t l = 0;
-    while(i < n) {
-      l += _font[(t[i] - 32) * 9] + 1;
-      i++;
-    };
-
-    return l;
-  }
-
-  void wrap(std::string &t, std::size_t w) {
-    std::size_t i = 0, si = 0, ll = 0;
-
-    while(true) {
-      uint32_t wl = _word_length(t, i);
-
-      if(i == std::string::npos) {
-        break;
-      }
-
-      if(ll + wl >= w) {
-        // if we would overflow the line then replace space with a newline
-        t[si] = '\n';
-        // next line starts with current word
-        ll = wl + 2;
-      }else{
-        ll += wl + 2; // 2 == space length, should be a configurable?
-      }
-
-      si = i;
-    }
   }
 
   std::vector<std::string> split(const std::string& t, char d) {

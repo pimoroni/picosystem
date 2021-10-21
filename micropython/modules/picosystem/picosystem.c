@@ -66,11 +66,10 @@ const mp_obj_type_t PicosystemVoice_type = {
 // picosystem.cpp
 
 MP_DEFINE_CONST_FUN_OBJ_0(picosystem_init_obj, picosystem_init);
-MP_DEFINE_CONST_FUN_OBJ_0(picosystem_reset_obj, picosystem_reset);
-MP_DEFINE_CONST_FUN_OBJ_0(picosystem_tick_obj, picosystem_tick);
 MP_DEFINE_CONST_FUN_OBJ_0(picosystem_logo_obj, picosystem_logo);
-MP_DEFINE_CONST_FUN_OBJ_0(picosystem_run_obj, picosystem_run);
+MP_DEFINE_CONST_FUN_OBJ_0(picosystem_start_obj, picosystem_start);
 MP_DEFINE_CONST_FUN_OBJ_0(picosystem_quit_obj, picosystem_quit);
+MP_DEFINE_CONST_FUN_OBJ_0(picosystem_flip_obj, picosystem_flip);
 
 // stats.cpp
 
@@ -82,12 +81,15 @@ MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_play_obj, 2, picosystem_audio_play);
 
 // state.cpp
 
-MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_pen_obj, 1, 4, picosystem_pen);
-MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_clip_obj, 4, 4, picosystem_clip);
-MP_DEFINE_CONST_FUN_OBJ_1(picosystem_blend_obj, picosystem_blend);
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_pen_obj, 0, 4, picosystem_pen);
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_alpha_obj, 0, 4, picosystem_alpha);
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_clip_obj, 0, 4, picosystem_clip);
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_blend_obj, 0, 1, picosystem_blend);
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_target_obj, 0, 1, picosystem_target);
-MP_DEFINE_CONST_FUN_OBJ_2(picosystem_camera_obj, picosystem_camera);
-MP_DEFINE_CONST_FUN_OBJ_1(picosystem_spritesheet_obj, picosystem_spritesheet);
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_camera_obj, 0, 2, picosystem_camera);
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_cursor_obj, 0, 2, picosystem_cursor);
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_spritesheet_obj, 0, 1, picosystem_spritesheet);
+// TODO font?
 
 // primitives.cpp
 
@@ -112,8 +114,11 @@ MP_DEFINE_CONST_FUN_OBJ_VAR(picosystem_fpoly_obj, 1, picosystem_fpoly);
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_line_obj, 4, 4, picosystem_line);
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_blit_obj, 7, 7, picosystem_blit);
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_sprite_obj, 3, 7, picosystem_sprite);
-MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_text_obj, 1, 3, picosystem_text);
-MP_DEFINE_CONST_FUN_OBJ_1(picosystem_text_width_obj, picosystem_text_width);
+
+// text.cpp
+
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_text_obj, 1, 4, picosystem_text);
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_measure_obj, 1, 2, picosystem_measure);
 
 // utility.cpp
 

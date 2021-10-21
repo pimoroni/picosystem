@@ -136,10 +136,10 @@ void draw_dial(std::string name, int32_t x, int32_t y) {
   fcircle(dotx + x + 30, doty + y + 20, 3);
 
   // centre dial label and value
-  uint32_t lw = text_width(d->name);
+  uint32_t lw = 60; //text_width(d->name);
   text(d->name, x + 30 - (lw / 2), y + 60 - 22);
   std::string unit_label = str(d->value) + d->unit;
-  lw = text_width(unit_label);
+  lw = 20;//text_width(unit_label);
   text(unit_label, x + 30 - (lw / 2), y + 60 - 12);
 
   // if this is the active dial then highlight it

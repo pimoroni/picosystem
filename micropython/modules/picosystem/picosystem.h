@@ -54,11 +54,10 @@ extern const mp_obj_type_t PicosystemVoice_type;
 
 // picosystem.cpp
 extern mp_obj_t picosystem_init();
-extern mp_obj_t picosystem_tick();
-extern mp_obj_t picosystem_reset();
 extern mp_obj_t picosystem_logo();
-extern mp_obj_t picosystem_run();
+extern mp_obj_t picosystem_start();
 extern mp_obj_t picosystem_quit();
+extern mp_obj_t picosystem_flip();
 
 // stats.cpp
 extern mp_obj_t picosystem_stats();
@@ -84,11 +83,13 @@ extern mp_obj_t picosystem_audio_play(size_t n_args, const mp_obj_t *pos_args, m
 // state.cpp
 extern mp_obj_t picosystem_clear();
 extern mp_obj_t picosystem_pen(mp_uint_t n_args, const mp_obj_t *args);
+extern mp_obj_t picosystem_alpha(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_clip(mp_uint_t n_args, const mp_obj_t *args);
-extern mp_obj_t picosystem_blend(mp_obj_t bf_obj);
+extern mp_obj_t picosystem_blend(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_target(mp_uint_t n_args, const mp_obj_t *args);
-extern mp_obj_t picosystem_camera(mp_obj_t camx_obj, mp_obj_t camy_obj);
-extern mp_obj_t picosystem_spritesheet(mp_obj_t ss_obj);
+extern mp_obj_t picosystem_camera(mp_uint_t n_args, const mp_obj_t *args);
+extern mp_obj_t picosystem_cursor(mp_uint_t n_args, const mp_obj_t *args);
+extern mp_obj_t picosystem_spritesheet(mp_uint_t n_args, const mp_obj_t *args);
 
 // primitives.cpp
 extern mp_obj_t picosystem_pixel(mp_obj_t x_obj, mp_obj_t y_obj);
@@ -105,8 +106,10 @@ extern mp_obj_t picosystem_fpoly(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_line(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_blit(mp_uint_t n_args, const mp_obj_t *args);
 extern mp_obj_t picosystem_sprite(mp_uint_t n_args, const mp_obj_t *args);
+
+// text.cpp
 extern mp_obj_t picosystem_text(mp_uint_t n_args, const mp_obj_t *args);
-extern mp_obj_t picosystem_text_width(mp_obj_t str_obj);
+extern mp_obj_t picosystem_measure(mp_uint_t n_args, const mp_obj_t *args);
 
 // utility.cpp
 extern mp_obj_t picosystem_rgb(mp_uint_t n_args, const mp_obj_t *args);

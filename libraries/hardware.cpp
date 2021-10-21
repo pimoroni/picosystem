@@ -94,10 +94,6 @@ namespace picosystem {
     sleep_ms(d);
   }
 
-  void sleep_us(uint32_t d) {
-    ::sleep_us(d);
-  }
-
   uint32_t battery() {
     // convert to 0..1 range for battery between 2.8v and 4.1v
     float c = (_battery_voltage() - 2.8f) / 1.3f;
@@ -347,11 +343,11 @@ namespace picosystem {
       FRMCTR1   = 0xB1, FRMCTR2   = 0xB2, GMCTRP1   = 0xE0, GMCTRN1   = 0xE1,
       INVOFF    = 0x20, SLPOUT    = 0x11, DISPON    = 0x29, GAMSET    = 0x26,
       DISPOFF   = 0x28, RAMWR     = 0x2C, INVON     = 0x21, CASET     = 0x2A,
-      RASET     = 0x2B
+      RASET     = 0x2B, STE       = 0x44
     };
 
     _screen_command(SWRESET);
-    sleep_ms(150);
+    sleep_ms(5);
     _screen_command(MADCTL,    1, "\x04");
     _screen_command(TEON,      1, "\x00");
     _screen_command(FRMCTR2,   5, "\x0C\x0C\x00\x33\x33");
@@ -365,13 +361,13 @@ namespace picosystem {
     _screen_command(VRHS,      1, "\x12");
     _screen_command(VDVS,      1, "\x20");
     _screen_command(PWRCTRL1,  2, "\xA4\xA1");
-    _screen_command(FRCTRL2,   1, "\x15");
+    _screen_command(FRCTRL2,   1, "\x1E");
     _screen_command(GMCTRP1,  14, "\xD0\x04\x0D\x11\x13\x2B\x3F\x54\x4C\x18\x0D\x0B\x1F\x23");
     _screen_command(GMCTRN1,  14, "\xD0\x04\x0C\x11\x13\x2C\x3F\x44\x51\x2F\x1F\x1F\x20\x23");
     _screen_command(INVON);
+    sleep_ms(115);
     _screen_command(SLPOUT);
     _screen_command(DISPON);
-    sleep_ms(100);
     _screen_command(CASET,     4, "\x00\x00\x00\xef");
     _screen_command(RASET,     4, "\x00\x00\x00\xef");
     _screen_command(RAMWR);

@@ -9,6 +9,7 @@ target_sources(picosystem INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}/audio.cpp
   ${CMAKE_CURRENT_LIST_DIR}/state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/primitives.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/text.cpp
   ${CMAKE_CURRENT_LIST_DIR}/utility.cpp
   ${CMAKE_CURRENT_LIST_DIR}/hardware.cpp
   ${CMAKE_CURRENT_LIST_DIR}/assets.cpp

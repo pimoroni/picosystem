@@ -387,69 +387,6 @@ namespace picosystem {
     blit(_ss, sx * 8, sy * 8, cx * 8, cy * 8, x, y, dw, dh);
   }
 
-  // draws a character at the current cursor position
-  void text(const char &c) {
-    if(!intersects(_tx, _ty, 8, 8, _cx, _cy, _cw, _ch)) {
-      return;
-    }
-
-    const uint8_t *p = &_font[(c - 32) * 9];
-
-    uint8_t w = *p++;
-
-    for(int32_t y = _ty; y < _ty + 8; y++) {
-      color_t *dest = _dt->p(_tx, y);
-      uint8_t pr = *p;
-      if(pr && y >= _cy && y < _cy + _ch) {
-        for(uint8_t x = _tx; x < _tx + w; x++) {
-          if(x >= _cx && x < _cx + _cw && pr & 0x80) {
-            _bf(&_pen, 0, 0, dest, 1);
-          }
-          pr <<= 1; dest++;
-        }
-      }
-      p++;
-    }
-
-    _tx += w + 1;
-  }
-
-  void text(const char &c, int32_t x, int32_t y) {
-    _camera_offset(x, y);
-
-    _tx = x;
-    _ty = y;
-
-    text(c);
-  }
-
-  void text(const std::string &t, int32_t x, int32_t y) {
-    _camera_offset(x, y);
-
-    _tx = x;
-    _ty = y;
-
-    text(t);
-  }
-
-  void text(const std::string &t) {
-    int32_t _stx = _tx;
-
-    for(auto &c : t) {
-      // newline
-      if(c == 10) {
-        // set cursor to start of next line
-        _ty += 8;
-        _tx = _stx;
-      } else {
-        text(c);
-      }
-    }
-
-    // set cursor to start of next line
-    _ty += 8;
-    _tx = _stx;
-  }
 
   void _logo() {
     const uint8_t *s = _picosystem_logo;

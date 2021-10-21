@@ -88,4 +88,13 @@ namespace picosystem {
     _ss = ss;
   }
 
+  void font(int32_t w, int32_t h, int32_t s, uint8_t *data) {
+    _tlw = w;
+    _tlh = h;
+    _tls = s;
+    if(data) {
+      _font = data;
+    }
+  }
+
 }

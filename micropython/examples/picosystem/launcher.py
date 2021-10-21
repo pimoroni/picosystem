@@ -95,7 +95,7 @@ def draw(tick):
         pen(15, 15, 15)
         _logo()
         label = "".join(["", "Pi", "co", "Sys", "tem"][0:min(note_idx, 5)])
-        label_width = text_width(label)
+        label_width, _ = measure(label)
         text(label, int(60 - (label_width / 2)), 90)
         return
 
@@ -128,7 +128,7 @@ def draw(tick):
     label = files[selected]
     if label == "__quit__":
         label = "quit"
-    label_width = text_width(label)
+    label_width, _ = measure(label)
     pen(11, 11, 8)
     frect(int(60 - label_width / 2 - 3), 102 - 3, label_width + 6, 13)
     pen(0, 0, 0)
