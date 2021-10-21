@@ -69,6 +69,8 @@ MP_DEFINE_CONST_FUN_OBJ_0(picosystem_init_obj, picosystem_init);
 MP_DEFINE_CONST_FUN_OBJ_0(picosystem_reset_obj, picosystem_reset);
 MP_DEFINE_CONST_FUN_OBJ_0(picosystem_tick_obj, picosystem_tick);
 MP_DEFINE_CONST_FUN_OBJ_0(picosystem_logo_obj, picosystem_logo);
+MP_DEFINE_CONST_FUN_OBJ_0(picosystem_run_obj, picosystem_run);
+MP_DEFINE_CONST_FUN_OBJ_0(picosystem_quit_obj, picosystem_quit);
 
 // stats.cpp
 

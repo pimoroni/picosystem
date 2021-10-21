@@ -13,7 +13,7 @@ intro_melody = True
 
 
 notes = [
-    (None, 100), ("G6", 10), ("E6", 30), ("A6", 10), ("G6", 30), (None, 50), ("B7", 1), ("C7", 1)
+    (None, 50), ("G6", 5), ("E6", 15), ("A6", 5), ("G6", 15), (None, 25), ("B7", 1), ("C7", 1)
 ]
 intro = Voice()
 intro.envelope(attack=50, decay=10, sustain=70, release=2000)
@@ -27,12 +27,14 @@ if "shapes.py" not in files:
 if "colour.py" not in files:
     files.append("colour")
 
+# HACK to add a quick menu item
+files.append("__quit__")
+
 filecount = len(files)
 
 target_angle = 0
 current_angle = 0
 selected = 0
-running = True
 
 blip = Voice(10, 10, 10, 10, 40, 2)
 
@@ -51,32 +53,32 @@ def update_melody(tick):
         last_note = tick
         note, note_duration = notes[note_idx]
         if note:
-            intro.play(note, note_duration * 4)
+            intro.play(note, note_duration * 8)
         note_idx += 1
     if note_idx >= len(notes):
         intro_melody = False
 
 
 def update(tick):
-    global selected, target_angle, running
+    global selected, target_angle
 
     if intro_melody:
         update_melody(tick)
+    else:
+        if pressed(LEFT):
+            selected -= 1
+            blip.play(1600, 30, 100)
 
-    if pressed(LEFT):
-        selected -= 1
-        blip.play(1600, 30, 100)
+        if pressed(RIGHT):
+            selected += 1
+            blip.play(1800, 30, 100)
 
-    if pressed(RIGHT):
-        selected += 1
-        blip.play(1800, 30, 100)
+        if pressed(A):
+            ding.play(880, 30, 100)
+            quit()
 
-    if pressed(A):
-        ding.play(880, 30, 100)
-        running = False
-
-    selected %= filecount
-    target_angle = -get_item_angle(selected)
+        selected %= filecount
+        target_angle = -get_item_angle(selected)
 
     if tick <= 75:
         backlight(tick)
@@ -123,15 +125,17 @@ def draw(tick):
         )
 
     # centre name of file at bottom of screen
-    label_width = text_width(files[selected])
+    label = files[selected]
+    if label == "__quit__":
+        label = "quit"
+    label_width = text_width(label)
     pen(11, 11, 8)
     frect(int(60 - label_width / 2 - 3), 102 - 3, label_width + 6, 13)
     pen(0, 0, 0)
-    text(files[selected], int(60 - (label_width / 2)), 102)
+    text(label, int(60 - (label_width / 2)), 102)
 
 
-while running:
-    tick()
+start()  # Will unblock when "quit" is called
 
 
 __launch_file__ = files[selected]
@@ -140,5 +144,5 @@ for k in locals().keys():
         del locals()[k]
 
 gc.collect()
-_reset()
-__import__(__launch_file__)
+if __launch_file__ != "__quit__":
+    __import__(__launch_file__)

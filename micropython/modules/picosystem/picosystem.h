@@ -57,6 +57,8 @@ extern mp_obj_t picosystem_init();
 extern mp_obj_t picosystem_tick();
 extern mp_obj_t picosystem_reset();
 extern mp_obj_t picosystem_logo();
+extern mp_obj_t picosystem_run();
+extern mp_obj_t picosystem_quit();
 
 // stats.cpp
 extern mp_obj_t picosystem_stats();

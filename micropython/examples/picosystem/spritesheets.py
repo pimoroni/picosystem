@@ -32,5 +32,4 @@ def draw(tick):
             sprite(x + y * int(120 / 8), x * 8, y * 8)
 
 
-while True:
-    tick()
+start()
