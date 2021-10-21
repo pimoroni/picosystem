@@ -45,7 +45,7 @@ set_source_files_properties(
 set_source_files_properties(
     ${CMAKE_CURRENT_LIST_DIR}/picosystem.cpp
     PROPERTIES COMPILE_FLAGS
-    "-DDYNAMIC_BUFFER=1 -DPIXEL_DOUBLE=1"
+    "-DPIXEL_DOUBLE=1"
 )
 
 # TODO fix sign compare issues in codebase
