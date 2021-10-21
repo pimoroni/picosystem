@@ -12,6 +12,7 @@ extern "C" {
 #include "picosystem.h"
 #include "math.h"
 #include "cstring"
+#include "py/gc.h"
 
 //#define NOT_INITIALISED_MSG     "Cannot call this function, as picodisplay is not initialised. Call picodisplay.init(<bytearray>) first."
 
@@ -136,8 +137,6 @@ mp_obj_t picosystem_init() {
 }
 
 mp_obj_t picosystem_run() {
-        uint32_t start_tick_us = time_us();
-
     if(update_callback_obj == mp_const_none) {
         update_callback_obj = pimoroni_mp_load_global(qstr_from_str("update"));
         if(update_callback_obj == mp_const_none) {
@@ -158,14 +157,14 @@ mp_obj_t picosystem_run() {
     running = true;
 
     while(running) {
-
-        // call users update() function
-        uint32_t start_update_us = time_us();
+        uint32_t start_tick_us = time_us();
 
         // store previous io state and get new io state
         _lio = _io;
         _io = _gpio_get();
 
+        // call users update() function
+        uint32_t start_update_us = time_us();
         mp_call_function_1(update_callback_obj, mp_obj_new_int(tick++));
         stats.update_us = time_us() - start_update_us;
 
@@ -174,7 +173,7 @@ mp_obj_t picosystem_run() {
         uint32_t wait_us = 0;
         uint32_t start_wait_flip_us = time_us();
         while(_is_flipping()) {
-            MICROPY_EVENT_POLL_HOOK
+            best_effort_wfe_or_timeout(make_timeout_time_us(500));
         }
         wait_us += time_us() - start_wait_flip_us;
 
@@ -192,7 +191,9 @@ mp_obj_t picosystem_run() {
         // flip the framebuffer to the screen
         _flip();
 
-        tick++;
+        // force a per-frame gc.collect() to avoid stutter
+        // cost on the order of microseconds.
+        gc_collect();
 
         stats.tick_us = time_us() - start_tick_us;
 

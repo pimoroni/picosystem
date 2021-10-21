@@ -13,7 +13,7 @@ intro_melody = True
 
 
 notes = [
-    (None, 100), ("G6", 10), ("E6", 30), ("A6", 10), ("G6", 30), (None, 50), ("B7", 1), ("C7", 1)
+    (None, 50), ("G6", 5), ("E6", 15), ("A6", 5), ("G6", 15), (None, 25), ("B7", 1), ("C7", 1)
 ]
 intro = Voice()
 intro.envelope(attack=50, decay=10, sustain=70, release=2000)
@@ -53,7 +53,7 @@ def update_melody(tick):
         last_note = tick
         note, note_duration = notes[note_idx]
         if note:
-            intro.play(note, note_duration * 4)
+            intro.play(note, note_duration * 8)
         note_idx += 1
     if note_idx >= len(notes):
         intro_melody = False
