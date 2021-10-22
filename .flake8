@@ -17,6 +17,8 @@ builtins =
     blend,
     target,
     camera,
+    cursor,
+    alpha,
     spritesheet,
     clear,
     pixel,

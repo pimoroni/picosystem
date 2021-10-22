@@ -27,6 +27,15 @@ if "shapes.py" not in files:
 if "colour.py" not in files:
     files.append("colour")
 
+if "music.py" not in files:
+    files.append("music")
+
+if "audio.py" not in files:
+    files.append("audio")
+
+if "text.py" not in files:
+    files.append("text")
+
 # HACK to add a quick menu item
 files.append("__quit__")
 
