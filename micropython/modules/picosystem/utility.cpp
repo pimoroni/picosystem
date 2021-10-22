@@ -19,19 +19,19 @@ mp_obj_t picosystem_rgb(mp_uint_t n_args, const mp_obj_t *args) {
     int g = mp_obj_get_int(args[1]);
     int b = mp_obj_get_int(args[2]);
     if(r < 0 || r > 15) {
-        mp_raise_ValueError("r out of range. Expected 0 to 15");
+        mp_raise_ValueError("rgb(): r out of range. Expected 0 to 15");
     }
     else if(g < 0 || g > 15) {
-        mp_raise_ValueError("g out of range. Expected 0 to 15");
+        mp_raise_ValueError("rgb(): g out of range. Expected 0 to 15");
     }
     else if(b < 0 || b > 15) {
-        mp_raise_ValueError("b out of range. Expected 0 to 15");
+        mp_raise_ValueError("rgb(): b out of range. Expected 0 to 15");
     }
     else {
         if(n_args == 4) {
             int a = mp_obj_get_int(args[3]);
             if(a < 0 || a > 15) {
-                mp_raise_ValueError("a out of range. Expected 0 to 15");
+                mp_raise_ValueError("rgb(): a out of range. Expected 0 to 15");
             }
             else {
                 return mp_obj_new_int(rgb(r, g, b, a));
@@ -49,19 +49,19 @@ mp_obj_t picosystem_hsv(mp_uint_t n_args, const mp_obj_t *args) {
     float s = mp_obj_get_float(args[1]);
     float v = mp_obj_get_float(args[2]);
     if(h < 0.0f || h > 1.0f) {
-        mp_raise_ValueError("h out of range. Expected 0.0 to 1.0");
+        mp_raise_ValueError("hsv(): h out of range. Expected 0.0 to 1.0");
     }
     else if(s < 0.0f || s > 1.0f) {
-        mp_raise_ValueError("s out of range. Expected 0.0 to 1.0");
+        mp_raise_ValueError("hsv(): s out of range. Expected 0.0 to 1.0");
     }
     else if(v < 0.0f || v > 1.0f) {
-        mp_raise_ValueError("v out of range. Expected 0.0 to 1.0");
+        mp_raise_ValueError("hsv(): v out of range. Expected 0.0 to 1.0");
     }
     else {
         if(n_args == 4) {
             float a = mp_obj_get_float(args[3]);
             if(a < 0.0f || a > 1.0f) {
-                mp_raise_ValueError("v out of range. Expected 0.0 to 1.0");
+                mp_raise_ValueError("hsv(): v out of range. Expected 0.0 to 1.0");
             }
             return mp_obj_new_int(hsv(h, s, v, a));
         }

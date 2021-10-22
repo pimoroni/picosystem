@@ -124,11 +124,11 @@ mp_obj_t picosystem_poly(mp_uint_t n_args, const mp_obj_t *args) {
                 tuples = points->items;
             }
             else {
-                mp_raise_ValueError("cannot provide an empty list");
+                mp_raise_ValueError("poly(): cannot provide an empty list");
             }
         }
         else {
-            mp_raise_TypeError("can't convert object to list");
+            mp_raise_TypeError("poly(): can't convert object to list");
         }
     }
 
@@ -139,12 +139,12 @@ mp_obj_t picosystem_poly(mp_uint_t n_args, const mp_obj_t *args) {
         for(size_t i = 0; i < num_tuples; i++) {
             mp_obj_t obj = tuples[i];
             if(!mp_obj_is_type(obj, &mp_type_tuple)) {
-                mp_raise_ValueError("can't convert object to tuple");
+                mp_raise_ValueError("poly(): can't convert object to tuple");
             }
             else {
                 mp_obj_tuple_t *tuple = MP_OBJ_TO_PTR2(obj, mp_obj_tuple_t);
                 if(tuple->len != 2) {
-                    mp_raise_ValueError("tuple must only contain two numbers");
+                    mp_raise_ValueError("poly(): tuple must only contain two numbers");
                 }
                 i2 = i * 2;
                 points[i2] = mp_obj_get_int(tuple->items[0]);
@@ -171,11 +171,11 @@ mp_obj_t picosystem_fpoly(mp_uint_t n_args, const mp_obj_t *args) {
                 tuples = points->items;
             }
             else {
-                mp_raise_ValueError("cannot provide an empty list");
+                mp_raise_ValueError("fpoly(): cannot provide an empty list");
             }
         }
         else {
-            mp_raise_TypeError("can't convert object to list");
+            mp_raise_TypeError("fpoly(): can't convert object to list");
         }
     }
 
@@ -186,12 +186,12 @@ mp_obj_t picosystem_fpoly(mp_uint_t n_args, const mp_obj_t *args) {
         for(size_t i = 0; i < num_tuples; i++) {
             mp_obj_t obj = tuples[i];
             if(!mp_obj_is_type(obj, &mp_type_tuple)) {
-                mp_raise_ValueError("can't convert object to tuple");
+                mp_raise_ValueError("fpoly(): can't convert object to tuple");
             }
             else {
                 mp_obj_tuple_t *tuple = MP_OBJ_TO_PTR2(obj, mp_obj_tuple_t);
                 if(tuple->len != 2) {
-                    mp_raise_ValueError("tuple must only contain two numbers");
+                    mp_raise_ValueError("fpoly(): tuple must only contain two numbers");
                 }
                 i2 = i * 2;
                 points[i2] = mp_obj_get_int(tuple->items[0]);
@@ -215,10 +215,16 @@ mp_obj_t picosystem_blit(mp_uint_t n_args, const mp_obj_t *args) {
         int h = mp_obj_get_int(args[4]);
         int dx = mp_obj_get_int(args[5]);
         int dy = mp_obj_get_int(args[6]);
-        blit(buffer_obj->buffer, x, y, w, h, dx, dy);
+        if(n_args == 9) {
+            int dw = mp_obj_get_int(args[7]);
+            int dh = mp_obj_get_int(args[8]);
+            blit(buffer_obj->buffer, x, y, w, h, dx, dy, dw, dh);
+        } else {
+            blit(buffer_obj->buffer, x, y, w, h, dx, dy);
+        }
     }
     else {
-        mp_raise_TypeError("src is not a valid buffer. Expected a Buffer class");
+        mp_raise_TypeError("blit(): src is not a valid buffer. Expected a Buffer class");
     }
     return mp_const_none;
 }

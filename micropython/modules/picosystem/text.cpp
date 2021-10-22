@@ -34,17 +34,8 @@ mp_obj_t picosystem_text(mp_uint_t n_args, const mp_obj_t *args) {
             text(t);
         }
     }
-    else if(mp_obj_is_float(args[0])) {
-        mp_raise_TypeError("can't convert 'float' object to str implicitly");
-    }
-    else if(mp_obj_is_int(args[0])) {
-        mp_raise_TypeError("can't convert 'int' object to str implicitly");
-    }
-    else if(mp_obj_is_bool(args[0])) {
-        mp_raise_TypeError("can't convert 'bool' object to str implicitly");
-    }
     else {
-        mp_raise_TypeError("can't convert object to str implicitly");
+        mp_raise_TypeError("text(): string required!");
     }
 
     return mp_const_none;
@@ -67,17 +58,8 @@ mp_obj_t picosystem_measure(mp_uint_t n_args, const mp_obj_t *args) {
         tuple[1] = mp_obj_new_int(h);
         return mp_obj_new_tuple(2, tuple);
     }
-    else if(mp_obj_is_float(str_obj)) {
-        mp_raise_TypeError("can't convert 'float' object to str implicitly");
-    }
-    else if(mp_obj_is_int(str_obj)) {
-        mp_raise_TypeError("can't convert 'int' object to str implicitly");
-    }
-    else if(mp_obj_is_bool(str_obj)) {
-        mp_raise_TypeError("can't convert 'bool' object to str implicitly");
-    }
     else {
-        mp_raise_TypeError("can't convert object to str implicitly");
+        mp_raise_TypeError("text(): string required!");
     }
 
     return mp_const_none;

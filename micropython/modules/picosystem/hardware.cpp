@@ -31,7 +31,7 @@ mp_obj_t picosystem_pressed(mp_obj_t b_obj) {
             break;
 
         default:
-            mp_raise_ValueError("button not valid.");
+            mp_raise_ValueError("pressed(): invalid button.");
             break;
     }
 
@@ -55,7 +55,7 @@ mp_obj_t picosystem_button(mp_obj_t b_obj) {
             break;
 
         default:
-            mp_raise_ValueError("button not valid.");
+            mp_raise_ValueError("button(): invalid button.");
             break;
     }
 
@@ -72,13 +72,13 @@ mp_obj_t picosystem_led(mp_obj_t r_obj, mp_obj_t g_obj, mp_obj_t b_obj) {
     int b = mp_obj_get_int(b_obj);
 
     if(r < 0 || r > 100) {
-        mp_raise_ValueError("r out of range. Expected 0 to 100");
+        mp_raise_ValueError("led(): r out of range. Expected 0 to 100");
     }
     else if(g < 0 || g > 100) {
-        mp_raise_ValueError("g out of range. Expected 0 to 100");
+        mp_raise_ValueError("led(): g out of range. Expected 0 to 100");
     }
     else if(b < 0 || b > 100) {
-        mp_raise_ValueError("b out of range. Expected 0 to 100");
+        mp_raise_ValueError("led(): b out of range. Expected 0 to 100");
     }
     else {
         led(r, g, b);
@@ -91,7 +91,7 @@ mp_obj_t picosystem_backlight(mp_obj_t b_obj) {
     int b = mp_obj_get_int(b_obj);
 
     if(b < 0 || b > 100) {
-        mp_raise_ValueError("b out of range. Expected 0 to 100");
+        mp_raise_ValueError("led(): b out of range. Expected 0 to 100");
     }
     else {
         backlight(b);

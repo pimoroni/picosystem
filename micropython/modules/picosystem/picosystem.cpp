@@ -175,6 +175,9 @@ mp_obj_t picosystem_quit(){
 
 /* flip() - Flip the buffer, use this from the repl! (or, your own main loop?) */
 mp_obj_t picosystem_flip() {
+    _lio = _io;
+    _io = _gpio_get();
+
     while(_is_flipping()) {
         best_effort_wfe_or_timeout(make_timeout_time_us(500));
     }
