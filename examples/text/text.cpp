@@ -21,7 +21,8 @@ void title(std::string t) {
   text(t + " (" + str(view + 1) + "/" + str(view_count) + ")", 2, 2);
 }
 
-extern color_t da[1440];
+extern color_t image_data[1440];
+buffer_t douglas = {.w = 32, .h = 45, .data = image_data};
 
 void draw(uint32_t tick) {
   pen(0, 0, 0);
@@ -82,8 +83,6 @@ Universe. That makes us something very special.\
     }break;
 
     case 0: {
-      title("Scroll and clip");
-
       font(-1, 12);
 
       std::string message = "\
@@ -93,8 +92,8 @@ think this to be normal is obviously some indication of how skewed our \
 perspective tends to be.\"";
 
       // box width and height
-      uint32_t bx = 30, by = 20;
-      uint32_t bw = 90, bh = 90;
+      uint32_t bx = 30, by = 0;
+      uint32_t bw = 90, bh = 120;
 
       int32_t w, h, p = 20;
       measure(message, w, h, bw - 10);
@@ -104,34 +103,20 @@ perspective tends to be.\"";
       scroll -= p;
 
       alpha(4);
-      for(int y = 0; y < 45; y++) {
-        for(int x = 0; x < 32; x++) {
-          pen(da[x + (y * 32)]);
-          frect(x * 2, y * 2 + 20, 2, 2);
-        }
-      }
+      blit(&douglas, 0, 0, 32, 45, -10, 20 - (scroll / 3), 32 * 3, 45 * 3);
 
       alpha();
       pen(12, 12, 12);
       clip(bx, by, bw, bh);
       text(message, bx + 5, by + 5 - scroll, bw - 10);
       clip();
+
+      title("Scroll and clip");
     }break;
   }
 }
 
-
-
-#include "picosystem.hpp"
-
-using namespace picosystem;
-
-
-#include "picosystem.hpp"
-
-using namespace picosystem;
-
-color_t da[1440] = {
+color_t image_data[1440] = {
   0x00f0, 0x00f0, 0x00f0, 0x00f0, 0x00f0, 0x00f0, 0x00f0, 0x00f0,
   0x00f0, 0x00f0, 0x00f0, 0x00f0, 0x00f0, 0x00f0, 0x00f0, 0x00f0,
   0x00f0, 0x00f0, 0x00f0, 0x00f0, 0x00f0, 0x00f0, 0x00f0, 0x00f0,
