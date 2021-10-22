@@ -47,6 +47,8 @@ jobs:
         cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/colour.py micropython/ports/rp2/modules/
         cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/shapes.py micropython/ports/rp2/modules/
         cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/text.py micropython/ports/rp2/modules/
+        cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/music.py micropython/ports/rp2/modules/
+        cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/audio.py micropython/ports/rp2/modules/
         cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/launcher.py micropython/ports/rp2/modules/
 
     # Linux deps
