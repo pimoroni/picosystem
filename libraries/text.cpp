@@ -50,11 +50,17 @@ namespace picosystem {
     return true;
   }
 
-  void _skip_escape_code(const std::string &t, std::size_t &i) {
+  uint32_t _skip_escape_code(const std::string &t, std::size_t &i) {
+    uint32_t l = 0;
     i++;
     if(_matches(t, "pen", i)) {
       i += 3;
     }
+    if(_matches(t, "spr", i)) {
+      i += 2;
+      l = 8;
+    }
+    return l;
   }
 
   // search for end of the next word (including any e)
@@ -68,7 +74,7 @@ namespace picosystem {
       }
 
       if(c == '\\') {
-        _skip_escape_code(t, i);
+        l += _skip_escape_code(t, i);
       } else {
         l += _char_width(c) + _tls;
         i++;
@@ -92,6 +98,13 @@ namespace picosystem {
       uint8_t b = _hex_to_int(t[i++]);
       uint8_t a = _hex_to_int(t[i]);
       pen(r, g, b, a);
+    }
+
+    if (_matches(t, "spr", i) ){
+      uint8_t si = std::stoi(t.substr(i, 3));
+      i += 2;
+      sprite(si, _tx, _ty);
+      _tx += 8;
     }
   }
 

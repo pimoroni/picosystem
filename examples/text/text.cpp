@@ -4,7 +4,7 @@
 using namespace picosystem;
 
 uint32_t view = 0;
-uint32_t view_count = 3;
+uint32_t view_count = 4;
 
 void init() {
 }
@@ -82,7 +82,7 @@ Universe. That makes us something very special.\
       text(message, 2, 32);
     }break;
 
-    case 0: {
+    case 3: {
       font(-1, 12);
 
       std::string message = "\
@@ -112,6 +112,25 @@ perspective tends to be.\"";
       clip();
 
       title("Scroll and clip");
+    }break;
+
+    case 0: {
+      font(-1, 12);
+
+      std::string message = "\
+Lo, brave adventurer! Choose a tasty treat:\
+\n\
+\n   A) Ripe and tasty \\spr001\
+\n   B) Delicious \\spr000\
+\n   C) This firm \\spr004\
+\n   D) Very spooky \\spr013\
+\n\
+\nMake your choice...";
+
+      pen(15, 15, 15);
+      text(message, 2, 16, 116);
+
+      title("Inline icons");
     }break;
   }
 }
