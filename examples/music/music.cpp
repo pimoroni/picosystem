@@ -116,8 +116,8 @@ void init() {
 
 // process user input and update the world state
 void update(uint32_t tick) {
-  note_tick += 10;
-  song_tick += 10;
+  note_tick += 25;
+  song_tick += 25;
 
   if(note_tick > (notes[current].d * bl)) {
     // if current note has finished playing then move onto the next one
