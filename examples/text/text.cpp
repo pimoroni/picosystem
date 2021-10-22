@@ -12,8 +12,6 @@ void init() {
 void update(uint32_t tick) {
   if(pressed(RIGHT)) {view = view == (view_count - 1) ? 0 : view + 1;}
   if(pressed( LEFT)) {view = view == 0 ? (view_count - 1) : view - 1;}
-
-  if(pressed(UP)) {screenshot();}
 }
 
 void title(std::string t) {
