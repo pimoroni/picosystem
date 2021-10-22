@@ -184,7 +184,6 @@ namespace picosystem {
   bool        contains(
                 int32_t  x, int32_t  y, int32_t  w, int32_t  h,
                 int32_t cx, int32_t cy, int32_t cw, int32_t ch);
-  uint32_t    wrap(std::string &t, uint32_t w);
   void        measure(
                 const std::string &t,
                 int32_t &w, int32_t &h,

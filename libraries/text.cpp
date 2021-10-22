@@ -9,10 +9,6 @@ namespace picosystem {
 
   // draws a character at the current cursor position
   void text(const char &c) {
-    if(!intersects(_tx, _ty, 8, 8, _cx, _cy, _cw, _ch)) {
-      return;
-    }
-
     const uint8_t *p = &_font[(c - 32) * 9];
 
     uint8_t w = *p++;
@@ -56,10 +52,8 @@ namespace picosystem {
 
   void _skip_escape_code(const std::string &t, std::size_t &i) {
     i++;
-    if(_matches(t, "rgba", i)) {
+    if(_matches(t, "pen", i)) {
       i += 3;
-    } else if(_matches(t, "rgb", i)) {
-      i += 2;
     }
   }
 
@@ -92,17 +86,12 @@ namespace picosystem {
 
   void _parse_escape_code(const std::string &t, std::size_t &i) {
     i++;
-    if(_matches(t, "rgba", i) ){
+    if (_matches(t, "pen", i) ){
       uint8_t r = _hex_to_int(t[i++]);
       uint8_t g = _hex_to_int(t[i++]);
       uint8_t b = _hex_to_int(t[i++]);
       uint8_t a = _hex_to_int(t[i]);
       pen(r, g, b, a);
-    } else if (_matches(t, "rgb", i) ){
-      uint8_t r = _hex_to_int(t[i++]);
-      uint8_t g = _hex_to_int(t[i++]);
-      uint8_t b = _hex_to_int(t[i]);
-      pen(r, g, b);
     }
   }
 
