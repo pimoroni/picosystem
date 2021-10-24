@@ -147,8 +147,11 @@ Lo, brave adventurer! Choose a tasty treat:\
 
       title("Shadow");
 
+      blend(PEN);
+      pen(3, 3, 3);
+      sprite(SKULL, 52, 32, 1, 1, 16, 16);
 
-
+      blend(ALPHA);
       sprite(SKULL, 52, 30, 1, 1, 16, 16);
 
       pen(15, 12, 8);
