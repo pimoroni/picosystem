@@ -56,11 +56,12 @@ float deg_to_rad(float d) {
 // draw the world
 void draw(uint32_t tick) {
   // clear the background
-  pen(2, 3, 4);
+  alpha();
+  pen(1, 1, 1);
   clear();
 
   pen(10, 10, 10);
-  text("Choose your weapon:", 10, 10);
+  text("Choose your weapon:", 8, 10);
 
   // animate towards the selected weapons angle
   static float angle = 0.0f;
@@ -97,17 +98,23 @@ void draw(uint32_t tick) {
     // size to draw weapon (closer = larger)
     int32_t scale = ((cos(deg_to_rad(item_angle)) + 1.0f) * 8.0f) + 8.0f;
 
-    int32_t a = scale / 1.5;
-    a = a > 15 ? 15 : a;
-
     // draw the shadow
-    alpha(a / 8);
-    pen(1, 1, 1);
-    int32_t sw = scale + (bounce / 3);
-    int32_t sh = sw / 3;
-    fellipse(60 + x, 55 + y + (scale / 1.2), sw / 2, sh / 2);
+    blend(PEN);
+    int32_t sw = scale + (bounce / 2);
+    int32_t sh = sw / 4;
+    pen(0, 0, 0);
+    sprite(
+      weapons[i].id,                                        // sprite id
+      60 + x - (sw / 2), 50 + y + (scale / 1.2),  // position
+      1, 1,
+      sw, sh                                        // size
+    );
+
+    blend(ALPHA);
 
     // draw the weapon sprite
+    int32_t a = ((cos(deg_to_rad(item_angle)) + 1.0f) * 6.0f) + 4.0f;
+    a = a > 15 ? 15 : a;
     alpha(a);
     sprite(
       weapons[i].id,                                        // sprite id
@@ -115,16 +122,21 @@ void draw(uint32_t tick) {
       1, 1,
       scale, scale                                          // size
     );
+    alpha(15);
+
+    //pen(15, 15, 15);
+    //text(str(a), 60 + x - (scale / 2), 55 + y - (scale / 2) + bounce);
   }
 
-  alpha(15);
+
 
   // centre name of weapon at bottom of screen
-  int label_width = 40;//text_width(weapons[selected].name);
-  pen(8, 11, 11);
-  frect(60 - label_width / 2 - 3, 104 - 3, label_width + 6, 13);
+  int32_t lw, lh;
+  measure(weapons[selected].name, lw, lh);
+  pen(12, 12, 12);
+  frect(60 - lw / 2 - 3, 104 - 3, lw + 6, 13);
   pen(0, 0, 0);
-  text(weapons[selected].name, 60 - (label_width / 2), 104);
+  text(weapons[selected].name, 60 - (lw / 2), 104);
 }
 
 

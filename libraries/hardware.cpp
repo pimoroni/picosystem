@@ -343,7 +343,7 @@ namespace picosystem {
       FRMCTR1   = 0xB1, FRMCTR2   = 0xB2, GMCTRP1   = 0xE0, GMCTRN1   = 0xE1,
       INVOFF    = 0x20, SLPOUT    = 0x11, DISPON    = 0x29, GAMSET    = 0x26,
       DISPOFF   = 0x28, RAMWR     = 0x2C, INVON     = 0x21, CASET     = 0x2A,
-      RASET     = 0x2B, STE       = 0x44
+      RASET     = 0x2B, STE       = 0x44, DGMEN     = 0xBA,
     };
 
     _screen_command(SWRESET);
@@ -352,7 +352,7 @@ namespace picosystem {
     _screen_command(TEON,      1, "\x00");
     _screen_command(FRMCTR2,   5, "\x0C\x0C\x00\x33\x33");
     _screen_command(COLMOD,    1, "\x03");
-    _screen_command(GAMSET,    1, "\x04");
+    _screen_command(GAMSET,    1, "\x01");
 
     _screen_command(GCTRL,     1, "\x14");
     _screen_command(VCOMS,     1, "\x25");

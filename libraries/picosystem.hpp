@@ -147,6 +147,18 @@ namespace picosystem {
                 color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        PEN(
                 color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+  void        DARKEN(
+                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+  void        LIGHTEN(
+                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+  void        ADD(
+                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+  void        SUBTRACT(
+                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+  void        MULTIPLY(
+                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+  void        DISSOLVE(
+                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
 
   // audio
   void        play(
