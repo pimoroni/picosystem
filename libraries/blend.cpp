@@ -187,7 +187,7 @@ namespace picosystem {
       int32_t sa = (s & 0x00f0) >> 4;
 
       // create 4-bit hash of destination pointer...
-      uint32_t h = _hash(int32_t(pd) >> 1) & 0x000f;
+      int32_t h = _hash(int32_t(pd) >> 1) & 0x000f;
       h = h == 0 ? 0 : h - 1;
       if(h < sa) {
         COPY(&s, 0, 0, pd, 1);
