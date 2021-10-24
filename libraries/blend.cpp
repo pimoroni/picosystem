@@ -52,7 +52,150 @@ namespace picosystem {
       // step destination and source
       pd++; so += ss;
     }
+  }
 
+  // compares source and destination RGB channels and picks the darker of the
+  // two. if there is global alpha the result is then blended with the
+  // destination.
+  void DARKEN(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+    while(c--) {
+      color_t s = *(ps + (so >> 16));
+      color_t d = *pd;
+
+      uint16_t sr = (s & 0x000f), sg = (s & 0xf000), sb = (s & 0x0f00);
+      uint16_t dr = (d & 0x000f), dg = (d & 0xf000), db = (d & 0x0f00);
+      uint16_t sa = (s & 0x00f0);
+
+      s = (sr < dr ? sr : dr) | (sg < dg ? sg : dg) | (sb < db ? sb : db) | sa;
+      ALPHA(&s, 0, 0, pd, 1);
+
+      // step destination and source
+      pd++; so += ss;
+    }
+  }
+
+  // compares source and destination RGB channels and picks the lighter of the
+  // two. if there is global alpha the result is then blended with the
+  // destination.
+  void LIGHTEN(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+    while(c--) {
+      color_t s = *(ps + (so >> 16));
+      color_t d = *pd;
+
+      uint16_t sr = (s & 0x000f), sg = (s & 0xf000), sb = (s & 0x0f00);
+      uint16_t dr = (d & 0x000f), dg = (d & 0xf000), db = (d & 0x0f00);
+      uint16_t sa = (s & 0x00f0);
+
+      s = (sr > dr ? sr : dr) | (sg > dg ? sg : dg) | (sb > db ? sb : db) | sa;
+      ALPHA(&s, 0, 0, pd, 1);
+
+      // step destination and source
+      pd++; so += ss;
+    }
+  }
+
+  // compares source and destination RGB channels and picks the lighter of the
+  // two. if there is global alpha the result is then blended with the
+  // destination.
+  void ADD(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+    while(c--) {
+      color_t s = *(ps + (so >> 16));
+      color_t d = *pd;
+
+      int32_t sr = (s & 0x000f), sg = (s & 0xf000), sb = (s & 0x0f00);
+      int32_t dr = (d & 0x000f), dg = (d & 0xf000), db = (d & 0x0f00);
+      int32_t sa = (s & 0x00f0);
+
+      dr += sr;
+      dg += sg;
+      db += sb;
+
+      dr = dr > 15 ? 15 : dr;
+      dg = dg > (15 << 12) ? (15 << 12) : dg;
+      db = db > (15 << 8) ? (15 << 8) : db;
+
+      s = dr | dg | db | sa;
+
+      ALPHA(&s, 0, 0, pd, 1);
+
+      // step destination and source
+      pd++; so += ss;
+    }
+  }
+
+  // compares source and destination RGB channels and picks the lighter of the
+  // two. if there is global alpha the result is then blended with the
+  // destination.
+  void SUBTRACT(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+    while(c--) {
+      color_t s = *(ps + (so >> 16));
+      color_t d = *pd;
+
+      int32_t sr = (s & 0x000f), sg = (s & 0xf000), sb = (s & 0x0f00);
+      int32_t dr = (d & 0x000f), dg = (d & 0xf000), db = (d & 0x0f00);
+      int32_t sa = (s & 0x00f0);
+
+      dr = dr > sr ? dr - sr : 0;
+      dg = dg > sg ? dg - sg : 0;
+      db = db > sb ? db - sb : 0;
+
+      s = dr | dg | db | sa;
+      ALPHA(&s, 0, 0, pd, 1);
+
+      // step destination and source
+      pd++; so += ss;
+    }
+  }
+
+  // compares source and destination RGB channels and picks the lighter of the
+  // two. if there is global alpha the result is then blended with the
+  // destination.
+  void MULTIPLY(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+    while(c--) {
+      color_t s = *(ps + (so >> 16));
+      color_t d = *pd;
+
+      int32_t sr = (s & 0x000f), sg = (s & 0xf000), sb = (s & 0x0f00);
+      int32_t dr = (d & 0x000f), dg = (d & 0xf000), db = (d & 0x0f00);
+      int32_t sa = (s & 0x00f0);
+
+      dr = (sr * dr) >> 4;
+      dg = (sg * dg) >> 18;
+      db = (sb * db) >> 12;
+
+      s = dr | dg | db | sa;
+      ALPHA(&s, 0, 0, pd, 1);
+
+      // step destination and source
+      pd++; so += ss;
+    }
+  }
+
+  uint32_t _hash(uint32_t v) {
+    int n = 4;
+    do {
+      v = ((v >> 8) ^ v) * 0xD2 + n;
+    } while(--n);
+    return v;
+  }
+  // performs a "fizzlefade" style effect by only copying the source pixel if
+  // the destination pointer address hashes to a value < source alpha
+  void DISSOLVE(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+    while(c--) {
+      color_t s = *(ps + (so >> 16));
+
+      int32_t sa = (s & 0x00f0) >> 4;
+
+      // create 4-bit hash of destination pointer...
+      int32_t h = _hash(int32_t(pd) >> 1) & 0x000f;
+      h = h == 0 ? 0 : h - 1;
+      if(h < sa) {
+        COPY(&s, 0, 0, pd, 1);
+      }
+
+      // step destination and source
+      pd++; so += ss;
+    }
   }
 
   // blends the source and destination
