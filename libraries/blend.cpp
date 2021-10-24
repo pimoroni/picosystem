@@ -30,12 +30,29 @@ namespace picosystem {
       // copy if alpha component
       if(s & 0x00f0) { *pd = s; }
 
-      // step destination
-      pd++;
-
-      // step source
-      so += ss;
+      // step destination and source
+      pd++; so += ss;
     }
+  }
+
+  // uses ALPHA blend but forces pen (even if we're doing a blit) which can
+  // be useful for masking sprites etc
+  void PEN(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+    color_t p = _pen;
+    while(c--) {
+      color_t s = *(ps + (so >> 16));
+
+      // copy source alpha to pen
+      p &= 0xff0f;
+      p |= s & 0x00f0;
+
+      // blend pixel
+      ALPHA(&p, 0, 0, pd, 1);
+
+      // step destination and source
+      pd++; so += ss;
+    }
+
   }
 
   // blends the source and destination

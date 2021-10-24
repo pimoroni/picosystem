@@ -140,14 +140,13 @@ namespace picosystem {
 
   // blend functions
   void        COPY(
-                color_t* ps, uint32_t so, int32_t ss,
-                color_t* pd, uint32_t c);
+                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        ALPHA(
-                color_t* ps, uint32_t so, int32_t ss,
-                color_t* pd, uint32_t c);
+                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        MASK(
-                color_t* ps, uint32_t so, int32_t ss,
-                color_t* pd, uint32_t c);
+                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+  void        PEN(
+                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
 
   // audio
   void        play(
@@ -199,6 +198,8 @@ namespace picosystem {
   void        led(uint8_t r, uint8_t g, uint8_t b);
   void        backlight(uint8_t b);
 
+  // weird and wonderful...
+  //void        screenshot();
 
   // internal methods - do not call directly, will change!
   void       _logo();
