@@ -12,15 +12,15 @@ struct weapon_t {
 };
 
 std::array<weapon_t, 9> weapons = {{
-  {TRIDENT1, "Trident"},
-  {SWORD1, "Sword"},
-  {LASERGUN1, "Laser Gun"},
-  {MACE1, "Mace"},
-  {DAGGER, "Dagger"},
-  {SPEAR, "Spear"},
-  {BOW, "Bow"},
-  {PISTOL, "Pistol"},
-  {SHOTGUN, "Shotgun"}
+  {WEAPON_TRIDENT, "Trident"},
+  {WEAPON_SWORD_IRON, "Sword"},
+  {WEAPON_SHOTGUN_AUTO, "Laser Gun"},
+  {WEAPON_MORNING_STAR, "Mace"},
+  {WEAPON_SAIS, "Dagger"},
+  {WEAPON_SPEAR, "Spear"},
+  {WEAPON_BOW_HUNTERS, "Bow"},
+  {WEAPON_PISTOL, "Pistol"},
+  {WEAPON_SHOTGUN, "Shotgun"}
 }};
 
 float target_angle = 0.0f;
