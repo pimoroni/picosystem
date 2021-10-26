@@ -5,7 +5,7 @@
 namespace picosystem {
 
   // copy the source over the destination, ignoring alpha channel
-  void COPY(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+  void COPY(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
     if(!ss) {
       // optimised for no source step
       if(uintptr_t(pd) & 0b11 && c) { *pd++ = *ps; c--; } // align to 32bits
@@ -23,7 +23,7 @@ namespace picosystem {
 
   // copy the source over the destination if source alpha is != 0
   // allows for faster blitting of sprites that only need 1-bit alpha
-  void MASK(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+  void MASK(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
     while(c--) {
       color_t s = *(ps + (so >> 16));
 
@@ -37,7 +37,7 @@ namespace picosystem {
 
   // uses ALPHA blend but forces pen (even if we're doing a blit) which can
   // be useful for masking sprites etc
-  void PEN(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+  void PEN(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
     color_t p = _pen;
     while(c--) {
       color_t s = *(ps + (so >> 16));
@@ -57,7 +57,7 @@ namespace picosystem {
   // compares source and destination RGB channels and picks the darker of the
   // two. if there is global alpha the result is then blended with the
   // destination.
-  void DARKEN(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+  void DARKEN(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
     while(c--) {
       color_t s = *(ps + (so >> 16));
       color_t d = *pd;
@@ -77,7 +77,7 @@ namespace picosystem {
   // compares source and destination RGB channels and picks the lighter of the
   // two. if there is global alpha the result is then blended with the
   // destination.
-  void LIGHTEN(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+  void LIGHTEN(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
     while(c--) {
       color_t s = *(ps + (so >> 16));
       color_t d = *pd;
@@ -97,7 +97,7 @@ namespace picosystem {
   // compares source and destination RGB channels and picks the lighter of the
   // two. if there is global alpha the result is then blended with the
   // destination.
-  void ADD(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+  void ADD(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
     while(c--) {
       color_t s = *(ps + (so >> 16));
       color_t d = *pd;
@@ -126,7 +126,7 @@ namespace picosystem {
   // compares source and destination RGB channels and picks the lighter of the
   // two. if there is global alpha the result is then blended with the
   // destination.
-  void SUBTRACT(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+  void SUBTRACT(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
     while(c--) {
       color_t s = *(ps + (so >> 16));
       color_t d = *pd;
@@ -150,7 +150,7 @@ namespace picosystem {
   // compares source and destination RGB channels and picks the lighter of the
   // two. if there is global alpha the result is then blended with the
   // destination.
-  void MULTIPLY(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+  void MULTIPLY(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
     while(c--) {
       color_t s = *(ps + (so >> 16));
       color_t d = *pd;
@@ -180,7 +180,7 @@ namespace picosystem {
   }
   // performs a "fizzlefade" style effect by only copying the source pixel if
   // the destination pointer address hashes to a value < source alpha
-  void DISSOLVE(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+  void DISSOLVE(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
     while(c--) {
       color_t s = *(ps + (so >> 16));
 
@@ -199,7 +199,7 @@ namespace picosystem {
   }
 
   // blends the source and destination
-  void ALPHA(color_t *ps, uint32_t so, int32_t ss, color_t *pd, uint32_t c) {
+  void ALPHA(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
     if(!ss) {
       // optimised for no source step
 
