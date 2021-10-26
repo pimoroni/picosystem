@@ -29,7 +29,7 @@ void draw(uint32_t tick) {
   clear();
 
   switch(view) {
-    case 0: {
+    case 4: {
       title("Word wrap");
 
       uint32_t wrap = (sin(time() / 1000.0f) * 36.0f) + 80;
@@ -127,30 +127,93 @@ Lo, brave adventurer! Choose a tasty treat:\
       title("Inline icons");
     }break;
 
-    case 4: {
+    case 0: {
       pen(0, 0, 0);
       clear();
 
-      // little helper function that centres and shadows text at the supplied
-      // y coordinate
-      auto shadow_text = [](std::string message, int32_t y) {
-        int32_t tx, ty;
-        measure(message, tx, ty);
+      title("Effects");
 
-        color_t old_pen = _pen;
-        pen(3, 3, 3);
-        text(message, 60 - (tx / 2), y + 1);
-        text(message, 60 - (tx / 2), y + 2);
-        pen(old_pen);
-        text(message, 60 - (tx / 2), y);
+      auto centre_text = [](std::string message, int32_t y, int32_t xo = 0) {
+        int32_t w, h;
+        measure(message, w, h);
+        text(message, 60 - (w / 2) + xo, y);
       };
 
-      title("Shadow");
+      std::string m;
 
+      // shadow text
+      m = "Shadow text example";
       blend(PEN);
-      pen(3, 3, 3);
-      sprite(SKULL, 52, 32, 1, 1, 16, 16);
+      pen(5, 5, 6);
+      centre_text(m, 23);
+      blend(MASK);
+      pen(13, 13, 15);
+      centre_text(m, 20);
 
+      // gradient text
+      m = "Gradient text example";
+      blend(MASK);
+      pen(14, 12, 0);
+      clip(0, 40, 120, 2);
+      centre_text(m, 40);
+      pen(14, 10, 0);
+      clip(0, 42, 120, 2);
+      centre_text(m, 40);
+      pen(12, 8, 0);
+      clip(0, 44, 120, 2);
+      centre_text(m, 40);
+      pen(10, 4, 0);
+      clip(0, 46, 120, 2);
+      centre_text(m, 40);
+      clip();
+
+      // outline text
+      m = "Outline text example";
+      blend(MASK);
+      pen(0, 12, 0);
+      centre_text(m, 59, -1);
+      centre_text(m, 60, -1);
+      centre_text(m, 61, -1);
+      centre_text(m, 59, 0);
+      centre_text(m, 60, 0);
+      centre_text(m, 61, 0);
+      centre_text(m, 59, 1);
+      centre_text(m, 60, 1);
+      centre_text(m, 61, 1);
+      pen(0, 0, 0);
+      centre_text(m, 60, 0);
+
+      // split text
+      m = "Split text example";
+      blend(MASK);
+      pen(12, 12, 15);
+      clip(0, 80, 120, 5);
+      centre_text(m, 80);
+      pen(15, 12, 15);
+      clip(0, 85, 120, 3);
+      centre_text(m, 80);
+      clip();
+
+
+      // glow text
+      m = "Glow text example";
+      blend(ALPHA);
+      pen(15, 15, 15, 2);
+      centre_text(m, 99, -1);
+      centre_text(m, 100, -1);
+      centre_text(m, 101, -1);
+      centre_text(m, 99, 0);
+      centre_text(m, 100, 0);
+      centre_text(m, 101, 0);
+      centre_text(m, 99, 1);
+      centre_text(m, 100, 1);
+      centre_text(m, 101, 1);
+      blend(MASK);
+      pen(0, 0, 0);
+      centre_text(m, 100, 0);
+
+
+/*
       blend(ALPHA);
       sprite(SKULL, 52, 30, 1, 1, 16, 16);
 
@@ -160,7 +223,7 @@ Lo, brave adventurer! Choose a tasty treat:\
       alpha(sin(time() / 200.0f) * 2.0f + 10.0f);
       pen(15, 15, 15);
       shadow_text("Try again: Y/N?", 90);
-      alpha();
+      alpha();*/
 
     }break;
   }
