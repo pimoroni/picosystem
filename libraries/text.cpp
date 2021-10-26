@@ -134,7 +134,7 @@ namespace picosystem {
 
         case '\\': {
           // special code - read ahead and do something...
-          _parse_escape_code(t, i);
+          tx += _skip_escape_code(t, i);
         }break;
       }
 
