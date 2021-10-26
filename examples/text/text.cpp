@@ -142,89 +142,90 @@ Lo, brave adventurer! Choose a tasty treat:\
       std::string m;
 
       // shadow text
-      m = "Shadow text example";
-      blend(PEN);
-      pen(5, 5, 6);
-      centre_text(m, 23);
-      blend(MASK);
-      pen(13, 13, 15);
-      centre_text(m, 20);
+      auto shadow_text = [](std::string m, color_t c, color_t s, int32_t x, int32_t y, int32_t sx, int32_t sy) {
+        blend(MASK);
+        pen(s);
+        text(m, x + sx, y + sy);
+        pen(c);
+        text(m, x, y);
+      };
+      int32_t sx = sin(time() / 250.0f) * 3.0f;
+      shadow_text("Shadow text example", rgb(13, 13, 15), rgb(7, 7, 9), 7, 20, sx, 2);
 
       // gradient text
-      m = "Gradient text example";
-      blend(MASK);
-      pen(14, 12, 0);
-      clip(0, 40, 120, 2);
-      centre_text(m, 40);
-      pen(14, 10, 0);
-      clip(0, 42, 120, 2);
-      centre_text(m, 40);
-      pen(12, 8, 0);
-      clip(0, 44, 120, 2);
-      centre_text(m, 40);
-      pen(10, 4, 0);
-      clip(0, 46, 120, 2);
-      centre_text(m, 40);
-      clip();
+      auto gradient_text = [](std::string m, color_t c1, color_t c2, int32_t x, int32_t y) {
+        blend(MASK);
+        pen(c1);             clip(0, y + 0, 120, 2); text(m, x, y);
+        pen(mix(c1, c2, 3)); clip(0, y + 2, 120, 2); text(m, x, y);
+        pen(mix(c1, c2, 6)); clip(0, y + 4, 120, 2); text(m, x, y);
+        pen(c2);             clip(0, y + 6, 120, 2); text(m, x, y);
+        clip();
+      };
+      static float hue = 0.0f;
+      hue += 0.01f;
+      if(hue > 1.0f) hue = 0.0f;
+      color_t c1 = hsv(hue, 0.8f, 1.0f), c2 = hsv(hue, 0.6f, 0.75);
+      gradient_text("Gradient text example", c1, c2, 5, 35);
 
       // outline text
-      m = "Outline text example";
-      blend(MASK);
-      pen(0, 12, 0);
-      centre_text(m, 59, -1);
-      centre_text(m, 60, -1);
-      centre_text(m, 61, -1);
-      centre_text(m, 59, 0);
-      centre_text(m, 60, 0);
-      centre_text(m, 61, 0);
-      centre_text(m, 59, 1);
-      centre_text(m, 60, 1);
-      centre_text(m, 61, 1);
-      pen(0, 0, 0);
-      centre_text(m, 60, 0);
+      auto outline_text = [](std::string m, color_t c, int32_t x, int32_t y, int32_t o) {
+        blend(MASK);
+        pen(c);
+
+        for(int i = -o; i <= o; i++) {
+          for(int j = -o; j <= o; j++) {
+            text(m, x + i, y + j);
+          }
+        }
+        pen(0, 0, 0);
+        text(m, x, y);
+      };
+      int32_t o = 1 + ((sin(time() / 250.0f) + 1.0f) * 2.0f);
+      outline_text("Outline text example", rgb(2, 14, 2), 10, 50, o);
+
+      // extrude text
+      auto extrude_text = [](std::string m, color_t c, color_t s, int32_t x, int32_t y, int32_t l) {
+        blend(MASK);
+        pen(s);
+        for(int i = 1; i <= l; i++) {
+          text(m, x + i, y + i);
+        }
+        pen(c);
+        text(m, x, y);
+      };
+      int32_t l = 1 + ((sin(time() / 250.0f) + 1.0f) * 2.0f);
+      extrude_text("Extrude text example", rgb(2, 14, 14), rgb(14, 2, 2), 5, 65, l);
+
+
+      auto split_text = [](std::string m, color_t c1, color_t c2, int32_t x, int32_t y) {
+        blend(MASK);
+        pen(c1);
+        clip(0, y, 120, 4);
+        text(m, x, y);
+        pen(c2);
+        clip(0, y + 4, 120, 4);
+        text(m, x, y);
+        clip();
+      };
 
       // split text
-      m = "Split text example";
-      blend(MASK);
-      pen(12, 12, 15);
-      clip(0, 80, 120, 5);
-      centre_text(m, 80);
-      pen(15, 12, 15);
-      clip(0, 85, 120, 3);
-      centre_text(m, 80);
-      clip();
-
+      float hue2 = hue + 0.5;
+      if(hue2 > 1.0f) hue2 -= 1.0f;
+      split_text("Split text example", hsv(hue2, 0.6f, 1.0f), hsv(hue, 0.4f, 1.0f), 15, 80);
 
       // glow text
-      m = "Glow text example";
-      blend(ALPHA);
-      pen(15, 15, 15, 2);
-      centre_text(m, 99, -1);
-      centre_text(m, 100, -1);
-      centre_text(m, 101, -1);
-      centre_text(m, 99, 0);
-      centre_text(m, 100, 0);
-      centre_text(m, 101, 0);
-      centre_text(m, 99, 1);
-      centre_text(m, 100, 1);
-      centre_text(m, 101, 1);
-      blend(MASK);
-      pen(0, 0, 0);
-      centre_text(m, 100, 0);
-
-
-/*
-      blend(ALPHA);
-      sprite(SKULL, 52, 30, 1, 1, 16, 16);
-
-      pen(15, 12, 8);
-      shadow_text("Game Over", 50);
-
-      alpha(sin(time() / 200.0f) * 2.0f + 10.0f);
-      pen(15, 15, 15);
-      shadow_text("Try again: Y/N?", 90);
-      alpha();*/
-
+      auto glow_text = [](std::string m, color_t c, int32_t x, int32_t y) {
+        blend(ALPHA);
+        pen(c);
+        text(m, x - 1, y - 1); text(m, x    , y - 1); text(m, x + 1, y - 1);
+        text(m, x - 1, y    ); text(m, x    , y    ); text(m, x + 1, y    );
+        text(m, x - 1, y + 1); text(m, x    , y + 1); text(m, x + 1, y + 1);
+        blend(MASK);
+        pen(0, 0, 0);
+        text(m, x, y);
+      };
+      int32_t g = 1 + ((sin(time() / 250.0f) + 1.0f) * 2.0f);
+      glow_text("Glow text example", hsv(hue, 1.0f, 1.0f, 0.2f), 15, 95);
     }break;
   }
 }

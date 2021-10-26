@@ -207,6 +207,7 @@ namespace picosystem {
   std::vector<std::string> split(const std::string& t, char d = '\n');
   float       fsin(float v);
   float       fcos(float v);
+  color_t     mix(color_t c1, color_t c2, uint32_t m);
 
   // hardware
   bool        pressed(uint32_t b);
