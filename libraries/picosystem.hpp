@@ -48,8 +48,11 @@ namespace picosystem {
     uint32_t noise, distort; // effects (strength 0..100)
   };
 
+  constexpr uint32_t HFLIP  = 0x01;
+  constexpr uint32_t VFLIP  = 0x02;
+
   using blend_func_t =
-    void(*)(color_t* source, uint32_t so, int32_t ss,
+    void(*)(color_t* source, int32_t so, int32_t ss,
             color_t*   dest, uint32_t count);
 
   // drawing state
@@ -117,11 +120,13 @@ namespace picosystem {
   void        blit(
                 buffer_t *source,
                 int32_t x, int32_t y, int32_t w, int32_t h,
-                int32_t dx, int32_t dy);
+                int32_t dx, int32_t dy,
+                uint32_t flags = 0);
   void        blit(
                 buffer_t *source,
                 int32_t sx, int32_t sy, int32_t sw, int32_t sh,
-                int32_t dx, int32_t dy, int32_t dw, int32_t dh);
+                int32_t dx, int32_t dy, int32_t dw, int32_t dh,
+                uint32_t flags = 0);
   void        sprite(uint32_t i, int32_t x, int32_t y);
   void        sprite(uint32_t i, int32_t x, int32_t y, int32_t cx, int32_t cy);
   void        sprite(
@@ -140,25 +145,25 @@ namespace picosystem {
 
   // blend functions
   void        COPY(
-                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        ALPHA(
-                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        MASK(
-                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        PEN(
-                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        DARKEN(
-                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        LIGHTEN(
-                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        ADD(
-                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        SUBTRACT(
-                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        MULTIPLY(
-                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        DISSOLVE(
-                color_t* ps, uint32_t so, int32_t ss, color_t* pd, uint32_t c);
+                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
 
   // audio
   void        play(

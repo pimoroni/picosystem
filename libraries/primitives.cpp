@@ -290,7 +290,7 @@ namespace picosystem {
     poly(pts.begin(), pts.size() / 2);
   }
 
-  void blit(buffer_t *src, int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t dx, int32_t dy) {
+  void blit(buffer_t *src, int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t dx, int32_t dy, uint32_t flags) {
     _camera_offset(dx, dy);
 
     if(!intersects(dx, dy, w, h, _cx, _cy, _cw, _ch)) {
@@ -316,14 +316,29 @@ namespace picosystem {
     color_t *ps = src->data + (sx + sy * src->w);
     color_t *pd = _dt->data + (dx + dy * _dt->w);
 
+    int32_t so = 0;
+    int32_t ss = 1 << 16;
+
+    if(flags & HFLIP) {
+      ss = (-1) << 16;
+      so = (w - sx - 1) << 16;
+    }
+
+    int32_t ds = _dt->w;
+
+    if(flags & VFLIP) {
+      pd += (h - 1) * _dt->w;
+      ds = -_dt->w;
+    }
+
     while(h--) {
-      _bf(ps, 0, 1 << 16, pd, w); // draw row
-      pd += _dt->w;
+      _bf(ps, so, ss, pd, w); // draw row
+      pd += ds;
       ps += src->w;
     }
   }
 
-  void blit(buffer_t *src, int32_t sx, int32_t sy, int32_t sw, int32_t sh, int32_t dx, int32_t dy, int32_t dw, int32_t dh) {
+  void blit(buffer_t *src, int32_t sx, int32_t sy, int32_t sw, int32_t sh, int32_t dx, int32_t dy, int32_t dw, int32_t dh, uint32_t flags) {
     _camera_offset(dx, dy);
 
     if(!intersects(dx, dy, dw, dh, _cx, _cy, _cw, _ch)) {
@@ -353,12 +368,24 @@ namespace picosystem {
     }
     int32_t w = std::min(dw, _cw);
 
+    if(flags & HFLIP) {
+      ssx += (w - 1) * ssxs;
+      ssxs = -ssxs;
+    }
+
+    int32_t ds = _dt->w;
+
+    if(flags & VFLIP) {
+      pd += (maxy - dy - 1) * _dt->w;
+      ds = -_dt->w;
+    }
+
     // loop for all visible scanlines
     for(int32_t y = dy; y < maxy; y++) {
       _bf(ps, ssx, ssxs, pd, w);
 
       ssy += ssys;
-      pd += _dt->w;
+      pd += ds;
       ps += src->w * (ssy >> 16);
       ssy &= 0xffff;
     }
