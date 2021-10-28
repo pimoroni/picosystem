@@ -171,6 +171,7 @@ namespace picosystem {
                 uint32_t duration = 500, uint32_t volume = 100);
   uint8_t     audio_sample(uint32_t ms);
   uint32_t    audio_position();
+  bool        audio_playing();
 
   // utility
   std::string str(float v, uint8_t precision = 2);
