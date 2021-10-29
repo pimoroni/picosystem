@@ -12,13 +12,13 @@ struct weapon_t {
 };
 
 std::array<weapon_t, 9> weapons = {{
-  {TRIDENT1, "Trident"},
-  {SWORD1, "Sword"},
-  {LASERGUN1, "Laser Gun"},
-  {MACE1, "Mace"},
-  {DAGGER, "Dagger"},
+  {TRIDENT, "Trident"},
+  {SWORD_IRON, "Sword"},
+  {SHOTGUN_AUTO, "Laser Gun"},
+  {MORNING_STAR, "Mace"},
+  {SAIS, "Dagger"},
   {SPEAR, "Spear"},
-  {BOW, "Bow"},
+  {BOW_HUNTERS, "Bow"},
   {PISTOL, "Pistol"},
   {SHOTGUN, "Shotgun"}
 }};
