@@ -143,14 +143,17 @@ Lo, brave adventurer! Choose a tasty treat:\
 
       // shadow text
       auto shadow_text = [](std::string m, color_t c, color_t s, int32_t x, int32_t y, int32_t sx, int32_t sy) {
-        blend(MASK);
+        blend(ALPHA);
         pen(s);
         text(m, x + sx, y + sy);
+        text(m, x + sx - 1, y + sy);
+        text(m, x + sx + 1, y + sy);
+        text(m, x + sx, y + sy + 1);
         pen(c);
         text(m, x, y);
       };
       int32_t sx = sin(time() / 250.0f) * 3.0f;
-      shadow_text("Shadow text example", rgb(13, 13, 15), rgb(7, 7, 9), 7, 20, sx, 2);
+      shadow_text("Shadow text example", rgb(13, 13, 15), rgb(7, 7, 9, 4), 7, 20, sx, 2);
 
       // gradient text
       auto gradient_text = [](std::string m, color_t c1, color_t c2, int32_t x, int32_t y) {
@@ -185,7 +188,7 @@ Lo, brave adventurer! Choose a tasty treat:\
 
       // extrude text
       auto extrude_text = [](std::string m, color_t c, color_t s, int32_t x, int32_t y, int32_t l) {
-        blend(MASK);
+        blend(ALPHA);
         pen(s);
         for(int i = 1; i <= l; i++) {
           text(m, x + i, y + i);
@@ -194,7 +197,7 @@ Lo, brave adventurer! Choose a tasty treat:\
         text(m, x, y);
       };
       int32_t l = 1 + ((sin(time() / 250.0f) + 1.0f) * 2.0f);
-      extrude_text("Extrude text example", rgb(2, 14, 14), rgb(14, 2, 2), 5, 65, l);
+      extrude_text("Extrude text example", rgb(0, 15, 15), rgb(15, 0, 0, 12), 5, 65, l);
 
 
       auto split_text = [](std::string m, color_t c1, color_t c2, int32_t x, int32_t y) {
@@ -226,6 +229,25 @@ Lo, brave adventurer! Choose a tasty treat:\
       };
       int32_t g = 1 + ((sin(time() / 250.0f) + 1.0f) * 2.0f);
       glow_text("Glow text example", hsv(hue, 1.0f, 1.0f, 0.2f), 15, 95);
+
+      // glitch text
+      auto glitch_text = [](std::string m, color_t c, int32_t x, int32_t y) {
+        blend(MASK);
+        pen(c);
+        for(uint8_t i = 0; i < 8; i++) {
+          clip(0, y + i, 120, 1);
+          int8_t o = 0;
+          if(std::rand() % 8 == 0) {
+            o = (std::rand() % 9) - 4;
+          }
+          text(m, x + o, y);
+        }
+        clip();
+      };
+
+      // split text
+      glitch_text("Glitch text example", rgb(6, 15, 12), 13, 110);
+
     }break;
   }
 }
