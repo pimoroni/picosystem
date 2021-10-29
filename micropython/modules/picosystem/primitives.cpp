@@ -215,7 +215,12 @@ mp_obj_t picosystem_blit(mp_uint_t n_args, const mp_obj_t *args) {
         int h = mp_obj_get_int(args[4]);
         int dx = mp_obj_get_int(args[5]);
         int dy = mp_obj_get_int(args[6]);
-        if(n_args == 9) {
+        if (n_args == 10) {
+            int dw = mp_obj_get_int(args[7]);
+            int dh = mp_obj_get_int(args[8]);
+            int flags = mp_obj_get_int(args[9]);
+            blit(buffer_obj->buffer, x, y, w, h, dx, dy, dw, dh, flags);
+        } else if (n_args == 9) {
             int dw = mp_obj_get_int(args[7]);
             int dh = mp_obj_get_int(args[8]);
             blit(buffer_obj->buffer, x, y, w, h, dx, dy, dw, dh);
@@ -248,6 +253,14 @@ mp_obj_t picosystem_sprite(mp_uint_t n_args, const mp_obj_t *args) {
         int dw = mp_obj_get_int(args[5]);
         int dh = mp_obj_get_int(args[6]);
         sprite(i, x, y, cx, cy, dw, dh);
+    }
+    else if(n_args == 8){
+        int cx = mp_obj_get_int(args[3]);
+        int cy = mp_obj_get_int(args[4]);
+        int dw = mp_obj_get_int(args[5]);
+        int dh = mp_obj_get_int(args[6]);
+        int flags = mp_obj_get_int(args[7]);
+        sprite(i, x, y, cx, cy, dw, dh, flags);
     }
     return mp_const_none;
 }
