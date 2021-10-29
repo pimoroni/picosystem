@@ -15,6 +15,8 @@ target_sources(picosystem INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}/assets.cpp
 )
 
+set(PICOSYSTEM_LINKER_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/memmap_picosystem.ld)
+
 target_include_directories(picosystem INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
 target_link_libraries(picosystem INTERFACE pico_stdlib hardware_pio hardware_spi hardware_pwm hardware_dma hardware_irq hardware_adc hardware_interp)
@@ -31,6 +33,8 @@ function(picosystem_executable NAME SOURCES)
 
   # create map/bin/hex file etc.
   pico_add_extra_outputs(${NAME})
+
+  pico_set_linker_script(${NAME} ${PICOSYSTEM_LINKER_SCRIPT})
 
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${NAME}.uf2 DESTINATION .)
 endfunction()
