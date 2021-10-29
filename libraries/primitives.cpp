@@ -414,6 +414,15 @@ namespace picosystem {
     blit(_ss, sx * 8, sy * 8, cx * 8, cy * 8, x, y, dw, dh);
   }
 
+  void sprite(
+    uint32_t i,
+    int32_t x, int32_t y, int32_t cx, int32_t cy,
+    int32_t dw, int32_t dh, uint32_t flags) {
+    uint32_t sx = i % (_ss->w / 8);
+    uint32_t sy = i / (_ss->w / 8);
+    blit(_ss, sx * 8, sy * 8, cx * 8, cy * 8, x, y, dw, dh, flags);
+  }
+
 
   void _logo() {
     const uint8_t *s = _picosystem_logo;

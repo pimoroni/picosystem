@@ -125,8 +125,29 @@ mp_obj_t picosystem_blend(mp_uint_t n_args, const mp_obj_t *args) {
             case MODE_MASK:
                 blend(MASK);
                 break;
+            case MODE_PEN:
+                blend(PEN);
+                break;
+            case MODE_DARKEN:
+                blend(DARKEN);
+                break;
+            case MODE_LIGHTEN:
+                blend(LIGHTEN);
+                break;
+            case MODE_ADD:
+                blend(ADD);
+                break;
+            case MODE_SUBTRACT:
+                blend(SUBTRACT);
+                break;
+            case MODE_MULTIPLY:
+                blend(MULTIPLY);
+                break;
+            case MODE_DISSOLVE:
+                blend(DISSOLVE);
+                break;
             default:
-                mp_raise_ValueError("blend(): not a valid blend mode. Expected COPY (0), ALPHA (1), or MASK (2)");
+                mp_raise_ValueError("blend(): not a valid blend mode. Expected: COPY, ALPHA, MASK, PEN, DARKEN, LIGHTEN, ADD, SUBTRACT, MULTIPLY, DISSOLVE");
         }
     } else {
         blend();
