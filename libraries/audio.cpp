@@ -23,6 +23,11 @@ namespace picosystem {
     return _ms;
   }
 
+  // Convenience function to tell if the note is still playing
+  bool audio_playing() {
+    return !(_ms > _duration + _voice.release + _voice.reverb);
+  }
+
   uint8_t audio_sample(uint32_t ms) {
     // calculate full duration including release and reverb
     uint32_t full_duration = _duration + _voice.release + _voice.reverb;
