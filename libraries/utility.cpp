@@ -35,6 +35,7 @@ namespace picosystem {
   }
 
    color_t hsv(float h, float s, float v, float a) {
+    h = h - floor(h); // clamp to 0..1
     float i = floor(h * 6.0f);
     float f = h * 6.0f - i;
     v *= 15.0f;
