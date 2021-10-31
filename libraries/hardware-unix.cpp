@@ -14,6 +14,7 @@ SDL_Renderer *renderer = nullptr;
 SDL_Texture *texture = nullptr;
 SDL_mutex *m_flip = nullptr;
 static bool running = true;
+static bool _done_init = false;
 std::chrono::time_point<std::chrono::high_resolution_clock> t_start;
 std::chrono::time_point<std::chrono::high_resolution_clock> t_last_flip;
 
@@ -84,7 +85,7 @@ namespace picosystem {
   void _sdl_resize() {
     SDL_LockMutex(m_flip);
 		SDL_DestroyTexture(texture);
-    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGR565, SDL_TEXTUREACCESS_STREAMING, SCREEN->w, SCREEN->h);
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB4444, SDL_TEXTUREACCESS_STREAMING, SCREEN->w, SCREEN->h);
     SDL_UnlockMutex(m_flip);
   }
 
@@ -207,8 +208,13 @@ namespace picosystem {
     dest.y = 0;
     dest.w = SCREEN->w;
     dest.h = SCREEN->h;
+
+    color_t data[SCREEN->w * SCREEN->h];
+    for (auto i = 0; i < SCREEN->w * SCREEN->h; i++) {
+      data[i] = (SCREEN->data[i] >> 8) | ((SCREEN->data[i] & 0xff) << 8);
+    }
   
-		SDL_UpdateTexture(texture, nullptr, SCREEN->data, SCREEN->w * 2);
+    SDL_UpdateTexture(texture, nullptr, data, SCREEN->w * 2);
 
     SDL_SetRenderTarget(renderer, nullptr);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
@@ -242,7 +248,7 @@ namespace picosystem {
   }
 
   uint32_t _gpio_get() {
-    return _sdl_input;
+    return ~_sdl_input;
   }
 
   void _sdl_set_mode() {
@@ -251,6 +257,9 @@ namespace picosystem {
   }
 
   void _init_hardware() {
+    if(_done_init) return;
+    _done_init = true;
+
     t_start = std::chrono::high_resolution_clock::now();
     m_flip = SDL_CreateMutex();
 

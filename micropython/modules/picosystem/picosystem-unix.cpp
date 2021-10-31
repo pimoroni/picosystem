@@ -57,23 +57,21 @@ mp_obj_t picosystem_init() {
 }
 
 mp_obj_t picosystem_start() {
+    (void)picosystem_init();
+
+    update_callback_obj = pimoroni_mp_load_global(qstr_from_str("update"));
     if(update_callback_obj == mp_const_none) {
-        update_callback_obj = pimoroni_mp_load_global(qstr_from_str("update"));
-        if(update_callback_obj == mp_const_none) {
-            //TODO switch out this URL for the final one
-            mp_raise_msg(&mp_type_NameError, "a function named 'update(ticks)' is not defined. Check out https://github.com/pimoroni/picosystem/blob/main/micropython/README.md for instructions");
-        }
+        //TODO switch out this URL for the final one
+        mp_raise_msg(&mp_type_NameError, "a function named 'update(ticks)' is not defined. Check out https://github.com/pimoroni/picosystem/blob/main/micropython/README.md for instructions");
     }
 
+    draw_callback_obj = mp_load_global(qstr_from_str("draw"));
     if(draw_callback_obj == mp_const_none) {
-        draw_callback_obj = mp_load_global(qstr_from_str("draw"));
-        if(draw_callback_obj == mp_const_none) {
-            //TODO switch out this URL for the final one
-            mp_raise_msg(&mp_type_NameError, "a function named 'draw()' is not defined. Check out https://github.com/pimoroni/picosystem/blob/main/micropython/README.md for instructions");
-        }
+        //TODO switch out this URL for the final one
+        mp_raise_msg(&mp_type_NameError, "a function named 'draw()' is not defined. Check out https://github.com/pimoroni/picosystem/blob/main/micropython/README.md for instructions");
     }
 
-    _io = 0;
+    _io = _gpio_get();
     running = true;
 
     while(running) {
@@ -81,7 +79,7 @@ mp_obj_t picosystem_start() {
 
         // store previous io state and get new io state
         _lio = _io;
-        _io = 0;
+        _io = _gpio_get();
 
         // call users update() function
         uint32_t start_update_us = time_us();
@@ -124,6 +122,8 @@ mp_obj_t picosystem_start() {
             // no idle time
             stats.idle = 0;
         }
+
+        sleep_us(25000 - stats.tick_us);
 
         MICROPY_EVENT_POLL_HOOK
 
