@@ -109,7 +109,6 @@ int main() {
   init();
 
   uint32_t tick = 0;
-  uint32_t last_frame_ms = 0;
   uint32_t start_flip = 0;
 
   _io = _gpio_get();

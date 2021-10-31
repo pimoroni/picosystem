@@ -1,7 +1,3 @@
-#include "hardware/spi.h"
-#include "hardware/sync.h"
-#include "pico/binary_info.h"
-
 #include "libraries/picosystem.hpp"
 
 #define MP_OBJ_TO_PTR2(o, t) ((t *)(uintptr_t)(o))

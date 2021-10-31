@@ -8,7 +8,6 @@
 #include <string>
 #include <vector>
 
-#include "pico/stdlib.h"
 
 void init();
 void update(uint32_t tick);

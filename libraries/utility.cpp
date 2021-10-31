@@ -15,7 +15,7 @@ namespace picosystem {
 
   std::string str(int32_t v) {
     static char b[32];
-    snprintf(b, 32, "%ld", v);
+    snprintf(b, 32, "%d", v);
     return b;
   }
 
@@ -25,7 +25,7 @@ namespace picosystem {
 
   std::string str(uint32_t v) {
     static char b[32];
-    snprintf(b, 32, "%lu", v);
+    snprintf(b, 32, "%u", v);
     return b;
   }
 
