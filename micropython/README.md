@@ -21,7 +21,7 @@ Play with audio beeps and boops via the REPL, and get a simple game running with
 
 ## Get the latest release
 
-Go to the [GitHub releases page](https://github.com/pimoroni/picosystem/releases/latest) to find the latets release of PicoSystem MicroPython.
+Go to the [GitHub releases page](https://github.com/pimoroni/picosystem/releases/latest) to find the latest release of PicoSystem MicroPython.
 
 * Scroll down and download the .uf2 file. eg: "picosystem-v0.1.0-micropython-v1.17.uf2"
 * Connect your PicoSystem to your computer.
