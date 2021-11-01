@@ -50,7 +50,9 @@ set_source_files_properties(
     "-DPIXEL_DOUBLE=1"
 )
 
-# TODO fix sign compare issues in codebase
+# Squash warnings in codebase.
+# MicroPython compiles with -Werror
+# TODO fix these!
 set_source_files_properties(
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/primitives.cpp
     PROPERTIES COMPILE_FLAGS
@@ -60,4 +62,9 @@ set_source_files_properties(
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/text.cpp
     PROPERTIES COMPILE_FLAGS
     "-Wno-error=sign-compare"
+)
+set_source_files_properties(
+    ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/utility.cpp
+    PROPERTIES COMPILE_FLAGS
+    "-Wno-error=format="
 )
