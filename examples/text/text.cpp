@@ -28,18 +28,6 @@ void draw(uint32_t tick) {
   pen(0, 0, 0);
   clear();
 
-  std::string message = "\
-\"The fact that we live at the bottom of a deep gravity well, on the surface of \
-a gas covered planet going around a nuclear fireball 90 million miles away and \
-think this to be normal is obviously some indication of how skewed our \
-perspective tends to be.\"";
-  pen(15, 15, 15);
-  int x = sin(time() / 2000.0f) * 50.0f;
-  int y = cos(time() / 2000.0f) * 50.0f;
-  text(message, x, y + 60, 100);
-  return;
-
-
   switch(view) {
     case 4: {
       title("Word wrap");
