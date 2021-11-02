@@ -9,6 +9,22 @@ namespace picosystem {
   uint32_t _duration;
   uint32_t _volume = 100;
 
+  voice_t voice(uint32_t attack, uint32_t decay, uint32_t sustain,
+                uint32_t release, int32_t bend,  uint32_t bend_ms,
+                uint32_t reverb, uint32_t noise, uint32_t distort) {
+    return {
+      .bend       = bend,
+      .bend_ms    = bend_ms,
+      .attack     = attack,
+      .decay      = decay,
+      .sustain    = sustain,
+      .release    = release,
+      .reverb     = reverb,
+      .noise      = noise,
+      .distort    = distort
+    };
+  }
+
   void play(voice_t voice,
     uint32_t frequency, uint32_t duration, uint32_t volume) {
     _frequency = frequency;

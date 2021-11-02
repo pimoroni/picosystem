@@ -170,6 +170,11 @@ namespace picosystem {
                 color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
 
   // audio
+  voice_t     voice(
+                uint32_t attack = 100, uint32_t decay = 50,
+                uint32_t sustain = 80, uint32_t release = 100,
+                int32_t bend = 0, uint32_t bend_ms = 0, uint32_t reverb = 0,
+                uint32_t noise = 0, uint32_t distort = 0);
   void        play(
                 voice_t voice, uint32_t frequency,
                 uint32_t duration = 500, uint32_t volume = 100);
@@ -185,11 +190,6 @@ namespace picosystem {
   color_t     rgb(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 15);
   color_t     hsv(float h, float s, float v, float a = 1.0f);
   buffer_t*   buffer(uint32_t w, uint32_t h, void *data = nullptr);
-  voice_t     voice(
-                uint32_t attack = 100, uint32_t decay = 50,
-                uint32_t sustain = 80, uint32_t release = 100,
-                int32_t bend = 0, uint32_t bend_ms = 0, uint32_t reverb = 0,
-                uint32_t noise = 0, uint32_t distort = 0);
   uint32_t    time();
   uint32_t    time_us();
   void        sleep(uint32_t d);
