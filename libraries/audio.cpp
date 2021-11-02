@@ -19,13 +19,8 @@ namespace picosystem {
     _ms = 0;
   }
 
-  uint32_t audio_position() {
-    return _ms;
-  }
-
-  // Convenience function to tell if the note is still playing
-  bool audio_playing() {
-    return !(_ms > _duration + _voice.release + _voice.reverb);
+  int32_t position() {
+    return (_ms > _duration + _voice.release + _voice.reverb) ? -1 : _ms;
   }
 
   uint8_t audio_sample(uint32_t ms) {

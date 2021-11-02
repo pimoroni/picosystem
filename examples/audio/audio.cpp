@@ -103,7 +103,7 @@ void update(uint32_t tick) {
   // if the current sound has finished playing, or we changed a dial value
   // then restart the sound
   uint32_t full_duration = get_dial_value("duration") + get_dial_value("release") + get_dial_value("reverb");
-  if(change || audio_position() > full_duration) {
+  if(change || position() > full_duration) {
     set_voice();
   }
 }
@@ -188,6 +188,6 @@ void draw(uint32_t tick) {
 
   // draw current playback marker
   pen(0, 15, 15);
-  uint32_t pos = (audio_position() * 230) / full_duration;
+  uint32_t pos = (position() * 230) / full_duration;
   frect(pos + 5, 5, 2, 50);
 }
