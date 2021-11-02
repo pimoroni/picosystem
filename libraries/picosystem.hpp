@@ -137,7 +137,6 @@ namespace picosystem {
                 uint32_t i,
                 int32_t x, int32_t y, int32_t cx, int32_t cy,
                 int32_t dw, int32_t dh, uint32_t flags);
-  void        text(const char &c, int32_t x, int32_t y);
   void        text(const char &c);
   void        text(
                 const std::string &t,

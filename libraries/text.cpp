@@ -11,6 +11,7 @@ namespace picosystem {
   void text(const char &c) {
     const uint8_t *p = &_font[(c - 32) * 9];
 
+    // get character width
     uint8_t w = *p++;
 
     // centre glyph if in fixed with mode
@@ -19,18 +20,13 @@ namespace picosystem {
       xo = (_tlw - w) >> 1;
     }
 
+    // draw character
     for(int32_t y = _ty; y < _ty + 8; y++) {
-      color_t *dest = _dt->p(_tx + xo, y);
-      uint8_t pr = *p;
-      if(pr && y >= _cy && y < _cy + _ch) {
-        for(uint8_t x = _tx + xo; x < _tx + xo + w; x++) {
-          if(x >= _cx && x < _cx + _cw && pr & 0x80) {
-            _bf(&_pen, 0, 0, dest, 1);
-          }
-          pr <<= 1; dest++;
-        }
+      uint8_t pr = *p++;
+      for(int32_t x = _tx + xo; x < _tx + xo + w; x++) {
+        if(pr & 0x80) pixel(x, y);
+        pr <<= 1;
       }
-      p++;
     }
 
     _tx += _char_width(c) + _tls;
@@ -179,7 +175,7 @@ namespace picosystem {
         }break;
 
         case '\t': {
-          _tx += _font[0] * 10; // four spaces
+          _tx += _font[0] * 10;
         }break;
 
         case '\\': {
@@ -191,7 +187,7 @@ namespace picosystem {
       if(c > 32 && c != '\\') {
         // check length to end of word
         if(!in_word) {
-          uint32_t nwl = _next_word_length(t, i);
+          int32_t nwl = _next_word_length(t, i);
           if(wrap != -1 && _tx + nwl > _wtx) {
             _tx  = _stx;
             _ty += _tlh;
