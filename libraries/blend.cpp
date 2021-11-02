@@ -11,7 +11,7 @@ namespace picosystem {
       if(uintptr_t(pd) & 0b11 && c) { *pd++ = *ps; c--; } // align to 32bits
       uint32_t *pda = (uint32_t *)pd; uint32_t s = *ps | (*ps << 16);
       while(c > 1) { *pda++ = s; c-=2; } // two pixel copy
-      if(c) { *pd++ = *ps; c--; } // finish if needed
+      if(c) { pd = (color_t *)pda; *pd = *ps; } // finish if needed
     }else if(ss == 1 << 16) {
       // optimised for source step == 1
       memcpy(pd, ps, c * 2);

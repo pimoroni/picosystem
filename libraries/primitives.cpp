@@ -43,7 +43,7 @@ namespace picosystem {
     _camera_offset(false);
     hline(x, y, w);
     vline(x, y + 1, h - 1);
-    hline(x + 1, y + h - 1, w);
+    hline(x + 1, y + h - 1, w - 1);
     vline(x + w - 1, y, h - 1);
     _camera_offset(true);
   }
