@@ -117,6 +117,15 @@ int main() {
   while(true) {
     uint32_t start_tick_us = time_us();
 
+    // reset drawing state except font and spritesheet
+    pen();
+    alpha();
+    clip();
+    blend();
+    target();
+    camera();
+    cursor();
+
     // store previous io state and get new io state
     _lio = _io;
     _io = _gpio_get();

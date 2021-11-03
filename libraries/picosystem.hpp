@@ -104,8 +104,8 @@ namespace picosystem {
   // primitives
   void        clear();
   void        pixel(int32_t x, int32_t y);
-  void        hline(int32_t x, int32_t y, int32_t c);
-  void        vline(int32_t x, int32_t y, int32_t c);
+  void        hline(int32_t x, int32_t y, int32_t l);
+  void        vline(int32_t x, int32_t y, int32_t l);
   void        poly(const int32_t *p, uint32_t l);
   void        poly(const std::initializer_list<int32_t> &pts);
   void        fpoly(const int32_t *p, uint32_t l);
