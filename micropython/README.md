@@ -25,7 +25,7 @@ Go to the [GitHub releases page](https://github.com/pimoroni/picosystem/releases
 
 * Scroll down and download the .uf2 file. eg: "picosystem-v0.1.0-micropython-v1.17.uf2"
 * Connect your PicoSystem to your computer.
-* Hold X while powering on your PicoSystem to ender bootloader mode.
+* Hold X while powering on your PicoSystem to enter bootloader mode.
 * Copy the .uf2 file (linked below) onto the "RPI-RP2" directory that appears.
 
 ## Function Reference
