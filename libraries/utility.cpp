@@ -111,19 +111,4 @@ namespace picosystem {
     return _fsin_lut[uint8_t((v * _2PI_LUTS) + 64)];
   }
 
-  color_t mix(color_t c1, color_t c2, uint32_t m) {
-    uint32_t r1 = c1 & 0x000f, r2 = c2 & 0x000f;
-    uint32_t g1 = c1 & 0xf000, g2 = c2 & 0xf000;
-    uint32_t b1 = c1 & 0x0f00, b2 = c2 & 0x0f00;
-    uint32_t a1 = c1 & 0x00f0, a2 = c2 & 0x00f0;
-
-    uint32_t im = 15 - m;
-
-    uint32_t r = ((r1 * im) + (r2 * m)) / 15;
-    uint32_t g = ((g1 * im) + (g2 * m)) / 15;
-    uint32_t b = ((b1 * im) + (b2 * m)) / 15;
-    uint32_t a = ((a1 * im) + (a2 * m)) / 15;
-
-    return (r & 0x000f) | (g & 0xf000) | (b & 0x0f00) | (a & 0x00f0);
-  }
 }

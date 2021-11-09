@@ -4,6 +4,70 @@
 
 namespace picosystem {
 
+  // helper functions for manipulating the channels of our pixel format
+
+  inline __attribute__((always_inline)) uint8_t _extract_alpha(uint32_t s) {
+    // grab alpha channel from source
+    uint8_t alpha = (s & 0xf0000) >> 16;
+
+    // combine source alpha with global alpha (adding 0xf makes operation act
+    // as ceil() instead of floor()
+    alpha = ((alpha * _a) + 0xf) >> 4;
+
+    // stretch alpha to 0..16 from 0..15 to allow us to use >>4 later in the
+    // blend for much better performance than /15 - we do this by adding the
+    // most significant bit meaning that possible values go 0...7 and 9..16
+    // skipping the middle bit
+    alpha += ((alpha & 0b1000) >> 3);
+
+    return alpha;
+  }
+
+  inline __attribute__((always_inline)) uint32_t _blend(uint32_t s, uint32_t d, uint8_t a) {
+    // blend source and destination (adding 0xf to each channel to makes
+    // end result ceil() instead of floor())
+    return ((s * a + d * (0x10 - a)) + 0x0f0f0f0f) >> 4;
+  }
+
+  inline __attribute__((always_inline)) uint32_t _unpack_channels(uint32_t s) {
+    // unpack source into 32 bits with space for alpha multiplication
+    // we start with (----GBAR) and end up with (-G-A-B-R)
+    return (s | ((s & 0xf0f0) << 12)) & 0x0f0f0f0f;
+  }
+
+  inline __attribute__((always_inline)) uint32_t _pack_channels(uint32_t s) {
+    // reconstruct 16bit destination colour
+    return (s & 0x0f0f) | ((s >> 12) & 0xf0f0);
+  }
+
+  color_t mix(color_t c1, color_t c2, uint8_t m) {
+    m += ((m & 0b1000) >> 3);
+    uint32_t s = _unpack_channels(c1);
+    uint32_t d = _unpack_channels(c2);
+    return _pack_channels(_blend(s, d, m));
+  }
+
+  // blend mode functions
+
+   // blends the source and destination
+  void ALPHA(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
+    uint32_t s = _unpack_channels(*(ps + (so >> 16)));
+    uint8_t alpha = _extract_alpha(s);
+
+    while(c--) {
+      uint32_t d = _unpack_channels(*pd);
+      d = _blend(s, d, alpha);
+      *pd++ = _pack_channels(d);
+
+      // step source if needed
+      if(ss) {
+        so += ss;
+        s = _unpack_channels(*(ps + (so >> 16)));
+        alpha = _extract_alpha(s);
+      }
+    }
+  }
+
   // copy the source over the destination, ignoring alpha channel
   void COPY(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
     if(!ss) {
@@ -39,12 +103,18 @@ namespace picosystem {
   // be useful for masking sprites etc
   void PEN(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
     color_t p = _pen;
+    uint8_t pa = (p & 0x00f0) >> 4;
+
     while(c--) {
       color_t s = *(ps + (so >> 16));
 
-      // copy source alpha to pen
+      // multiply source alpha with pen
+      uint8_t sa = (s & 0x00f0) >> 4;
+      uint8_t a = ((pa * sa) + 0xf) >> 4;
+
+      // replace pen alpha
       p &= 0xff0f;
-      p |= s & 0x00f0;
+      p |= a << 4;
 
       // blend pixel
       ALPHA(&p, 0, 0, pd, 1);
@@ -198,122 +268,5 @@ namespace picosystem {
     }
   }
 
-  // blends the source and destination
-  void ALPHA(color_t *ps, int32_t so, int32_t ss, color_t *pd, uint32_t c) {
-    if(!ss) {
-      // optimised for no source step
-
-      // fetch next source pixel
-      uint32_t ts = *(ps + (so >> 16));
-
-      // extract source alpha
-      uint32_t sa = (ts & 0x00f0) >> 4;
-
-      // transparent pen, nothing to draw here...
-      if(sa == 0) return;
-
-      // add one to source alpha so that we can get away with >>4 when
-      // scaling our channels back down (instead of expensive /15) this
-      // is accurate enough...
-      sa++;
-
-      sa *= (_a + 1);
-      sa >>= 4;
-
-      // unpack source into 32 bits with space for alpha multiplication
-      // we start with 16-bits (GBAR) and end up with 32bits (-G---B-R)
-      ts = (ts | ((ts & 0xf0f0) << 12)) & 0x0f000f0f;
-
-      // pre-multiply alpha
-      ts *= sa;
-
-      // replace alpha
-      ts |= (sa << 20);
-
-      while(c--) {
-        // unpack dest into 32 bits with space for alpha multiplication
-        // we start with 16-bits (GBAR) and end up with 32bits (-G-A-B-R)
-        uint32_t td = *pd;
-        td = (td | ((td & 0xf0f0) << 12)) & 0x0f0f0f0f;
-
-        // blend all four channels at once
-        td = (ts + td * (16 - sa)) >> 4;
-
-        // reconstruct 16bit destination colour
-        *pd++ = (td & 0x0f0f) | ((td >> 12) & 0xf0f0);
-      }
-    }else{
-      while(c--) {
-        // fetch next source pixel
-        uint32_t ts = *(ps + (so >> 16));
-
-        // extract source alpha
-        uint32_t sa = (ts & 0x00f0) >> 4;
-
-        // add one to source alpha so that we can get away with >>4 when
-        // scaling our channels back down (instead of expensive /15) this
-        // is accurate enough...
-        if(sa != 0) sa++;
-
-        sa *= (_a + 1);
-        sa >>= 4;
-
-        // unpack source into 32 bits with space for alpha multiplication
-        // we start with 16-bits (GBAR) and end up with 32bits (-G---B-R)
-        ts = (ts | ((ts & 0xf0f0) << 12)) & 0x0f000f0f;
-
-        // pre-multiply alpha
-        ts *= sa;
-
-        // replace alpha
-        ts |= (sa << 20);
-
-        // unpack dest into 32 bits with space for alpha multiplication
-        // we start with 16-bits (GBAR) and end up with 32bits (-G-A-B-R)
-        uint32_t td = *pd;
-        td = (td | ((td & 0xf0f0) << 12)) & 0x0f0f0f0f;
-
-        // blend all four channels at once
-        td = (ts + td * (16 - sa)) >> 4;
-
-        // reconstruct 16bit destination colour
-        *pd++ = (td & 0x0f0f) | ((td >> 12) & 0xf0f0);
-
-        // step source
-        so += ss;
-      }
-    }
-
-    /*
-    effectively does this but faster...
-
-    uint16_t ts = *(ps + (so >> 16));
-    uint8_t sr = (ts & 0x000f) >>  0;
-    uint8_t sg = (ts & 0xf000) >> 12;
-    uint8_t sb = (ts & 0x0f00) >>  8;
-    uint8_t sa = (ts & 0x00f0) >>  4;
-
-    sr *= sa;
-    sg *= sa;
-    sb *= sa;
-
-    uint16_t td = *pd;
-    uint8_t dr = (td & 0x000f) >>  0;
-    uint8_t dg = (td & 0xf000) >> 12;
-    uint8_t db = (td & 0x0f00) >>  8;
-    uint8_t da = (td & 0x00f0) >>  4;
-
-    dr = sr + dr * (15 - sa);
-    dg = sg + dg * (15 - sa);
-    db = sb + db * (15 - sa);
-    da = sa + da * (15 - sa);
-
-    dr /= 15;
-    dg /= 15;
-    db /= 15;
-    da /= 15;
-
-    *pd = (dg << 12) | (db << 8) | (da << 4) | (dr << 0);*/
-  }
 
 }
