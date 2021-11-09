@@ -68,11 +68,11 @@ void draw(uint32_t tick) {
   pen(0, 0, 0);
   clear();
 
-  blend(COPY);
-
   switch(view) {
     case 0: {
+      alpha(8);
       for(auto &s : shapes) {pen(s.p); frect(s.x, s.y, s.w, s.h);}
+      alpha();
       label("Filled rectangles");
     } break;
     case 1: {

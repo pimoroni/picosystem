@@ -141,34 +141,36 @@ Lo, brave adventurer! Choose a tasty treat:\
 
       // shadow text
       auto shadow_text = [](std::string m, color_t c, color_t s, int32_t x, int32_t y, int32_t sx, int32_t sy) {
-        blend(ALPHA);
+        blend(PEN);
         pen(s);
         text(m, x + sx, y + sy);
         text(m, x + sx - 1, y + sy);
         text(m, x + sx + 1, y + sy);
         text(m, x + sx, y + sy + 1);
+        blend(ALPHA);
         pen(c);
         text(m, x, y);
       };
       int32_t sx = sin(time() / 250.0f) * 3.0f;
       c1 = hsv(hue + (hue_step * 0), 0.8f, 1.0f);
-      shadow_text("Shadow text example", c1, rgb(7, 7, 9, 4), 7, 20, sx, 2);
+      shadow_text("Shadow text \\spr005", c1, rgb(7, 7, 9, 4), 15, 20, sx, 2);
+      pen(c1); frect(0, 20, 5, 7);
 
       // gradient text
       auto gradient_text = [](std::string m, color_t c1, color_t c2, int32_t x, int32_t y) {
         blend(MASK);
-        pen(c1);             clip(0, y + 0, 120, 2); text(m, x, y);
-        pen(mix(c1, c2, 3)); clip(0, y + 2, 120, 2); text(m, x, y);
-        pen(mix(c1, c2, 6)); clip(0, y + 4, 120, 2); text(m, x, y);
-        pen(c2);             clip(0, y + 6, 120, 2); text(m, x, y);
+        for(int i = 0; i < 8; i++) {
+          pen(mix(c2, c1, i * 1.875f)); clip(0, y + i, 120, 1); text(m, x, y);
+        }
         clip();
       };
-      c1 = hsv(hue + (hue_step * 1), 0.8f, 1.0f); c2 = hsv(hue + (hue_step * 1), 0.8f, 1.0f);
-      gradient_text("Gradient text example", c1, c2, 5, 35);
+      c1 = hsv(hue + (hue_step * 1), 1.0f, 1.0f); c2 = hsv(hue + (hue_step * 1), 0.5f, 0.5f);
+      gradient_text("Gradient text \\spr004", c1, c2, 15, 35);
+      pen(c1); frect(0, 35, 5, 7);
 
       // outline text
       auto outline_text = [](std::string m, color_t c, int32_t x, int32_t y, int32_t o) {
-        blend(MASK);
+        blend(PEN);
         pen(c);
 
         for(int i = -o; i <= o; i++) {
@@ -176,26 +178,31 @@ Lo, brave adventurer! Choose a tasty treat:\
             text(m, x + i, y + j);
           }
         }
+
+        blend(MASK);
         pen(0, 0, 0);
         text(m, x, y);
       };
-      int32_t o = 1 + ((sin(time() / 250.0f) + 1.0f) * 2.0f);
+      int32_t o = 1 + ((sin(time() / 250.0f) + 1.0f) * 1.5f);
       c1 = hsv(hue + (hue_step * 2), 0.8f, 1.0f);
-      outline_text("Outline text example", c1, 10, 50, o);
+      outline_text("Outline text \\spr003", c1, 15, 50, o);
+      pen(c1); frect(0, 50, 5, 7);
 
       // extrude text
       auto extrude_text = [](std::string m, color_t c, color_t s, int32_t x, int32_t y, int32_t l) {
-        blend(ALPHA);
+        blend(PEN);
         pen(s);
         for(int i = 1; i <= l; i++) {
           text(m, x + i, y + i);
         }
+        blend(ALPHA);
         pen(c);
         text(m, x, y);
       };
       int32_t l = 1 + ((sin(time() / 250.0f) + 1.0f) * 2.0f);
       c1 = hsv(hue + (hue_step * 3), 0.8f, 1.0f); c2 = hsv(hue + (hue_step * 3) + 0.1f, 0.6f, 0.8f);
-      extrude_text("Extrude text example", c1, c2, 5, 65, l);
+      extrude_text("Extrude text \\spr007", c1, c2, 15, 65, l);
+      pen(c1); frect(0, 65, 5, 7);
 
 
       auto split_text = [](std::string m, color_t c1, color_t c2, int32_t x, int32_t y) {
@@ -213,22 +220,24 @@ Lo, brave adventurer! Choose a tasty treat:\
       float hue2 = hue + 0.5;
       if(hue2 > 1.0f) hue2 -= 1.0f;
       c1 = hsv(hue + (hue_step * 4), 0.8f, 1.0f); c2 = hsv(hue + (hue_step * 4) + 0.1f, 0.4f, 0.6f);
-      split_text("Split text example", c1, c2, 15, 80);
+      split_text("Split text \\spr002", c1, c2, 15, 80);
+      pen(c1); frect(0, 80, 5, 7);
 
       // glow text
       auto glow_text = [](std::string m, color_t c, int32_t x, int32_t y) {
-        blend(ALPHA);
+        blend(PEN);
         pen(c);
         text(m, x - 1, y - 1); text(m, x    , y - 1); text(m, x + 1, y - 1);
         text(m, x - 1, y    ); text(m, x    , y    ); text(m, x + 1, y    );
         text(m, x - 1, y + 1); text(m, x    , y + 1); text(m, x + 1, y + 1);
-        blend(MASK);
+        blend(PEN);
         pen(0, 0, 0);
         text(m, x, y);
       };
       int32_t g = 1 + ((sin(time() / 250.0f) + 1.0f) * 2.0f);
       c1 = hsv(hue + (hue_step * 5), 0.8f, 1.0f, 0.2f);
-      glow_text("Glow text example", c1, 15, 95);
+      glow_text("Glow text \\spr001", c1, 15, 95);
+      pen(c1); frect(0, 95, 5, 7);
 
       // glitch text
       auto glitch_text = [](std::string m, color_t c, int32_t x, int32_t y) {
@@ -247,7 +256,8 @@ Lo, brave adventurer! Choose a tasty treat:\
 
       // split text
       c1 = hsv(hue + (hue_step * 6), 0.8f, 1.0f);
-      glitch_text("Glitch text example", c1, 13, 110);
+      glitch_text("Glitch text \\spr000", c1, 15, 110);
+      pen(c1); frect(0, 110, 5, 7);
 
     }break;
   }
