@@ -21,9 +21,6 @@ void title(std::string t) {
   text(t + " (" + str(view + 1) + "/" + str(view_count) + ")", 2, 2);
 }
 
-extern color_t image_data[1440];
-buffer_t douglas = {.w = 32, .h = 45, .data = image_data};
-
 void draw(uint32_t tick) {
   pen(0, 0, 0);
   clear();

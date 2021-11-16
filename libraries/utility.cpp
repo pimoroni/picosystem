@@ -111,4 +111,50 @@ namespace picosystem {
     return _fsin_lut[uint8_t((v * _2PI_LUTS) + 64)];
   }
 
+  float rndf(float min, float max) {
+    return ((float(std::rand()) / float(RAND_MAX)) * (max - min)) + min;
+  }
+
+  int rnd(int min, int max) {
+    return (std::rand() % (max - min)) + min;
+  }
+
+  float deg2rad(float a) {
+    constexpr float d2r = 3.1415927f / 180.0f;
+    return a * d2r;
+  }
+
+  float rad2deg(float r) {
+    constexpr float r2d = 180.0f / 3.1415927f;
+    return r * r2d;
+  }
+
+  int clamp(int v, int min, int max) {
+    v = v < min ? min : v;
+    v = v > max ? max : v;
+    return v;
+  }
+
+  float clamp(float v, float min, float max) {
+    v = v < min ? min : v;
+    v = v > max ? max : v;
+    return v;
+  }
+
+  uint8_t a(color_t &c) {
+    return (c & 0x00f0) >> 4;
+  }
+
+  uint8_t r(color_t &c) {
+    return (c & 0x000f) >> 0;
+  }
+
+  uint8_t g(color_t &c) {
+    return (c & 0xf000) >> 12;
+  }
+
+  uint8_t b(color_t &c) {
+    return (c & 0x0f00) >> 8;
+  }
+
 }

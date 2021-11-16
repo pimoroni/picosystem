@@ -24,9 +24,17 @@ namespace picosystem {
   }
 
   inline __attribute__((always_inline)) uint32_t _blend(uint32_t s, uint32_t d, uint8_t a) {
-    // blend source and destination (adding 0xf to each channel to makes
-    // end result ceil() instead of floor())
-    return ((s * a + d * (0x10 - a)) + 0x0f0f0f0f) >> 4;
+    // bias_mask ensures that when the source is greater than the destination
+    // (per channel, not as a whole) we bias up by adding 0x0f (causing the
+    // later >>4 truncation to effectively ceil()) and when the source is less
+    // than the destination we don't apply any bias causing the truncation to
+    // floor().
+    //
+    // the `((d - s) & 0xf0f0f0f0) >> 4` results in a mask of '0's and
+    // 'f's as appropriate for each channel so that they can be individually
+    // biased or not as needed.
+    uint32_t bias_mask = ((d - s) & 0xf0f0f0f0) >> 4;
+    return ((s * a + d * (0x10 - a)) + bias_mask) >> 4;
   }
 
   inline __attribute__((always_inline)) uint32_t _unpack_channels(uint32_t s) {
@@ -36,7 +44,7 @@ namespace picosystem {
   }
 
   inline __attribute__((always_inline)) uint32_t _pack_channels(uint32_t s) {
-    // reconstruct 16bit destination colour
+    // reconstruct 16bit colour value from unpacked channels
     return (s & 0x0f0f) | ((s >> 12) & 0xf0f0);
   }
 

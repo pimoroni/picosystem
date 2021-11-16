@@ -161,6 +161,9 @@ namespace picosystem {
     int32_t _wtx = _tx + wrap;
     bool in_word = false;
 
+    // save current pen in case escape codes change it
+    color_t oc = _pen;
+
     for(std::size_t i = 0; i < t.size(); i++) {
       char c = t[i];
 
@@ -203,6 +206,7 @@ namespace picosystem {
     // set cursor to start of next line
     _ty += _tlh;
     _tx = _stx;
+    _pen = oc;
   }
 
   void text(const std::string &t, int32_t x, int32_t y, int32_t wrap) {

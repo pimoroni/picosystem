@@ -35,6 +35,10 @@ namespace picosystem {
     int32_t w, h;
     color_t *data;
 
+    buffer_t() : w(0), h(0), data(nullptr) {}
+    buffer_t(int32_t w, int32_t h, color_t *data = nullptr)
+      : w(w), h(h), data(data) {}
+
     color_t *p(int32_t x, int32_t y) {
       return data + (x + y * w);
     }
@@ -187,6 +191,10 @@ namespace picosystem {
   std::string str(std::size_t v);
   std::string str(uint32_t v);
   color_t     rgb(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 15);
+  uint8_t     a(color_t &c);
+  uint8_t     r(color_t &c);
+  uint8_t     g(color_t &c);
+  uint8_t     b(color_t &c);
   color_t     hsv(float h, float s, float v, float a = 1.0f);
   buffer_t*   buffer(uint32_t w, uint32_t h, void *data = nullptr);
   uint32_t    time();
@@ -212,6 +220,12 @@ namespace picosystem {
   float       fsin(float v);
   float       fcos(float v);
   color_t     mix(color_t c1, color_t c2, uint8_t m);
+  float       rndf(float min, float max);
+  int         rnd(int min, int max);
+  float       deg2rad(float a);
+  float       rad2deg(float r);
+  int         clamp(int v, int min, int max);
+  float       clamp(float v, float min, float max);
 
   // hardware
   bool        pressed(uint32_t b);

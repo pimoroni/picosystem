@@ -14,6 +14,7 @@ pico_sdk_init()
 include(${CMAKE_CURRENT_LIST_DIR}/libraries/picosystem.cmake REQUIRED)
 
 add_subdirectory(examples)
+add_subdirectory(tutorials)
 
 # setup release packages
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)

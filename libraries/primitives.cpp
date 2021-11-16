@@ -60,7 +60,7 @@ namespace picosystem {
 
   void circle(int32_t x, int32_t y, int32_t r) {
     _camera_offset(x, y);
-    if(!intersects(x - r, y - r, r + r, r + r, _cx, _cy, _cw, _ch)) {
+    if(!intersects(x - r, y - r, r + r, r + r, _cx, _cy, _cw, _ch) || r < 1) {
       return;
     }
 
@@ -98,7 +98,7 @@ namespace picosystem {
 
   void fcircle(int32_t x, int32_t y, int32_t r) {
     _camera_offset(x, y);
-    if(!intersects(x - r, y - r, r + r, r + r, _cx, _cy, _cw, _ch)) {
+    if(!intersects(x - r, y - r, r + r, r + r, _cx, _cy, _cw, _ch) || r < 1) {
       return;
     }
 
