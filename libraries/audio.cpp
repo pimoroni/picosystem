@@ -39,6 +39,10 @@ namespace picosystem {
     return (_ms > _duration + _voice.release + _voice.reverb) ? -1 : _ms;
   }
 
+  bool playing() {
+    return position() != -1;
+  }
+
   uint8_t audio_sample(uint32_t ms) {
     // calculate full duration including release and reverb
     uint32_t full_duration = _duration + _voice.release + _voice.reverb;
