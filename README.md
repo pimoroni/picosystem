@@ -41,6 +41,8 @@ our [PicoSystem C++ API Cheatsheet](https://learn.pimoroni.com/article/picosyste
 
 ### Getting started
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/.../...)
+
 *First things first!* You must install
 [Raspberry Pi's Pico SDK](https://github.com/raspberrypi/pico-sdk) following the
 instructions they provide.
@@ -62,6 +64,7 @@ git clone git@github.com:pimoroni/picosystem.git
 3. Create a build folder and build the examples
 ```
 mkdir build
+cd build
 cmake ..
 make -j8
 ```
