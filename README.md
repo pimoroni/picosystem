@@ -54,14 +54,15 @@ mkdir picosystem
 cd picosystem
 ```
 
-2. Clone this repository
+2. Clone and navigate to this repository
 ```
-git clone git@github.com:pimoroni/picosystem.git
+git clone https://github.com/pimoroni/picosystem.git
+cd picosystem/
 ```
 
 3. Create a build folder and build the examples
 ```
-mkdir build
+mkdir build && cd build
 cmake ..
 make -j8
 ```
