@@ -152,16 +152,54 @@ spritesheet(my_sprites)
 
 ## Build from source
 
+These steps mirror those in the GitHub actions workflow: https://github.com/pimoroni/picosystem/blob/main/.github/workflows/micropython.yml
+
+A customised version of MicroPython is required, since PicoSystem uses some hacks that have not yet been tidied and submitted upstream.
+
+Clone PicoSystem (if you have not already done so):
+
 ```
-git clone https://github.com/pimoroni/micropython -b board/rp2/pimoroni_picosystem
+git clone https://github.com/pimoroni/picosystem
+```
+
+Clone MicroPython and fetch the submodules (note you must use the `experimental/picosystem` branch for now, this is subject to change):
+
+```
+git clone https://github.com/pimoroni/micropython -b experimental/picosystem
 cd micropython
 git submodule update --init
 cd lib/pico-sdk
 git submodule update --init
-cd ../../micropython/mpy_cross
+```
+
+Build mpy-cross:
+
+```
+cd ../../mpy-cross
 make
+```
+
+Navigate to the RP2 port:
+
+```
 cd ../ports/rp2
+```
+
+Copy frozen modules:
+
+```
 cp ../../../picosystem/micropython/modules_py/boot.py modules/
+cp ../../../picosystem/micropython/examples/picosystem/colour.py modules/
+cp ../../../picosystem/micropython/examples/picosystem/shapes.py modules/
+cp ../../../picosystem/micropython/examples/picosystem/text.py modules/
+cp ../../../picosystem/micropython/examples/picosystem/music.py modules/
+cp ../../../picosystem/micropython/examples/picosystem/audio.py modules/
+cp ../../../picosystem/micropython/examples/picosystem/launcher.py modules/
+```
+
+Build:
+
+```
 make USER_C_MODULES=../../../picosystem/micropython/modules/micropython.cmake BOARD=PIMORONI_PICOSYSTEM
 cp build-PIMORONI_PICOSYSTEM/firmware.uf2 /path/to/RPI-RP2/
 ```
