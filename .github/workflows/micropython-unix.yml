@@ -1,0 +1,93 @@
+name: MicroPython SDL
+
+on:
+  push:
+  pull_request:
+  release:
+    types: [created]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  MICROPYTHON_VERSION: v1.17
+  BUILD_TYPE: Release
+  MICROPY_VARIANT: standard
+
+jobs:
+  build:
+    name: ${{matrix.name}}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-20.04
+            name: MicroPython Build (Unix, SDL) (Linux)
+            cache-key: linux
+            apt-packages: libsdl2-dev libreadline-dev
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+    # Check out MicroPython
+    - name: Checkout MicroPython
+      uses: actions/checkout@v2
+      with:
+        repository: pimoroni/micropython
+        ref: experimental/picosystem-sdl-unix #${{env.MICROPYTHON_VERSION}}
+        submodules: false  # MicroPython submodules are hideously broken
+        path: micropython
+
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+        path: picosystem-${{ github.sha }}
+
+    # Linux deps
+    - name: Install deps
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt update && sudo apt install ${{matrix.apt-packages}}
+
+    - name: Fetch base MicroPython submodules
+      shell: bash
+      working-directory: micropython
+      run: git submodule update --init
+
+    - name: Build mpy-cross
+      shell: bash
+      working-directory: micropython/mpy-cross
+      run: make
+
+    - name: Make MicroPython Build Dir
+      shell: bash
+      working-directory: micropython/ports/unix
+      run: mkdir build
+
+    - name: Build MicroPython
+      shell: bash
+      working-directory: micropython/ports/unix/build
+      run: |
+        cmake .. -DUSER_C_MODULES=../../../picosystem-${GITHUB_SHA}/micropython/modules/micropython-unix.cmake -DSDL2_DIR=/usr/lib/x86_64-linux-gnu/cmake/SDL2/
+        make -j2
+
+    - name: Rename .uf2 for artifact & release
+      shell: bash
+      working-directory: micropython/ports/unix/build
+      run: |
+        cp micropython ${{github.event.repository.name}}-${{github.sha}}-micropython-unix-sdl-${{env.MICROPYTHON_VERSION}}
+        cp micropython ${{github.event.repository.name}}-${{github.event.release.tag_name}}-micropython-unix-sdl-${{env.MICROPYTHON_VERSION}}
+
+    - name: Store .uf2 as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{github.event.repository.name}}-${{github.sha}}-micropython-unix-sdl-${{env.MICROPYTHON_VERSION}}
+        path: micropython/ports/unix/build/${{github.event.repository.name}}-${{github.sha}}-micropython-unix-sdl-${{env.MICROPYTHON_VERSION}}
+
+    - name: Upload .uf2
+      if: github.event_name == 'release'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        asset_path: micropython/ports/unix/build/micropython
+        upload_url: ${{github.event.release.upload_url}}
+        asset_name: ${{github.event.repository.name}}-${{github.event.release.tag_name}}-micropython-unix-sdl-${{env.MICROPYTHON_VERSION}}
+        asset_content_type: application/octet-stream
