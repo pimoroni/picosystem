@@ -102,9 +102,9 @@ If you find things not working as expected on the REPL, reset your pen, cursor, 
 * `poly((x, y), (x, y), (x, y))` - polygon (supply points as tuples)
 * `fpoly((x, y), (x, y), (x, y))` - filled polygon (supply points as tuples)
 * `text(message)` - message at cursor position
-* `text(message, wrap)` - message at cursor position, text will be wrapped on word boundaries if it exceesds wrap width in pixels
+* `text(message, wrap)` - message at cursor position, text will be wrapped on word boundaries if it exceeds wrap width in pixels
 * `text(message, x, y)` - message at xy
-* `text(message, x, y, wrap)` - message at xy, text will be wrapped on word boundaries if it exceesds wrap width in pixels
+* `text(message, x, y, wrap)` - message at xy, text will be wrapped on word boundaries if it exceeds wrap width in pixels
 * `sprite(i, x, y)` - draws sprite from current spritesheet at xy
 * `sprite(i, x, y, cx, cy)` - draws a rectangle of sprites from current spritesheet at xy, cx sprites across and cy sprites down
 * `sprite(i, x, y, cx, cy, dw, dh)` - draws a rectangle of sprites from current spritesheet at xy, cx sprites across and cy sprites down, scaled to a rectangle dw by dh pixels
