@@ -101,6 +101,14 @@ If you find things not working as expected on the REPL, reset your pen, cursor, 
 * `vline(x, y, length)` - vertical line starting from xy, length in pixels
 * `poly((x, y), (x, y), (x, y))` - polygon (supply points as tuples)
 * `fpoly((x, y), (x, y), (x, y))` - filled polygon (supply points as tuples)
+* `text(message)` - message at cursor position
+* `text(message, wrap)` - message at cursor position, text will be wrapped on word boundaries if it exceeds wrap width in pixels
+* `text(message, x, y)` - message at xy
+* `text(message, x, y, wrap)` - message at xy, text will be wrapped on word boundaries if it exceeds wrap width in pixels
+* `sprite(i, x, y)` - draws sprite from current spritesheet at xy
+* `sprite(i, x, y, cx, cy)` - draws a rectangle of sprites from current spritesheet at xy, cx sprites across and cy sprites down
+* `sprite(i, x, y, cx, cy, dw, dh)` - draws a rectangle of sprites from current spritesheet at xy, cx sprites across and cy sprites down, scaled to a rectangle dw by dh pixels
+* `sprite(i, x, y, cx, cy, dw, dh, flags)` - draws a rectangle of sprites from current spritesheet at xy, cx sprites across and cy sprites down, scaled to a rectangle dw by dh pixels, flags can be any combination of HFLIP and VFLIP
 * `blit(Buffer, x, y, w, h, dx, dy)` - blit a portion of a Buffer to dx,dy
 * `blit(Buffer, x, y, w, h, dx, dy, dw, dh)` - blit a portion of a Buffer to dx,dy stretching to dw,dh
 
@@ -111,7 +119,7 @@ If you find things not working as expected on the REPL, reset your pen, cursor, 
 
 ### Buffers
 
-A Buffer contains an image or spriteshet in the screen pixel format (16bit AAAARRRRGGGGBBBB).
+A Buffer contains an image or spritesheet in the screen pixel format (16bit AAAARRRRGGGGBBBB).
 
 You can draw to a Buffer using all the regular drawing operations, or draw a Buffer to the screen with `blit()`.
 
