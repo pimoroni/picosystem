@@ -10,10 +10,10 @@ douglas = Buffer(32, 45)
 def update(tick):
     global view
 
-    if(pressed(RIGHT)):
+    if pressed(RIGHT):
         view += 1
 
-    if(pressed(LEFT)):
+    if pressed(LEFT):
         view -= 1
 
     view %= view_count

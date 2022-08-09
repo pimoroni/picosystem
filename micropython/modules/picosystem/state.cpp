@@ -157,7 +157,7 @@ mp_obj_t picosystem_blend(mp_uint_t n_args, const mp_obj_t *args) {
 
 mp_obj_t picosystem_target(mp_uint_t n_args, const mp_obj_t *args) {
     if (n_args == 1) {
-        if(mp_obj_is_type(args[0], &PicosystemBuffer_type)) {
+        if(mp_obj_is_exact_type(args[0], &PicosystemBuffer_type)) {
             _PicosystemBuffer_obj_t *buffer_obj = MP_OBJ_TO_PTR2(args[0], _PicosystemBuffer_obj_t);
             target(buffer_obj->buffer);
         }
@@ -196,7 +196,7 @@ mp_obj_t picosystem_cursor(mp_uint_t n_args, const mp_obj_t *args) {
 
 mp_obj_t picosystem_spritesheet(mp_uint_t n_args, const mp_obj_t *args)  {
     if (n_args == 1) {
-        if(mp_obj_is_type(args[0], &PicosystemBuffer_type)) {
+        if(mp_obj_is_exact_type(args[0], &PicosystemBuffer_type)) {
             _PicosystemBuffer_obj_t *buffer_obj = MP_OBJ_TO_PTR2(args[0], _PicosystemBuffer_obj_t);
             spritesheet(buffer_obj->buffer);
         }
