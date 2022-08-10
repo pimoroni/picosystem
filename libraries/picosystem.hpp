@@ -12,6 +12,14 @@
 
 #include "pico/stdlib.h"
 
+#ifdef PIXEL_DOUBLE
+#define SCREEN_WIDTH  120
+#define SCREEN_HEIGHT 120
+#else
+#define SCREEN_WIDTH  240
+#define SCREEN_HEIGHT 240
+#endif
+
 void init();
 void update(uint32_t tick);
 void draw(uint32_t tick);
