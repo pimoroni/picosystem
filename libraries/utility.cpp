@@ -60,7 +60,16 @@ namespace picosystem {
     buffer_t *b = new buffer_t();
     b->w = w;
     b->h = h;
-    b->data = data ? (color_t *)data : new color_t[w * h]{};
+    if (data)
+    {
+      b->data = (color_t *)data;
+      b->alloc = false;
+    }
+    else
+    {
+      b->data = new color_t[w * h]{};
+      b->alloc = true;
+    }
     return b;
   }
 
