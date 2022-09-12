@@ -170,10 +170,10 @@ Clone PicoSystem (if you have not already done so):
 git clone https://github.com/pimoroni/picosystem
 ```
 
-Clone MicroPython and fetch the submodules (note you must use the `experimental/picosystem` branch for now, this is subject to change):
+Clone MicroPython and fetch the submodules (note you must use the `experimental/picosystem-1.19` branch for now, this is subject to change):
 
 ```
-git clone https://github.com/pimoroni/micropython -b experimental/picosystem
+git clone https://github.com/pimoroni/micropython -b experimental/picosystem-1.19
 cd micropython
 git submodule update --init
 cd lib/pico-sdk
