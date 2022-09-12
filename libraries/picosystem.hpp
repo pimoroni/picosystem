@@ -34,9 +34,14 @@ namespace picosystem {
   struct buffer_t {
     int32_t w, h;
     color_t *data;
+    bool alloc;
 
     color_t *p(int32_t x, int32_t y) {
       return data + (x + y * w);
+    }
+
+    ~buffer_t() {
+      if (alloc) delete data;
     }
   };
 
