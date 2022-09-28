@@ -170,7 +170,7 @@ STATIC const mp_map_elem_t picosystem_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_quit), MP_ROM_PTR(&picosystem_quit_obj) },
     { MP_ROM_QSTR(MP_QSTR_flip), MP_ROM_PTR(&picosystem_flip_obj) },
     { MP_ROM_QSTR(MP_QSTR_logo), MP_ROM_PTR(&picosystem_logo_obj) },
-    { MP_ROM_QSTR(MP_QSTR_logo), MP_ROM_PTR(&picosystem_stats_obj) },
+    { MP_ROM_QSTR(MP_QSTR_stats), MP_ROM_PTR(&picosystem_stats_obj) },
     { MP_ROM_QSTR(MP_QSTR_play), MP_ROM_PTR(&picosystem_play_obj) },
 
     // state.cpp
