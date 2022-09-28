@@ -15,6 +15,17 @@ STATIC const mp_rom_map_elem_t PicosystemBuffer_locals_dict_table[] = {
 STATIC MP_DEFINE_CONST_DICT(PicosystemBuffer_locals_dict, PicosystemBuffer_locals_dict_table);
 
 /***** Class Definition *****/
+#ifdef MP_DEFINE_CONST_OBJ_TYPE
+MP_DEFINE_CONST_OBJ_TYPE(
+    PicosystemBuffer_type,
+    MP_QSTR_Buffer,
+    MP_TYPE_FLAG_NONE,
+    make_new, PicosystemBuffer_make_new,
+    print, PicosystemBuffer_print,
+    buffer, PicosystemBuffer_get_buffer,
+    locals_dict, (mp_obj_dict_t*)&PicosystemBuffer_locals_dict
+);
+#else
 const mp_obj_type_t PicosystemBuffer_type = {
     { &mp_type_type },
     .name = MP_QSTR_Buffer,
@@ -23,6 +34,7 @@ const mp_obj_type_t PicosystemBuffer_type = {
     .buffer_p = { .get_buffer = PicosystemBuffer_get_buffer },
     .locals_dict = (mp_obj_dict_t*)&PicosystemBuffer_locals_dict,
 };
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // PicosystemVoice Class
@@ -47,6 +59,17 @@ STATIC const mp_rom_map_elem_t PicosystemVoice_locals_dict_table[] = {
 STATIC MP_DEFINE_CONST_DICT(PicosystemVoice_locals_dict, PicosystemVoice_locals_dict_table);
 
 /***** Class Definition *****/
+
+#ifdef MP_DEFINE_CONST_OBJ_TYPE
+MP_DEFINE_CONST_OBJ_TYPE(
+    PicosystemVoice_type,
+    MP_QSTR_Voice,
+    MP_TYPE_FLAG_NONE,
+    make_new, PicosystemVoice_make_new,
+    print, PicosystemVoice_print,
+    locals_dict, (mp_obj_dict_t*)&PicosystemVoice_locals_dict
+);
+#else
 const mp_obj_type_t PicosystemVoice_type = {
     { &mp_type_type },
     .name = MP_QSTR_Voice,
@@ -55,6 +78,7 @@ const mp_obj_type_t PicosystemVoice_type = {
     .locals_dict = (mp_obj_dict_t*)&PicosystemVoice_locals_dict,
     //.attr = PicosystemVoice_attr,
 };
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // picosystem Module
