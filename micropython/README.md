@@ -73,7 +73,7 @@ If you find things not working as expected on the REPL, reset your pen, cursor, 
 
 * `pen(number)`, `pen(r, g, b)` or `pen(r, g, b, a)` - set the drawing colour
 * `pen()` - reset the drawing colour to white (15, 15, 15, 15)
-* `clip(x, y, w, h` - set the clipping region (drawing outside this region is ignored)
+* `clip(x, y, w, h)` - set the clipping region (drawing outside this region is ignored)
 * `clip()` - reset the clipping region *to the drawing target size* (0, 0, 120, 120 if SCREEN)
 * `blend(COPY / ALPHA / MASK)` - set the blend mode
 * `blend()` - reset the blend mode (`ALPHA`)
