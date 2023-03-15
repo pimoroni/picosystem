@@ -134,7 +134,7 @@ mp_obj_t picosystem_poly(mp_uint_t n_args, const mp_obj_t *args) {
 
     if(num_tuples > 0) {
         size_t num_points = num_tuples * 2;
-        int32_t* points = new int32_t[num_points];
+        int32_t* points = m_new(int32_t, num_points);
         size_t i2 = 0;
         for(size_t i = 0; i < num_tuples; i++) {
             mp_obj_t obj = tuples[i];
@@ -152,7 +152,7 @@ mp_obj_t picosystem_poly(mp_uint_t n_args, const mp_obj_t *args) {
             }
         }
         poly(points, num_tuples);
-        delete[] points;
+        m_free(points);
     }
 
     return mp_const_none;

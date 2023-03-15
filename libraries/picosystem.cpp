@@ -24,12 +24,22 @@ namespace picosystem {
   #ifndef DYNAMIC_BUFFER
   #ifdef PIXEL_DOUBLE
     color_t _fb[120 * 120] __attribute__ ((aligned (4))) = { };
-    buffer_t *SCREEN = buffer(120, 120, _fb);
+    buffer_t _SCREEN = {
+      .w = 120,
+      .h = 120,
+      .data = (color_t *)&_fb
+    };
     int32_t _cx = 0, _cy = 0, _cw = 120, _ch = 120;
+    buffer_t *SCREEN = &_SCREEN;
   #else
     color_t _fb[240 * 240] __attribute__ ((aligned (4))) = { };
-    buffer_t *SCREEN = buffer(240, 240, _fb);
+    buffer_t _SCREEN = {
+      .w = 240,
+      .h = 240,
+      .data = (color_t *)&_fb
+    };
     int32_t _cx = 0, _cy = 0, _cw = 240, _ch = 240;
+    buffer_t *SCREEN = &_SCREEN;
   #endif
   #else
     buffer_t *SCREEN = nullptr;
@@ -41,7 +51,12 @@ namespace picosystem {
   #ifdef NO_SPRITESHEET
     buffer_t *_ss = nullptr;
   #else
-    buffer_t *SPRITESHEET = buffer(128, 128, (void *)_default_sprite_sheet);
+    buffer_t _SPRITESHEET = {
+      .w = 128,
+      .h = 128,
+      .data = (color_t *)_default_sprite_sheet
+    };
+    buffer_t *SPRITESHEET = &_SPRITESHEET;
     buffer_t *_ss = SPRITESHEET;
   #endif
 
