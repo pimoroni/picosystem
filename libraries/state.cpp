@@ -84,7 +84,7 @@ namespace picosystem {
     _ss = SPRITESHEET;
   }
 
-  void spritesheet(buffer_t *ss) {
+  void spritesheet(const buffer_t *ss) {
     _ss = ss;
   }
 

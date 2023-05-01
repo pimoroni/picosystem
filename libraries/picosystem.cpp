@@ -38,21 +38,21 @@ namespace picosystem {
   buffer_t *_dt = SCREEN;
 
   #ifdef NO_SPRITESHEET
-    buffer_t *_ss = nullptr;
+    const buffer_t *_ss = nullptr;
   #else
     buffer_t _SPRITESHEET = {
       .w = 128,
       .h = 128,
       .data = (color_t *)_default_sprite_sheet
     };
-    buffer_t *SPRITESHEET = &_SPRITESHEET;
-    buffer_t *_ss = SPRITESHEET;
+    const buffer_t *SPRITESHEET = &_SPRITESHEET;
+    const buffer_t *_ss = SPRITESHEET;
   #endif
 
   #ifdef NO_FONT
-    uint8_t *_font = nullptr;
+    const uint8_t *_font = nullptr;
   #else
-    uint8_t *_font = (uint8_t *)&_default_font[0][0];
+    const uint8_t *_font = &_default_font[0][0];
   #endif
 
 }
