@@ -1,4 +1,5 @@
 #include <math.h>
+#include <array>
 
 #include "picosystem.hpp"
 
