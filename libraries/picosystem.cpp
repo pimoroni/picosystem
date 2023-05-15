@@ -22,18 +22,13 @@ namespace picosystem {
   blend_func_t _bf = ALPHA;
 
   #ifndef DYNAMIC_BUFFER
-  #ifdef PIXEL_DOUBLE
-    color_t _fb[120 * 120] __attribute__ ((aligned (4))) = { };
-    buffer_t *SCREEN = buffer(120, 120, _fb);
-    int32_t _cx = 0, _cy = 0, _cw = 120, _ch = 120;
-  #else
-    color_t _fb[240 * 240] __attribute__ ((aligned (4))) = { };
-    buffer_t *SCREEN = buffer(240, 240, _fb);
-    int32_t _cx = 0, _cy = 0, _cw = 240, _ch = 240;
-  #endif
+
+    color_t _fb[SCREEN_WIDTH * SCREEN_HEIGHT] __attribute__ ((aligned (4))) = { };
+    buffer_t *SCREEN = buffer(SCREEN_WIDTH, SCREEN_HEIGHT, _fb);
+    int32_t _cx = 0, _cy = 0, _cw = SCREEN_WIDTH, _ch = SCREEN_HEIGHT;
   #else
     buffer_t *SCREEN = nullptr;
-    int32_t _cx = 0, _cy = 0, _cw = 120, _ch = 120;
+    int32_t _cx = 0, _cy = 0, _cw = SCREEN_WIDTH, _ch = SCREEN_HEIGHT;
   #endif
 
   buffer_t *_dt = SCREEN;
