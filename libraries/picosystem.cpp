@@ -158,8 +158,6 @@ int main() {
     start_flip = time_us();
     _flip();
 
-    tick++;
-
     stats.tick_us = time_us() - start_tick_us;
 
     // calculate fps and round to nearest value (instead of truncating/floor)
