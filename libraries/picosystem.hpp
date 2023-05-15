@@ -40,6 +40,10 @@ namespace picosystem {
       return data + (x + y * w);
     }
 
+    const color_t *p(int32_t x, int32_t y) const {
+      return data + (x + y * w);
+    }
+
     ~buffer_t() {
       if (alloc) delete data;
     }
@@ -57,8 +61,8 @@ namespace picosystem {
   constexpr uint32_t VFLIP  = 0x02;
 
   using blend_func_t =
-    void(*)(color_t* source, int32_t so, int32_t ss,
-            color_t*   dest, uint32_t count);
+    void(*)(const color_t* source, int32_t so, int32_t ss,
+                  color_t*   dest, uint32_t count);
 
   // drawing state
   extern color_t        _pen;                // pen
@@ -72,9 +76,10 @@ namespace picosystem {
   extern blend_func_t   _bf;                 // blend function
   extern buffer_t      * SCREEN;             // framebuffer
   extern buffer_t      *_dt;                 // drawing target
-  extern buffer_t      * SPRITESHEET;        // inbuilt spritesheet
-  extern buffer_t      *_ss;                 // sprite sheet
-  extern uint8_t       *_font;               // font data
+
+  extern const buffer_t * SPRITESHEET;        // inbuilt spritesheet
+  extern const buffer_t *_ss;                 // sprite sheet
+  extern const uint8_t  *_font;               // font data
 
   // audio state
   extern voice_t        _v;                   // current voice
@@ -99,7 +104,7 @@ namespace picosystem {
   void        camera();
   void        camera(int32_t x, int32_t y);
   void        spritesheet();
-  void        spritesheet(buffer_t *ss);
+  void        spritesheet(const buffer_t *ss);
   void        cursor();
   void        cursor(int32_t x, int32_t y);
   void        font(
@@ -123,12 +128,12 @@ namespace picosystem {
   void        fellipse(int32_t x, int32_t y, int32_t rx, int32_t ry);
   void        line(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
   void        blit(
-                buffer_t *source,
+                const buffer_t *source,
                 int32_t x, int32_t y, int32_t w, int32_t h,
                 int32_t dx, int32_t dy,
                 uint32_t flags = 0);
   void        blit(
-                buffer_t *source,
+                const buffer_t *source,
                 int32_t sx, int32_t sy, int32_t sw, int32_t sh,
                 int32_t dx, int32_t dy, int32_t dw, int32_t dh,
                 uint32_t flags = 0);
@@ -153,25 +158,25 @@ namespace picosystem {
 
   // blend functions
   void        COPY(
-                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
+                const color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        ALPHA(
-                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
+                const color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        MASK(
-                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
+                const color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        PEN(
-                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
+                const color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        DARKEN(
-                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
+                const color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        LIGHTEN(
-                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
+                const color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        ADD(
-                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
+                const color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        SUBTRACT(
-                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
+                const color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        MULTIPLY(
-                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
+                const color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
   void        DISSOLVE(
-                color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
+                const color_t* ps, int32_t so, int32_t ss, color_t* pd, uint32_t c);
 
   // audio
   voice_t     voice(

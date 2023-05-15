@@ -290,7 +290,7 @@ namespace picosystem {
     poly(pts.begin(), pts.size() / 2);
   }
 
-  void blit(buffer_t *src, int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t dx, int32_t dy, uint32_t flags) {
+  void blit(const buffer_t *src, int32_t sx, int32_t sy, int32_t w, int32_t h, int32_t dx, int32_t dy, uint32_t flags) {
     _camera_offset(dx, dy);
 
     if(!intersects(dx, dy, w, h, _cx, _cy, _cw, _ch)) {
@@ -313,7 +313,7 @@ namespace picosystem {
       return;
     }
 
-    color_t *ps = src->data + (sx + sy * src->w);
+    const color_t *ps = src->data + (sx + sy * src->w);
     color_t *pd = _dt->data + (dx + dy * _dt->w);
 
     int32_t so = 0;
@@ -338,7 +338,7 @@ namespace picosystem {
     }
   }
 
-  void blit(buffer_t *src, int32_t sx, int32_t sy, int32_t sw, int32_t sh, int32_t dx, int32_t dy, int32_t dw, int32_t dh, uint32_t flags) {
+  void blit(const buffer_t *src, int32_t sx, int32_t sy, int32_t sw, int32_t sh, int32_t dx, int32_t dy, int32_t dw, int32_t dh, uint32_t flags) {
     _camera_offset(dx, dy);
 
     if(!intersects(dx, dy, dw, dh, _cx, _cy, _cw, _ch)) {
@@ -350,7 +350,7 @@ namespace picosystem {
     int32_t ssx = 0, ssxs = (sw << 16) / dw;
 
     color_t *pd = _dt->p(dx, dy);
-    color_t *ps = src->p(sx, sy);
+    const color_t *ps = src->p(sx, sy);
 
     // if we need to offset our start to the clip area then we need to jump
     // ahead in the source
