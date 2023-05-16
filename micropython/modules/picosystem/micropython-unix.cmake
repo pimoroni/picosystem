@@ -4,7 +4,7 @@ add_library(usermod_${MOD_NAME} INTERFACE)
 
 target_sources(usermod_${MOD_NAME} INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/picosystem.c
-    ${CMAKE_CURRENT_LIST_DIR}/picosystem.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/picosystem-unix.cpp
     ${CMAKE_CURRENT_LIST_DIR}/voice.cpp
     ${CMAKE_CURRENT_LIST_DIR}/buffer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/state.cpp
@@ -13,19 +13,16 @@ target_sources(usermod_${MOD_NAME} INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/utility.cpp
     ${CMAKE_CURRENT_LIST_DIR}/hardware.cpp
     ${CMAKE_CURRENT_LIST_DIR}/stats.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/picosystem.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/picosystem-unix.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/audio.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/blend.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/state.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/primitives.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/hardware-unix.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/text.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/utility.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/hardware.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/assets.cpp
 )
-
-pico_generate_pio_header(usermod_picosystem ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/screen.pio)
-pico_generate_pio_header(usermod_picosystem ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/screen_double.pio)
 
 target_include_directories(usermod_${MOD_NAME} INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}
@@ -50,9 +47,19 @@ set_source_files_properties(
     "-DPIXEL_DOUBLE=1"
 )
 
-# Squash warnings in codebase.
-# MicroPython compiles with -Werror
-# TODO fix these!
+set_source_files_properties(
+    ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/blend.cpp
+    PROPERTIES COMPILE_FLAGS
+    "-fpermissive -Wno-error"
+)
+
+set_source_files_properties(
+    ${CMAKE_CURRENT_LIST_DIR}/state.cpp
+    PROPERTIES COMPILE_FLAGS
+    "-Wno-error=format="
+)
+
+# TODO fix sign compare issues in codebase
 set_source_files_properties(
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/primitives.cpp
     PROPERTIES COMPILE_FLAGS
@@ -62,9 +69,4 @@ set_source_files_properties(
     ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/text.cpp
     PROPERTIES COMPILE_FLAGS
     "-Wno-error=sign-compare"
-)
-set_source_files_properties(
-    ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/utility.cpp
-    PROPERTIES COMPILE_FLAGS
-    "-Wno-error=format="
 )
