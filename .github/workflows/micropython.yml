@@ -69,8 +69,8 @@ jobs:
       RELEASE_FILE: pimoroni-${{matrix.shortname}}-${{github.event.release.tag_name || github.sha}}-micropython.uf2
       RELEASE_FILE_WITH_OS: pimoroni-${{matrix.shortname}}-${{github.event.release.tag_name || github.sha}}-micropython-with-examples.uf2
       BOARD_DIR: "$GITHUB_WORKSPACE/picosystem/micropython/${{matrix.board}}"
-      EXAMPLES_DIR: "$GITHUB_WORKSPACE/picosystem/micropython/examples/picosystem/"
-      C_MODULES_DIR: "$GITHUB_WORKSPACE/picosystem/micropython/modules/"
+      EXAMPLES_DIR: "$GITHUB_WORKSPACE/picosystem/micropython/examples/picosystem"
+      C_MODULES_DIR: "$GITHUB_WORKSPACE/picosystem/micropython/modules"
 
     steps:
     - name: Compiler Cache

@@ -1,6 +1,10 @@
 # PicoSystem boot script
 import picosystem
 import builtins
+import cppmem
+
+# Switch C++ memory allocations to use MicroPython's heap
+cppmem.set_mode(cppmem.MICROPYTHON)
 
 # Import PicoSystem module constants to builtins,
 # so they are available globally.
