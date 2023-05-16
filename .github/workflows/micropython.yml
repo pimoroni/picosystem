@@ -109,6 +109,17 @@ jobs:
         ref: v0.0.1
         path: dir2uf2
 
+    - name: "HACK: Revert Patches"  # Avoid an already-patched MicroPython tree breaking our build
+      shell: bash
+      working-directory: micropython
+      run: |
+        git checkout ports/rp2/CMakeLists.txt
+
+    - name: "HACK: CMakeLists.txt Disable C++ Exceptions Patch"
+      shell: bash
+      working-directory: micropython
+      run: git apply $GITHUB_WORKSPACE/picosystem/micropython/micropython_nano_specs.patch
+
     # Install apt packages
     - name: Install CCache & Compiler
       shell: bash
