@@ -345,7 +345,7 @@ mp_obj_t PicosystemVoice_make_new(const mp_obj_type_t *type, size_t n_args, size
 }
 
 mp_obj_t picosystem_audio_play(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    if(!mp_obj_is_type(pos_args[0], &PicosystemVoice_type)) {
+    if(!mp_obj_is_exact_type(pos_args[0], &PicosystemVoice_type)) {
         mp_raise_TypeError("play: not a valid Voice. Expected a Voice class");
     }
 

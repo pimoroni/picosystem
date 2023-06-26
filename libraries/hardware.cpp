@@ -179,11 +179,13 @@ namespace picosystem {
   }
 
   void screen_program_init(PIO pio, uint sm) {
+    pio_clear_instruction_memory(pio);
+  
     #ifdef PIXEL_DOUBLE
-      uint offset = pio_add_program(screen_pio, &screen_double_program);
+      uint offset = pio_add_program(pio, &screen_double_program);
       pio_sm_config c = screen_double_program_get_default_config(offset);
     #else
-      uint offset = pio_add_program(screen_pio, &screen_program);
+      uint offset = pio_add_program(pio, &screen_program);
       pio_sm_config c = screen_program_get_default_config(offset);
     #endif
 
@@ -211,8 +213,8 @@ namespace picosystem {
     // join fifos as only tx needed (gives 8 deep fifo instead of 4)
     sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);
 
-    pio_gpio_init(screen_pio, MOSI);
-    pio_gpio_init(screen_pio, SCK);
+    pio_gpio_init(pio, MOSI);
+    pio_gpio_init(pio, SCK);
 
     pio_sm_init(pio, sm, offset, &c);
     pio_sm_set_enabled(pio, sm, true);

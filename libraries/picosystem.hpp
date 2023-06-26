@@ -6,7 +6,9 @@
 #include <initializer_list>
 
 #include <string>
+#include <string_view>
 #include <vector>
+#include <charconv>
 
 #include "pico/stdlib.h"
 
@@ -144,11 +146,11 @@ namespace picosystem {
                 int32_t dw, int32_t dh, uint32_t flags);
   void        text(const char &c);
   void        text(
-                const std::string &t,
+                const std::string_view &t,
                 int32_t x, int32_t y,
                 int32_t wrap = -1);
   void        text(
-                const std::string &t,
+                const std::string_view &t,
                 int32_t wrap = -1);
 
   // blend functions
@@ -210,10 +212,10 @@ namespace picosystem {
                 int32_t  x, int32_t  y, int32_t  w, int32_t  h,
                 int32_t cx, int32_t cy, int32_t cw, int32_t ch);
   void        measure(
-                const std::string &t,
+                const std::string_view &t,
                 int32_t &w, int32_t &h,
                 int32_t wrap = -1);
-  std::vector<std::string> split(const std::string& t, char d = '\n');
+  std::vector<std::string_view> split(const std::string_view& t, char d = '\n');
   float       fsin(float v);
   float       fcos(float v);
   color_t     mix(color_t c1, color_t c2, uint8_t m);

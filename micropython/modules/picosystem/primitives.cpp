@@ -117,7 +117,7 @@ mp_obj_t picosystem_poly(mp_uint_t n_args, const mp_obj_t *args) {
 
     // Check if there is only one argument, which might be a list
     if(n_args == 1) {
-        if(mp_obj_is_type(args[0], &mp_type_list)) {
+        if(mp_obj_is_exact_type(args[0], &mp_type_list)) {
             mp_obj_list_t *points = MP_OBJ_TO_PTR2(args[0], mp_obj_list_t);
             if(points->len > 0) {
                 num_tuples = points->len;
@@ -134,11 +134,11 @@ mp_obj_t picosystem_poly(mp_uint_t n_args, const mp_obj_t *args) {
 
     if(num_tuples > 0) {
         size_t num_points = num_tuples * 2;
-        int32_t* points = new int32_t[num_points];
+        int32_t* points = m_new(int32_t, num_points);
         size_t i2 = 0;
         for(size_t i = 0; i < num_tuples; i++) {
             mp_obj_t obj = tuples[i];
-            if(!mp_obj_is_type(obj, &mp_type_tuple)) {
+            if(!mp_obj_is_exact_type(obj, &mp_type_tuple)) {
                 mp_raise_ValueError("poly(): can't convert object to tuple");
             }
             else {
@@ -152,7 +152,7 @@ mp_obj_t picosystem_poly(mp_uint_t n_args, const mp_obj_t *args) {
             }
         }
         poly(points, num_tuples);
-        delete[] points;
+        m_free(points);
     }
 
     return mp_const_none;
@@ -164,7 +164,7 @@ mp_obj_t picosystem_fpoly(mp_uint_t n_args, const mp_obj_t *args) {
 
     // Check if there is only one argument, which might be a list
     if(n_args == 1) {
-        if(mp_obj_is_type(args[0], &mp_type_list)) {
+        if(mp_obj_is_exact_type(args[0], &mp_type_list)) {
             mp_obj_list_t *points = MP_OBJ_TO_PTR2(args[0], mp_obj_list_t);
             if(points->len > 0) {
                 num_tuples = points->len;
@@ -185,7 +185,7 @@ mp_obj_t picosystem_fpoly(mp_uint_t n_args, const mp_obj_t *args) {
         size_t i2 = 0;
         for(size_t i = 0; i < num_tuples; i++) {
             mp_obj_t obj = tuples[i];
-            if(!mp_obj_is_type(obj, &mp_type_tuple)) {
+            if(!mp_obj_is_exact_type(obj, &mp_type_tuple)) {
                 mp_raise_ValueError("fpoly(): can't convert object to tuple");
             }
             else {
@@ -206,7 +206,7 @@ mp_obj_t picosystem_fpoly(mp_uint_t n_args, const mp_obj_t *args) {
 }
 
 mp_obj_t picosystem_blit(mp_uint_t n_args, const mp_obj_t *args) {
-    if(mp_obj_is_type(args[0], &PicosystemBuffer_type)) {
+    if(mp_obj_is_exact_type(args[0], &PicosystemBuffer_type)) {
         _PicosystemBuffer_obj_t *buffer_obj = MP_OBJ_TO_PTR2(args[0], _PicosystemBuffer_obj_t);
 
         int x = mp_obj_get_int(args[1]);

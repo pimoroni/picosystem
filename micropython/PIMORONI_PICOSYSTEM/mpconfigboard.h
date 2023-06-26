@@ -1,0 +1,30 @@
+#define MICROPY_HW_BOARD_NAME          "Pimoroni PicoSystem"
+#define MICROPY_HW_FLASH_STORAGE_BYTES (15 * 1024 * 1024)
+
+// --- I2C ---
+#ifndef PICO_DEFAULT_I2C
+#define PICO_DEFAULT_I2C 0
+#endif
+#ifndef PICO_DEFAULT_I2C_SDA_PIN
+#define PICO_DEFAULT_I2C_SDA_PIN 4
+#endif
+#ifndef PICO_DEFAULT_I2C_SCL_PIN
+#define PICO_DEFAULT_I2C_SCL_PIN 5
+#endif
+
+// --- SPI ---
+#ifndef PICO_DEFAULT_SPI
+#define PICO_DEFAULT_SPI 0
+#endif
+#ifndef PICO_DEFAULT_SPI_SCK_PIN
+#define PICO_DEFAULT_SPI_SCK_PIN 18
+#endif
+#ifndef PICO_DEFAULT_SPI_TX_PIN
+#define PICO_DEFAULT_SPI_TX_PIN 19
+#endif
+#ifndef PICO_DEFAULT_SPI_RX_PIN
+#define PICO_DEFAULT_SPI_RX_PIN 16
+#endif
+#ifndef PICO_DEFAULT_SPI_CSN_PIN
+#define PICO_DEFAULT_SPI_CSN_PIN 17
+#endif

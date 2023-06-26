@@ -32,7 +32,7 @@ namespace picosystem {
     _tx += _char_width(c) + _tls;
   }
 
-  bool _matches(const std::string &t, const std::string &m, std::size_t &i) {
+  bool _matches(const std::string_view &t, const std::string_view &m, std::size_t &i) {
     std::size_t j = 0;
     while(j < m.size()) {
       if(t[i + j] != m[j]) {
@@ -46,7 +46,7 @@ namespace picosystem {
     return true;
   }
 
-  uint32_t _skip_escape_code(const std::string &t, std::size_t &i) {
+  uint32_t _skip_escape_code(const std::string_view &t, std::size_t &i) {
     uint32_t l = 0;
     i++;
     if(_matches(t, "pen", i)) {
@@ -60,7 +60,7 @@ namespace picosystem {
   }
 
   // search for end of the next word (including any e)
-  uint32_t _next_word_length(const std::string &t, std::size_t i) {
+  uint32_t _next_word_length(const std::string_view &t, std::size_t i) {
     // search through until we find a non word character to break on
     uint32_t l = 0;
     while(true) {
@@ -86,8 +86,8 @@ namespace picosystem {
     return 0;
   }
 
-  void _parse_escape_code(const std::string &t, std::size_t &i) {
-    i++;
+  void _parse_escape_code(const std::string_view &t, std::size_t &i) {
+    i++; // Skip the escape character
     if (_matches(t, "pen", i) ){
       uint8_t r = _hex_to_int(t[i++]);
       uint8_t g = _hex_to_int(t[i++]);
@@ -97,14 +97,17 @@ namespace picosystem {
     }
 
     if (_matches(t, "spr", i) ){
-      uint8_t si = std::stoi(t.substr(i, 3));
-      i += 2;
-      sprite(si, _tx, _ty);
-      _tx += 8;
+      uint8_t si;
+      auto result = std::from_chars(t.data() + i, t.data() + t.size(), si);
+      if(result.ec != std::errc::invalid_argument && result.ec != std::errc::result_out_of_range) {
+        i += result.ptr - t.data();
+        sprite(si, _tx, _ty);
+        _tx += 8;
+      }
     }
   }
 
-  void measure(const std::string &t, int32_t &w, int32_t &h, int32_t wrap) {
+  void measure(const std::string_view &t, int32_t &w, int32_t &h, int32_t wrap) {
     w = 0; h = 0;
 
     // save cursor position for wrapping new lines
@@ -155,7 +158,7 @@ namespace picosystem {
     h = ty + _tlh;
   }
 
-  void text(const std::string &t, int32_t wrap) {
+  void text(const std::string_view &t, int32_t wrap) {
     // save cursor position for wrapping new lines
     int32_t _stx = _tx;
     int32_t _wtx = _tx + wrap;
@@ -205,7 +208,7 @@ namespace picosystem {
     _tx = _stx;
   }
 
-  void text(const std::string &t, int32_t x, int32_t y, int32_t wrap) {
+  void text(const std::string_view &t, int32_t x, int32_t y, int32_t wrap) {
     _camera_offset(x, y);
     _tx = x; _ty = y;
     text(t, wrap);

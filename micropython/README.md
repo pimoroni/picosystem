@@ -4,7 +4,7 @@ MicroPython is a great way for beginners to get a feel for PicoSystem.
 
 Play with audio beeps and boops via the REPL, and get a simple game running with minimal boilerplate.
 
-- [PicoSystem MicroPython](#picosystem-micropython)
+- [PicoSystem MicroPython ](#picosystem-micropython-)
   - [Get the latest release](#get-the-latest-release)
   - [Function Reference](#function-reference)
     - [Boilerplate](#boilerplate)
@@ -15,9 +15,14 @@ Play with audio beeps and boops via the REPL, and get a simple game running with
     - [Buffers](#buffers)
     - [Advanced Text Formatting](#advanced-text-formatting)
     - [Useful Bits 'n' Bobs](#useful-bits-n-bobs)
-  - [Recipes & Common Usage Patterns](#recipes--common-usage-patterns)
+  - [Recipes \& Common Usage Patterns](#recipes--common-usage-patterns)
       - [Loading a spritesheet](#loading-a-spritesheet)
   - [Build from source](#build-from-source)
+    - [Build mpy-cross:](#build-mpy-cross)
+    - [Navigate to the RP2 port:](#navigate-to-the-rp2-port)
+    - [Configure:](#configure)
+    - [Build:](#build)
+    - [Install:](#install)
 
 ## Get the latest release
 
@@ -173,41 +178,42 @@ git clone https://github.com/pimoroni/picosystem
 Clone MicroPython and fetch the submodules (note you must use the `experimental/picosystem` branch for now, this is subject to change):
 
 ```
-git clone https://github.com/pimoroni/micropython -b experimental/picosystem
+git clone https://github.com/micropython/micropython
 cd micropython
-git submodule update --init
-cd lib/pico-sdk
 git submodule update --init
 ```
 
-Build mpy-cross:
+### Build mpy-cross:
 
 ```
 cd ../../mpy-cross
 make
 ```
 
-Navigate to the RP2 port:
+### Navigate to the RP2 port:
 
 ```
 cd ../ports/rp2
 ```
 
-Copy frozen modules:
+### Configure:
+
+You must build against the PicoSystem set of `USER_C_MODULES` and use the `PIMORONI_PICOSYSTEM` board directory. These can be specified when configuring MicroPython, like so:
 
 ```
-cp ../../../picosystem/micropython/modules_py/boot.py modules/
-cp ../../../picosystem/micropython/examples/picosystem/colour.py modules/
-cp ../../../picosystem/micropython/examples/picosystem/shapes.py modules/
-cp ../../../picosystem/micropython/examples/picosystem/text.py modules/
-cp ../../../picosystem/micropython/examples/picosystem/music.py modules/
-cp ../../../picosystem/micropython/examples/picosystem/audio.py modules/
-cp ../../../picosystem/micropython/examples/picosystem/launcher.py modules/
+cmake -S . -B build-picosystem -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=../../../picosystem/micropython/modules/micropython.cmake -DMICROPY_BOARD_DIR=../../../picosystem/micropython/PIMORONI_PICOSYSTEM
 ```
 
-Build:
+### Build:
 
 ```
-make USER_C_MODULES=../../../picosystem/micropython/modules/micropython.cmake BOARD=PIMORONI_PICOSYSTEM
-cp build-PIMORONI_PICOSYSTEM/firmware.uf2 /path/to/RPI-RP2/
+cmake --build build-picosystem
+```
+
+If you see an error about `pio` headers, don't dispair, just build again. There's some kind of race condition here.
+
+### Install:
+
+```
+cp build-picosystem/firmware.uf2 /path/to/RPI-RP2/
 ```
