@@ -8,6 +8,7 @@ on:
 
 env:
   MICROPYTHON_VERSION: v1.20.0
+  WORKFLOW_VERSION: 0
 
 jobs:
   deps:
@@ -19,9 +20,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{runner.workspace}}
-        key: workspace-micropython-${{env.MICROPYTHON_VERSION}}
+        key: workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.WORKFLOW_VERSION}}
         restore-keys: |
-          workspace-micropython-${{env.MICROPYTHON_VERSION}}
+          workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.WORKFLOW_VERSION}}
 
     # Check out MicroPython
     - name: Checkout MicroPython
@@ -86,9 +87,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{runner.workspace}}
-        key: workspace-micropython-${{env.MICROPYTHON_VERSION}}
+        key: workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.WORKFLOW_VERSION}}
         restore-keys: |
-          workspace-micropython-${{env.MICROPYTHON_VERSION}}
+          workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.WORKFLOW_VERSION}}
 
     - uses: actions/checkout@v3
       with:
@@ -119,6 +120,11 @@ jobs:
       shell: bash
       working-directory: micropython
       run: git apply $GITHUB_WORKSPACE/picosystem/micropython/micropython_nano_specs.patch
+
+    - name: "HACK: Overclock & Overvolt Patch"
+      shell: bash
+      working-directory: micropython
+      run: git apply $GITHUB_WORKSPACE/picosystem/micropython/overclock_and_overvolt.patch
 
     # Install apt packages
     - name: Install CCache & Compiler
