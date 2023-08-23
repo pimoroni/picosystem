@@ -44,9 +44,9 @@ namespace picosystem {
     for(uint8_t i = 0; i < 32; i++) {
       uint32_t pin = 1U << i;
       if(pin & pin_mask) {
-        gpio_set_function(pin, GPIO_FUNC_SIO);
-        gpio_set_dir(pin, GPIO_IN);
-        gpio_pull_up(pin);
+        gpio_set_function(i, GPIO_FUNC_SIO);
+        gpio_set_dir(i, GPIO_IN);
+        gpio_pull_up(i);
       }
     }
   }
@@ -55,9 +55,9 @@ namespace picosystem {
     for(uint8_t i = 0; i < 32; i++) {
       uint32_t pin = 1U << i;
       if(pin & pin_mask) {
-        gpio_set_function(pin, GPIO_FUNC_SIO);
-        gpio_set_dir(pin, GPIO_OUT);
-        gpio_put(pin, 0);
+        gpio_set_function(i, GPIO_FUNC_SIO);
+        gpio_set_dir(i, GPIO_OUT);
+        gpio_put(i, 0);
       }
     }
   }
