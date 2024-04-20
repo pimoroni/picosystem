@@ -4,33 +4,47 @@ MicroPython is a great way for beginners to get a feel for PicoSystem.
 
 Play with audio beeps and boops via the REPL, and get a simple game running with minimal boilerplate.
 
-- [PicoSystem MicroPython](#picosystem-micropython)
-  - [Get the latest release](#get-the-latest-release)
-  - [Function Reference](#function-reference)
-    - [Boilerplate](#boilerplate)
-    - [Just Dabbling](#just-dabbling)
-    - [State](#state)
-    - [Primitives](#primitives)
-    - [Input](#input)
-    - [Buffers](#buffers)
-    - [Advanced Text Formatting](#advanced-text-formatting)
-    - [Useful Bits 'n' Bobs](#useful-bits-n-bobs)
-  - [Recipes & Common Usage Patterns](#recipes--common-usage-patterns)
-      - [Loading a spritesheet](#loading-a-spritesheet)
-  - [Build from source](#build-from-source)
+To view a demo that runs most of the [examples](examples/picosystem), hold `A` while powering on your PicoSystem.
 
-## Get the latest release
+## Contents
+
+- [Getting Started](#getting-started)
+  - [Getting the Latest Release](#getting-the-latest-release)
+- [How to Write Programs](#how-to-write-programs)
+  - [Hello, World!](#hello-world)
+  - [API Reference](#api-reference)
+  - [Booting with your Program](#booting-with-your-program)
+  - [Just Dabbling](#just-dabbling)
+  - [Buffers](#buffers)
+  - [Advanced Text Formatting](#advanced-text-formatting)
+  - [Recipes & Common Usage Patterns](#recipes--common-usage-patterns)
+    - [Loading a Spritesheet](#loading-a-spritesheet)
+- [Build from Source](#build-from-source)
+
+## Getting Started
+
+The [Thonny IDE](https://thonny.org) makes editing MicroPython code easy. To get started writing code:
+
+1. Connect your PicoSystem to your computer using a USB-C cable
+2. Ensure the PicoSystem is turned on
+3. Select the PicoSystem from the bottom-right corner of Thonny
+
+   > Typically, it will show up as something like "MicroPython (Raspberry Pi Pico) • Board in FS mode @ ...". If you don't see that option, ensure the board is powered on and not simply charging.
+
+4. [Write your first program](#hello-world) and click the play button in Thonny!
+
+### Getting the Latest Release
 
 Go to the [GitHub releases page](https://github.com/pimoroni/picosystem/releases/latest) to find the latest release of PicoSystem MicroPython.
 
-* Scroll down and download the .uf2 file. eg: "picosystem-v0.1.0-micropython-v1.17.uf2"
-* Connect your PicoSystem to your computer.
-* Hold X while powering on your PicoSystem to enter bootloader mode.
-* Copy the .uf2 file (linked below) onto the "RPI-RP2" directory that appears.
+1. Scroll down and download the `.uf2` file. eg: `picosystem-v0.1.0-micropython-v1.17.uf2`
+2. Connect your PicoSystem to your computer.
+3. Hold `X` while powering on your PicoSystem to enter bootloader mode.
+4. Copy the `.uf2` file (linked below) onto the `RPI-RP2` directory that appears.
 
-## Function Reference
+> **Note:** This process will _not_ overwrite your existing code files already stored on your PicoSystem, such as `main.py`.
 
-### Boilerplate
+## How to Write Programs
 
 Every PicoSystem MicroPython application must have the following basic form:
 
@@ -44,10 +58,54 @@ def draw(tick):
 start()
 ```
 
-The `update` function is where your game logic goes. `draw` is responsible for drawing your game world to the screen. Call `start()` to signal to PicoSystem
-that it should start cranking the game engine.
+The `update()` function is where your game logic goes (checking buttons and updating game state). `draw()` is responsible for drawing your game world to the screen. Each of these provides a `tick` parameter that tells your program how many frames have elapsed since your program started.
 
-In your `update` function you can optionally call `quit()` to break out of the game loop.
+Call `start()` to signal to PicoSystem that it should start cranking the game engine. In your `update()` function you can optionally call `quit()` to break out of the game loop.
+
+> **Warning:** Do not call `init()` in your code! This is called by the PicoSystem automatically, and you will need to [rescue your PicoSystem](#uh-oh-rescuing-your-picosystem) if this is run as part of your program.
+
+### Hello, World!
+
+Here's a simple program to get you started:
+
+```python
+HEIGHT = 120
+y = 20
+
+def update(tick):
+    global y
+
+    if button(UP) and y > 0:
+        y -= 1
+    
+    if button(DOWN) and y < HEIGHT - 8:
+        y += 1  
+
+def draw(tick):
+    pen(15, 0, 10)
+    clear()
+
+    pen(15, 15, 15)
+    text('Hello, World!', 30, y)
+
+start()
+```
+
+Be sure to check out the [examples](examples/picosystem) for ideas on how to leverage more of the built-in PicoSystem functions. You can also refer to the [API Reference](#api-reference) below.
+
+### API Reference
+
+There's a lot more you can do than what's shown in [Hello, World!](#hello-world) The complete list of built-in functions and their descriptions can be found in [`picosystem.py`](picosystem.py)
+
+### Booting with your Program
+
+To make your program to run whenever your PicoSystem boots, simply name your code file `main.py` when saving to your PicoSystem.
+
+#### Uh Oh! Rescuing your PicoSystem
+
+Have you coded yourself into some trouble and are finding your PicoSystem will no longer start up or communicate with your computer? Simply hold the `B` and `Y` buttons (as in "bye!") while powering on your PicoSystem. If this doesn't seem to work, ensure you have the [latest firmware](#getting-the-latest-release) on your PicoSystem.
+
+This will rename your current `main.py` to `main.py.bak` so that your PicoSystem will start up properly next time. To continue editing your code after reconnecting to Thonny (per the [Getting Started](#getting-started) steps), just open `main.py.bak` from your PicoSystem, fix any errors, and re-save it as `main.py`. It's also a good idea to delete `main.py.bak` when you're done.
 
 ### Just Dabbling
 
@@ -68,54 +126,6 @@ If you find things not working as expected on the REPL, reset your pen, cursor, 
 ```
 >>> pen();cursor();camera();clip();alpha()
 ```
-
-### State
-
-* `pen(number)`, `pen(r, g, b)` or `pen(r, g, b, a)` - set the drawing colour
-* `pen()` - reset the drawing colour to white (15, 15, 15, 15)
-* `clip(x, y, w, h` - set the clipping region (drawing outside this region is ignored)
-* `clip()` - reset the clipping region *to the drawing target size* (0, 0, 120, 120 if SCREEN)
-* `blend(COPY / ALPHA / MASK)` - set the blend mode
-* `blend()` - reset the blend mode (`ALPHA`)
-* `target(Buffer)` - set a Buffer to draw into
-* `target()` - reset the draw target to `SCREEN`
-* `camera(x, y)` - set the camera location
-* `camera()` - reset the camera location (0, 0)
-* `cursor(x, y)` - set the text cursor
-* `cursor()` - reset the text cursor (0, 0)
-* `spritesheet(Buffer)` - set the spritesheet
-* `spritesheet()` - reset the spritesheet to the builtin default
-
-### Primitives
-
-* `clear()` - clear to pen
-* `pixel(x, y)` - single pixel
-* `rect(x, y, w, h)` - rectangle
-* `frect(x, y, w, h)` - filled rectangle
-* `circle(x, y, r)` - circle
-* `fcircle(x, y, r)` - fcircle
-* `ellipse(x, y, rx, ry)` - ellipse
-* `fellipse(x, y, rx, ry)` - fellipse
-* `line(x1, y1, x2, y2)` - line from xy1 to xy2
-* `hline(x, y, length)` - horizontal line starting from xy, length in pixels
-* `vline(x, y, length)` - vertical line starting from xy, length in pixels
-* `poly((x, y), (x, y), (x, y))` - polygon (supply points as tuples)
-* `fpoly((x, y), (x, y), (x, y))` - filled polygon (supply points as tuples)
-* `text(message)` - message at cursor position
-* `text(message, wrap)` - message at cursor position, text will be wrapped on word boundaries if it exceeds wrap width in pixels
-* `text(message, x, y)` - message at xy
-* `text(message, x, y, wrap)` - message at xy, text will be wrapped on word boundaries if it exceeds wrap width in pixels
-* `sprite(i, x, y)` - draws sprite from current spritesheet at xy
-* `sprite(i, x, y, cx, cy)` - draws a rectangle of sprites from current spritesheet at xy, cx sprites across and cy sprites down
-* `sprite(i, x, y, cx, cy, dw, dh)` - draws a rectangle of sprites from current spritesheet at xy, cx sprites across and cy sprites down, scaled to a rectangle dw by dh pixels
-* `sprite(i, x, y, cx, cy, dw, dh, flags)` - draws a rectangle of sprites from current spritesheet at xy, cx sprites across and cy sprites down, scaled to a rectangle dw by dh pixels, flags can be any combination of HFLIP and VFLIP
-* `blit(Buffer, x, y, w, h, dx, dy)` - blit a portion of a Buffer to dx,dy
-* `blit(Buffer, x, y, w, h, dx, dy, dw, dh)` - blit a portion of a Buffer to dx,dy stretching to dw,dh
-
-### Input
-
-* `pressed(A / B / X / Y / UP / DOWN / LEFT / RIGHT)` - `True` if the button has been pressed since the last frame.
-* `button(A / B / X / Y / UP / DOWN / LEFT / RIGHT)` - `True` if the button *is* pressed
 
 ### Buffers
 
@@ -138,17 +148,9 @@ PicoSystem's `text()` function has some special escape sequences:
 * `\\penRGBA` - set the text colour to RGBA, eg red is: `\\penF00F`
 * `\\spr000` - draw a sprite in-line with text, eg a leaf: `\\spr007`
 
-### Useful Bits 'n' Bobs
+### Recipes & Common Usage Patterns
 
-* `rgb(r, g, b)` or `rgb(r, g, b, a)` - return a new colour (16bit number)
-* `hsv(hue, sat, value)` - convert from HSV to RGB and return a colour (16bit number)
-* `intersects(x, y, w, h, cx, cy, cw, ch)` - check if two rectangles intersect
-* `ix, iy, iw, ih = intersection(x, y, w, h, cx, cy, cw, ch)` - return the intersection between two rectangles
-* `contains(x, y, cx, cy, cw, ch)` - check if a rectangle cxywh contains point xy
-
-## Recipes & Common Usage Patterns
-
-#### Loading a spritesheet
+#### Loading a Spritesheet
 
 You can use `open(filename, "rb").readinto(Buffer)` to load one of the supplied .16bpp spritesheet files, like so:
 
@@ -158,7 +160,7 @@ open("spritesheet.16bpp", "rb").readinto(my_sprites)
 spritesheet(my_sprites)
 ```
 
-## Build from source
+## Build from Source
 
 These steps mirror those in the GitHub actions workflow: https://github.com/pimoroni/picosystem/blob/main/.github/workflows/micropython.yml
 
@@ -196,7 +198,7 @@ cd ../ports/rp2
 Copy frozen modules:
 
 ```
-cp ../../../picosystem/micropython/modules_py/boot.py modules/
+cp ../../../picosystem/micropython/modules_py/* modules/
 cp ../../../picosystem/micropython/examples/picosystem/colour.py modules/
 cp ../../../picosystem/micropython/examples/picosystem/shapes.py modules/
 cp ../../../picosystem/micropython/examples/picosystem/text.py modules/
