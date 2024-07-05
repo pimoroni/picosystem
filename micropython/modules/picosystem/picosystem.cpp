@@ -156,7 +156,7 @@ mp_obj_t picosystem_start() {
             stats.idle = 0;
         }
 
-        MICROPY_EVENT_POLL_HOOK
+        mp_event_handle_nowait();
 
     }
 
