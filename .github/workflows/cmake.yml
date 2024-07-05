@@ -31,19 +31,19 @@ jobs:
 
     steps:
     - name: Checkout PicoSystem SDK
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     # Pico SDK
     - name: Checkout Pico SDK
       if: matrix.pico-sdk
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         repository: raspberrypi/pico-sdk
         path: pico-sdk
         submodules: true
 
     - name: Cache
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: /home/runner/.ccache
         key: ccache-${{matrix.cache-key}}-${{github.ref}}-${{github.sha}}

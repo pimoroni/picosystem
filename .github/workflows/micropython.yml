@@ -72,7 +72,7 @@ jobs:
 
     steps:
     - name: Compiler Cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: /home/runner/.ccache
         key: ccache-micropython-${{matrix.shortname}}-${{github.ref}}-${{github.sha}}
@@ -81,7 +81,7 @@ jobs:
           ccache-micropython-${{matrix.shortname}}-
 
     - name: Workspace Cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{runner.workspace}}
         key: workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.WORKFLOW_VERSION}}
