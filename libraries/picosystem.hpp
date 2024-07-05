@@ -8,7 +8,6 @@
 #include <string>
 #include <vector>
 
-#include "pico/stdlib.h"
 
 void init();
 void update(uint32_t tick);
@@ -197,6 +196,7 @@ namespace picosystem {
   uint32_t    time();
   uint32_t    time_us();
   void        sleep(uint32_t d);
+  void        sleep_us(uint32_t d);
   bool        intersects(
                 int32_t  x, int32_t  y, int32_t  w, int32_t  h,
                 int32_t cx, int32_t cy, int32_t cw, int32_t ch);
