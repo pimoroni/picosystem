@@ -88,30 +88,27 @@ jobs:
         restore-keys: |
           workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.WORKFLOW_VERSION}}
 
-    - uses: actions/checkout@v4
+    - name: Check out PicoSystem
+      uses: actions/checkout@v4
       with:
         submodules: true
         path: picosystem
 
     # Check out Pimoroni Pico
-    - uses: actions/checkout@v4
+    - name: Check out Pimoroni Pico
+      uses: actions/checkout@v4
       with:
         repository: pimoroni/pimoroni-pico
         submodules: true
         path: pimoroni-pico
 
     # Check out dir2u2f
-    - uses: actions/checkout@v4
+    - name: Check out dir2uf2
+      uses: actions/checkout@v4
       with:
         repository: gadgetoid/dir2uf2
         ref: v0.0.4
         path: dir2uf2
-
-    - name: "HACK: Revert Patches"  # Avoid an already-patched MicroPython tree breaking our build
-      shell: bash
-      working-directory: micropython
-      run: |
-        git checkout ports/rp2/CMakeLists.txt
 
     - name: "HACK: Overclock & Overvolt Patch"
       shell: bash
