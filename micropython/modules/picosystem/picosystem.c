@@ -8,11 +8,11 @@
 MP_DEFINE_CONST_FUN_OBJ_1(PicosystemBuffer___del___obj, PicosystemBuffer___del__);
 
 /***** Binding of Methods *****/
-STATIC const mp_rom_map_elem_t PicosystemBuffer_locals_dict_table[] = {
+static const mp_rom_map_elem_t PicosystemBuffer_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR___del__), MP_ROM_PTR(&PicosystemBuffer___del___obj) },
 };
 
-STATIC MP_DEFINE_CONST_DICT(PicosystemBuffer_locals_dict, PicosystemBuffer_locals_dict_table);
+static MP_DEFINE_CONST_DICT(PicosystemBuffer_locals_dict, PicosystemBuffer_locals_dict_table);
 
 /***** Class Definition *****/
 #ifdef MP_DEFINE_CONST_OBJ_TYPE
@@ -48,7 +48,7 @@ MP_DEFINE_CONST_FUN_OBJ_KW(PicosystemVoice_effects_obj, 1, PicosystemVoice_effec
 MP_DEFINE_CONST_FUN_OBJ_KW(PicosystemVoice_bend_obj, 1, PicosystemVoice_bend);
 
 /***** Binding of Methods *****/
-STATIC const mp_rom_map_elem_t PicosystemVoice_locals_dict_table[] = {
+static const mp_rom_map_elem_t PicosystemVoice_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR___del__), MP_ROM_PTR(&PicosystemVoice___del___obj) },
     { MP_ROM_QSTR(MP_QSTR_play), MP_ROM_PTR(&PicosystemVoice_play_obj) },
     { MP_ROM_QSTR(MP_QSTR_envelope), MP_ROM_PTR(&PicosystemVoice_envelope_obj) },
@@ -56,7 +56,7 @@ STATIC const mp_rom_map_elem_t PicosystemVoice_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_bend), MP_ROM_PTR(&PicosystemVoice_bend_obj) },
 };
 
-STATIC MP_DEFINE_CONST_DICT(PicosystemVoice_locals_dict, PicosystemVoice_locals_dict_table);
+static MP_DEFINE_CONST_DICT(PicosystemVoice_locals_dict, PicosystemVoice_locals_dict_table);
 
 /***** Class Definition *****/
 
@@ -89,76 +89,76 @@ const mp_obj_type_t PicosystemVoice_type = {
 
 // picosystem.cpp
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_init_obj, picosystem_init);
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_logo_obj, picosystem_logo);
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_start_obj, picosystem_start);
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_quit_obj, picosystem_quit);
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_flip_obj, picosystem_flip);
+static MP_DEFINE_CONST_FUN_OBJ_0(picosystem_init_obj, picosystem_init);
+static MP_DEFINE_CONST_FUN_OBJ_0(picosystem_logo_obj, picosystem_logo);
+static MP_DEFINE_CONST_FUN_OBJ_0(picosystem_start_obj, picosystem_start);
+static MP_DEFINE_CONST_FUN_OBJ_0(picosystem_quit_obj, picosystem_quit);
+static MP_DEFINE_CONST_FUN_OBJ_0(picosystem_flip_obj, picosystem_flip);
 
 // stats.cpp
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_stats_obj, picosystem_stats);
+static MP_DEFINE_CONST_FUN_OBJ_0(picosystem_stats_obj, picosystem_stats);
 
 // voice.cpp
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_play_obj, 2, picosystem_audio_play);
+static MP_DEFINE_CONST_FUN_OBJ_KW(picosystem_play_obj, 2, picosystem_audio_play);
 
 // state.cpp
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_pen_obj, 0, 4, picosystem_pen);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_alpha_obj, 0, 4, picosystem_alpha);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_clip_obj, 0, 4, picosystem_clip);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_blend_obj, 0, 1, picosystem_blend);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_target_obj, 0, 1, picosystem_target);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_camera_obj, 0, 2, picosystem_camera);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_cursor_obj, 0, 2, picosystem_cursor);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_spritesheet_obj, 0, 1, picosystem_spritesheet);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_pen_obj, 0, 4, picosystem_pen);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_alpha_obj, 0, 4, picosystem_alpha);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_clip_obj, 0, 4, picosystem_clip);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_blend_obj, 0, 1, picosystem_blend);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_target_obj, 0, 1, picosystem_target);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_camera_obj, 0, 2, picosystem_camera);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_cursor_obj, 0, 2, picosystem_cursor);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_spritesheet_obj, 0, 1, picosystem_spritesheet);
 
 // primitives.cpp
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(picosystem_pixel_obj, picosystem_pixel);
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(picosystem_hline_obj, picosystem_hline);
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(picosystem_vline_obj, picosystem_vline);
+static MP_DEFINE_CONST_FUN_OBJ_2(picosystem_pixel_obj, picosystem_pixel);
+static MP_DEFINE_CONST_FUN_OBJ_3(picosystem_hline_obj, picosystem_hline);
+static MP_DEFINE_CONST_FUN_OBJ_3(picosystem_vline_obj, picosystem_vline);
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_clear_obj, picosystem_clear);
+static MP_DEFINE_CONST_FUN_OBJ_0(picosystem_clear_obj, picosystem_clear);
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_rect_obj, 4, 4, picosystem_rect);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_frect_obj, 4, 4, picosystem_frect);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_rect_obj, 4, 4, picosystem_rect);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_frect_obj, 4, 4, picosystem_frect);
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(picosystem_circle_obj, picosystem_circle);
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(picosystem_fcircle_obj, picosystem_fcircle);
+static MP_DEFINE_CONST_FUN_OBJ_3(picosystem_circle_obj, picosystem_circle);
+static MP_DEFINE_CONST_FUN_OBJ_3(picosystem_fcircle_obj, picosystem_fcircle);
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_ellipse_obj, 4, 4, picosystem_ellipse);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_fellipse_obj, 4, 4, picosystem_fellipse);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_ellipse_obj, 4, 4, picosystem_ellipse);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_fellipse_obj, 4, 4, picosystem_fellipse);
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR(picosystem_poly_obj, 1, picosystem_poly);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR(picosystem_fpoly_obj, 1, picosystem_fpoly);
+static MP_DEFINE_CONST_FUN_OBJ_VAR(picosystem_poly_obj, 1, picosystem_poly);
+static MP_DEFINE_CONST_FUN_OBJ_VAR(picosystem_fpoly_obj, 1, picosystem_fpoly);
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_line_obj, 4, 4, picosystem_line);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_blit_obj, 7, 10, picosystem_blit);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_sprite_obj, 3, 8, picosystem_sprite);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_text_obj, 1, 4, picosystem_text);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_measure_obj, 1, 2, picosystem_measure);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_line_obj, 4, 4, picosystem_line);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_blit_obj, 7, 10, picosystem_blit);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_sprite_obj, 3, 8, picosystem_sprite);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_text_obj, 1, 4, picosystem_text);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_measure_obj, 1, 2, picosystem_measure);
 
 // utility.cpp
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_rgb_obj, 3, 4, picosystem_rgb);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_hsv_obj, 3, 4, picosystem_hsv);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_rgb_obj, 3, 4, picosystem_rgb);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_hsv_obj, 3, 4, picosystem_hsv);
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_intersects_obj, 8, 8, picosystem_intersects);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_intersection_obj, 8, 8, picosystem_intersection);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_contains_obj, 6, 6, picosystem_contains);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_intersects_obj, 8, 8, picosystem_intersects);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_intersection_obj, 8, 8, picosystem_intersection);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(picosystem_contains_obj, 6, 6, picosystem_contains);
 
 // hardware.cpp
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(picosystem_pressed_obj, picosystem_pressed);
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(picosystem_button_obj, picosystem_button);
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(picosystem_battery_obj, picosystem_battery);
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(picosystem_led_obj, picosystem_led);
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(picosystem_backlight_obj, picosystem_backlight);
+static MP_DEFINE_CONST_FUN_OBJ_1(picosystem_pressed_obj, picosystem_pressed);
+static MP_DEFINE_CONST_FUN_OBJ_1(picosystem_button_obj, picosystem_button);
+static MP_DEFINE_CONST_FUN_OBJ_0(picosystem_battery_obj, picosystem_battery);
+static MP_DEFINE_CONST_FUN_OBJ_3(picosystem_led_obj, picosystem_led);
+static MP_DEFINE_CONST_FUN_OBJ_1(picosystem_backlight_obj, picosystem_backlight);
 
 /***** Globals Table *****/
-STATIC const mp_map_elem_t picosystem_globals_table[] = {
+static const mp_map_elem_t picosystem_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_picosystem) },
     { MP_OBJ_NEW_QSTR(MP_QSTR_Buffer), (mp_obj_t)&PicosystemBuffer_type },
     { MP_OBJ_NEW_QSTR(MP_QSTR_Voice), (mp_obj_t)&PicosystemVoice_type },
@@ -407,7 +407,7 @@ STATIC const mp_map_elem_t picosystem_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_SWORD11), MP_ROM_INT(SWORD11) },
     { MP_ROM_QSTR(MP_QSTR_CROWN2), MP_ROM_INT(CROWN2) },
 };
-STATIC MP_DEFINE_CONST_DICT(mp_module_picosystem_globals, picosystem_globals_table);
+static MP_DEFINE_CONST_DICT(mp_module_picosystem_globals, picosystem_globals_table);
 
 /***** Module Definition *****/
 const mp_obj_module_t picosystem_user_cmodule = {
