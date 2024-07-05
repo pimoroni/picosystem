@@ -7,7 +7,7 @@ on:
     types: [created]
 
 env:
-  MICROPYTHON_VERSION: v1.20.0
+  MICROPYTHON_VERSION: v1.23.0
   WORKFLOW_VERSION: 0
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
     steps:
     - name: Workspace Cache
       id: cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{runner.workspace}}
         key: workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.WORKFLOW_VERSION}}
@@ -27,7 +27,7 @@ jobs:
     # Check out MicroPython
     - name: Checkout MicroPython
       if: steps.cache.outputs.cache-hit != 'true'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: micropython/micropython
         ref: ${{env.MICROPYTHON_VERSION}}
@@ -62,9 +62,6 @@ jobs:
           - name: PicoSystem
             shortname: picosystem
             board: PIMORONI_PICOSYSTEM
-            # 0x10000000 + (16*1024*1024) - (15*1024*1024)  ( 1MB firmware + 15MB filesystem )
-            dir2uf2_fs_start: 269484032
-            dir2uf2_fs_size: 7340032
 
     env:
       RELEASE_FILE: pimoroni-${{matrix.shortname}}-${{github.event.release.tag_name || github.sha}}-micropython.uf2
@@ -91,23 +88,23 @@ jobs:
         restore-keys: |
           workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.WORKFLOW_VERSION}}
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: true
         path: picosystem
 
     # Check out Pimoroni Pico
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: pimoroni/pimoroni-pico
         submodules: true
         path: pimoroni-pico
 
     # Check out dir2u2f
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: gadgetoid/dir2uf2
-        ref: v0.0.1
+        ref: v0.0.4
         path: dir2uf2
 
     - name: "HACK: Revert Patches"  # Avoid an already-patched MicroPython tree breaking our build
@@ -115,11 +112,6 @@ jobs:
       working-directory: micropython
       run: |
         git checkout ports/rp2/CMakeLists.txt
-
-    - name: "HACK: CMakeLists.txt Disable C++ Exceptions Patch"
-      shell: bash
-      working-directory: micropython
-      run: git apply $GITHUB_WORKSPACE/picosystem/micropython/micropython_nano_specs.patch
 
     - name: "HACK: Overclock & Overvolt Patch"
       shell: bash
@@ -156,17 +148,17 @@ jobs:
     - name: Append Filesystem
       shell: bash
       run: |
-        python3 -m pip install littlefs-python
-        ./dir2uf2/dir2uf2 --fs-start ${{matrix.dir2uf2_fs_start}} --fs-size ${{matrix.dir2uf2_fs_size}} --append-to micropython/ports/rp2/build/${{env.RELEASE_FILE}} --manifest ${{env.BOARD_DIR}}/uf2-manifest.txt --filename with-examples.uf2 ${{env.EXAMPLES_DIR}}/
+        python3 -m pip install littlefs-python==0.4.0
+        ./dir2uf2/dir2uf2 --append-to micropython/ports/rp2/build/${{env.RELEASE_FILE}} --manifest ${{env.BOARD_DIR}}/uf2-manifest.txt --filename with-examples.uf2 ${{env.EXAMPLES_DIR}}/
 
     - name: Store .uf2 as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{env.RELEASE_FILE}}
         path: micropython/ports/rp2/build/${{env.RELEASE_FILE}}
 
     - name: Store .uf2 + Examples as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{env.RELEASE_FILE_WITH_OS}}
         path: ${{env.RELEASE_FILE_WITH_OS}}
