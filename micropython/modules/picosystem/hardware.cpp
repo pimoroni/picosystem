@@ -91,7 +91,7 @@ mp_obj_t picosystem_backlight(mp_obj_t b_obj) {
     int b = mp_obj_get_int(b_obj);
 
     if(b < 0 || b > 100) {
-        mp_raise_ValueError("led(): b out of range. Expected 0 to 100");
+        mp_raise_ValueError("backlight(): b out of range. Expected 0 to 100");
     }
     else {
         backlight(b);
