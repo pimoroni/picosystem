@@ -410,7 +410,7 @@ namespace picosystem {
     dma_channel_set_irq0_enabled(dma_channel, true);
     irq_set_enabled(pio_get_dreq(screen_pio, screen_sm, true), true);
 
-    irq_set_exclusive_handler(DMA_IRQ_0, dma_complete);
+    irq_add_shared_handler(DMA_IRQ_0, dma_complete, PICO_SHARED_IRQ_HANDLER_HIGHEST_ORDER_PRIORITY);
     irq_set_enabled(DMA_IRQ_0, true);
 
     // initialise audio pwm pin
