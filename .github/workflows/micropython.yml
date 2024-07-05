@@ -118,11 +118,16 @@ jobs:
       working-directory: micropython
       run: git apply $GITHUB_WORKSPACE/picosystem/micropython/overclock_and_overvolt.patch
 
+    - name: Install Arm GNU Toolchain (arm-none-eabi-gcc)
+      uses: carlosperate/arm-none-eabi-gcc-action@v1
+      with:
+        release: '9-2020-q2'
+
     # Install apt packages
-    - name: Install CCache & Compiler
+    - name: Install CCache
       shell: bash
       run:
-        sudo apt update && sudo apt install ccache gcc-arm-none-eabi
+        sudo apt update && sudo apt install ccache
 
     # Build firmware
     - name: Configure MicroPython
