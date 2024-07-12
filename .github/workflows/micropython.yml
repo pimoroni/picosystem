@@ -1,4 +1,4 @@
-name: MicroPython
+name: MicroPython Firmware
 
 on:
   push:
@@ -7,88 +7,163 @@ on:
     types: [created]
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  MICROPYTHON_VERSION: v1.19
-  BUILD_TYPE: Release
-  BOARD_TYPE: PIMORONI_PICOSYSTEM
+  MICROPYTHON_VERSION: v1.23.0
+  WORKFLOW_VERSION: 0
 
 jobs:
-  build:
-    name: ${{matrix.name}}
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-20.04
-            name: MicroPython Build (Linux)
-            cache-key: linux
-            apt-packages: clang-tidy gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
-
-    runs-on: ${{matrix.os}}
-
+  deps:
+    runs-on: ubuntu-20.04
+    name: Dependencies
     steps:
+    - name: Workspace Cache
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: ${{runner.workspace}}
+        key: workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.WORKFLOW_VERSION}}
+        restore-keys: |
+          workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.WORKFLOW_VERSION}}
+
     # Check out MicroPython
     - name: Checkout MicroPython
-      uses: actions/checkout@v2
+      if: steps.cache.outputs.cache-hit != 'true'
+      uses: actions/checkout@v4
       with:
-        repository: pimoroni/micropython
-        ref: experimental/picosystem-1.19
+        repository: micropython/micropython
+        ref: ${{env.MICROPYTHON_VERSION}}
         submodules: false  # MicroPython submodules are hideously broken
         path: micropython
 
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
-        path: picosystem-${{ github.sha }}
-
-    # HACK: Copy Python module files
-    - name: Copy modules
-      run: |
-        cp -r picosystem-${GITHUB_SHA}/micropython/modules_py/* micropython/ports/rp2/modules/
-        cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/colour.py micropython/ports/rp2/modules/
-        cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/shapes.py micropython/ports/rp2/modules/
-        cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/text.py micropython/ports/rp2/modules/
-        cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/music.py micropython/ports/rp2/modules/
-        cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/audio.py micropython/ports/rp2/modules/
-        cp -r picosystem-${GITHUB_SHA}/micropython/examples/picosystem/launcher.py micropython/ports/rp2/modules/
-
-    # Linux deps
-    - name: Install deps
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt update && sudo apt install ${{matrix.apt-packages}}
-
     - name: Fetch base MicroPython submodules
+      if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       working-directory: micropython
       run: git submodule update --init
 
     - name: Fetch Pico SDK submodules
+      if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       working-directory: micropython/lib/pico-sdk
       run: git submodule update --init
 
     - name: Build mpy-cross
+      if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       working-directory: micropython/mpy-cross
       run: make
 
+  build:
+    needs: deps
+    name: Build ${{matrix.name}}
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - name: PicoSystem
+            shortname: picosystem
+            board: PIMORONI_PICOSYSTEM
+
+    env:
+      RELEASE_FILE: pimoroni-${{matrix.shortname}}-${{github.event.release.tag_name || github.sha}}-micropython.uf2
+      RELEASE_FILE_WITH_OS: pimoroni-${{matrix.shortname}}-${{github.event.release.tag_name || github.sha}}-micropython-with-examples.uf2
+      BOARD_DIR: "$GITHUB_WORKSPACE/picosystem/micropython/${{matrix.board}}"
+      EXAMPLES_DIR: "$GITHUB_WORKSPACE/picosystem/micropython/examples/picosystem"
+      C_MODULES_DIR: "$GITHUB_WORKSPACE/picosystem/micropython/modules"
+
+    steps:
+    - name: Compiler Cache
+      uses: actions/cache@v4
+      with:
+        path: /home/runner/.ccache
+        key: ccache-micropython-${{matrix.shortname}}-${{github.ref}}-${{github.sha}}
+        restore-keys: |
+          ccache-micropython-${{matrix.shortname}}-${{github.ref}}
+          ccache-micropython-${{matrix.shortname}}-
+
+    - name: Workspace Cache
+      uses: actions/cache@v4
+      with:
+        path: ${{runner.workspace}}
+        key: workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.WORKFLOW_VERSION}}
+        restore-keys: |
+          workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.WORKFLOW_VERSION}}
+
+    - name: Check out PicoSystem
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+        path: picosystem
+
+    # Check out Pimoroni Pico
+    - name: Check out Pimoroni Pico
+      uses: actions/checkout@v4
+      with:
+        repository: pimoroni/pimoroni-pico
+        submodules: true
+        path: pimoroni-pico
+
+    # Check out dir2u2f
+    - name: Check out dir2uf2
+      uses: actions/checkout@v4
+      with:
+        repository: gadgetoid/dir2uf2
+        ref: v0.0.5
+        path: dir2uf2
+
+    - name: "HACK: Overclock & Overvolt Patch"
+      shell: bash
+      working-directory: micropython
+      run: git apply $GITHUB_WORKSPACE/picosystem/micropython/overclock_and_overvolt.patch
+
+    - name: Install Arm GNU Toolchain (arm-none-eabi-gcc)
+      uses: carlosperate/arm-none-eabi-gcc-action@v1
+      with:
+        release: '9-2020-q2'
+
+    # Install apt packages
+    - name: Install CCache
+      shell: bash
+      run:
+        sudo apt update && sudo apt install ccache
+
+    # Build firmware
+    - name: Configure MicroPython
+      shell: bash
+      working-directory: micropython/ports/rp2
+      run: |
+        cmake -S . -B build -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=${{env.C_MODULES_DIR}}/micropython.cmake -DMICROPY_BOARD_DIR=${{env.BOARD_DIR}} -DMICROPY_BOARD= -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+
     - name: Build MicroPython
       shell: bash
       working-directory: micropython/ports/rp2
-      run: make USER_C_MODULES=../../../picosystem-${GITHUB_SHA}/micropython/modules/micropython.cmake BOARD=${BOARD_TYPE} -j2
-
-    - name: Rename .uf2 for artifact & release
-      shell: bash
-      working-directory: micropython/ports/rp2/build-${{env.BOARD_TYPE}}
       run: |
-        cp firmware.uf2 ${{github.event.repository.name}}-${{github.sha}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
-        cp firmware.uf2 ${{github.event.repository.name}}-${{github.event.release.tag_name}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
+        ccache --zero-stats || true
+        cmake --build build -j 2
+        ccache --show-stats || true
+
+    - name: Rename .uf2 for artifact
+      shell: bash
+      working-directory: micropython/ports/rp2/build
+      run: |
+        cp firmware.uf2 ${{env.RELEASE_FILE}}
+
+    - name: Append Filesystem
+      shell: bash
+      run: |
+        python3 -m pip install -r dir2uf2/requirements-micropython-1.23.0.txt
+        ./dir2uf2/dir2uf2 --fs-compact --append-to micropython/ports/rp2/build/${{env.RELEASE_FILE}} --manifest ${{env.BOARD_DIR}}/uf2-manifest.txt --filename with-examples.uf2 ${{env.EXAMPLES_DIR}}/
 
     - name: Store .uf2 as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
-        name: ${{github.event.repository.name}}-${{github.sha}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
-        path: micropython/ports/rp2/build-${{env.BOARD_TYPE}}/${{github.event.repository.name}}-${{github.sha}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
+        name: ${{env.RELEASE_FILE}}
+        path: micropython/ports/rp2/build/${{env.RELEASE_FILE}}
+
+    - name: Store .uf2 + Examples as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{env.RELEASE_FILE_WITH_OS}}
+        path: ${{env.RELEASE_FILE_WITH_OS}}
 
     - name: Upload .uf2
       if: github.event_name == 'release'
@@ -96,7 +171,18 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
-        asset_path: micropython/ports/rp2/build-${{env.BOARD_TYPE}}/firmware.uf2
+        asset_path: micropython/ports/rp2/build/${{env.RELEASE_FILE}}
         upload_url: ${{github.event.release.upload_url}}
-        asset_name: ${{github.event.repository.name}}-${{github.event.release.tag_name}}-micropython-${{env.MICROPYTHON_VERSION}}.uf2
+        asset_name: ${{env.RELEASE_FILE}}
+        asset_content_type: application/octet-stream
+
+    - name: Upload .uf2 + Examples
+      if: github.event_name == 'release'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        asset_path: ${{env.RELEASE_FILE_WITH_OS}}
+        upload_url: ${{github.event.release.upload_url}}
+        asset_name: ${{env.RELEASE_FILE_WITH_OS}}
         asset_content_type: application/octet-stream

@@ -63,8 +63,7 @@ mp_obj_t PicosystemBuffer_make_new(const mp_obj_type_t *type, size_t n_args, siz
         mp_raise_ValueError("Buffer(): both w and h must be greater than zero");
     }
 
-    self = m_new_obj_with_finaliser(_PicosystemBuffer_obj_t);
-    self->base.type = &PicosystemBuffer_type;
+    self = mp_obj_malloc_with_finaliser(_PicosystemBuffer_obj_t, &PicosystemBuffer_type);
 
     self->buffer = m_new(buffer_t, 1);
     self->buffer->w = w;

@@ -1,8 +1,6 @@
-set(MOD_NAME picosystem)
-string(TOUPPER ${MOD_NAME} MOD_NAME_UPPER)
-add_library(usermod_${MOD_NAME} INTERFACE)
+add_library(usermod_picosystem INTERFACE)
 
-target_sources(usermod_${MOD_NAME} INTERFACE
+target_sources(usermod_picosystem INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/picosystem.c
     ${CMAKE_CURRENT_LIST_DIR}/picosystem.cpp
     ${CMAKE_CURRENT_LIST_DIR}/voice.cpp
@@ -27,16 +25,20 @@ target_sources(usermod_${MOD_NAME} INTERFACE
 pico_generate_pio_header(usermod_picosystem ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/screen.pio)
 pico_generate_pio_header(usermod_picosystem ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/screen_double.pio)
 
-target_include_directories(usermod_${MOD_NAME} INTERFACE
+target_include_directories(usermod_picosystem INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}
 )
 
-target_compile_definitions(usermod_${MOD_NAME} INTERFACE
-    MODULE_${MOD_NAME_UPPER}_ENABLED=1
+target_compile_definitions(usermod_picosystem INTERFACE
+    MODULE_PICOSYSTEM_ENABLED=1
     PIXEL_DOUBLE=1
 )
 
-target_link_libraries(usermod INTERFACE usermod_${MOD_NAME})
+target_link_libraries(usermod_picosystem INTERFACE
+    hardware_vreg
+)
+
+target_link_libraries(usermod INTERFACE usermod_picosystem)
 
 set_source_files_properties(
     ${CMAKE_CURRENT_LIST_DIR}/picosystem.c

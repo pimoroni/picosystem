@@ -44,9 +44,9 @@ namespace picosystem {
     for(uint8_t i = 0; i < 32; i++) {
       uint32_t pin = 1U << i;
       if(pin & pin_mask) {
-        gpio_set_function(pin, GPIO_FUNC_SIO);
-        gpio_set_dir(pin, GPIO_IN);
-        gpio_pull_up(pin);
+        gpio_set_function(i, GPIO_FUNC_SIO);
+        gpio_set_dir(i, GPIO_IN);
+        gpio_pull_up(i);
       }
     }
   }
@@ -55,9 +55,9 @@ namespace picosystem {
     for(uint8_t i = 0; i < 32; i++) {
       uint32_t pin = 1U << i;
       if(pin & pin_mask) {
-        gpio_set_function(pin, GPIO_FUNC_SIO);
-        gpio_set_dir(pin, GPIO_OUT);
-        gpio_put(pin, 0);
+        gpio_set_function(i, GPIO_FUNC_SIO);
+        gpio_set_dir(i, GPIO_OUT);
+        gpio_put(i, 0);
       }
     }
   }
@@ -179,11 +179,13 @@ namespace picosystem {
   }
 
   void screen_program_init(PIO pio, uint sm) {
+    pio_clear_instruction_memory(pio);
+  
     #ifdef PIXEL_DOUBLE
-      uint offset = pio_add_program(screen_pio, &screen_double_program);
+      uint offset = pio_add_program(pio, &screen_double_program);
       pio_sm_config c = screen_double_program_get_default_config(offset);
     #else
-      uint offset = pio_add_program(screen_pio, &screen_program);
+      uint offset = pio_add_program(pio, &screen_program);
       pio_sm_config c = screen_program_get_default_config(offset);
     #endif
 
@@ -211,8 +213,8 @@ namespace picosystem {
     // join fifos as only tx needed (gives 8 deep fifo instead of 4)
     sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);
 
-    pio_gpio_init(screen_pio, MOSI);
-    pio_gpio_init(screen_pio, SCK);
+    pio_gpio_init(pio, MOSI);
+    pio_gpio_init(pio, SCK);
 
     pio_sm_init(pio, sm, offset, &c);
     pio_sm_set_enabled(pio, sm, true);
@@ -408,7 +410,8 @@ namespace picosystem {
     dma_channel_set_irq0_enabled(dma_channel, true);
     irq_set_enabled(pio_get_dreq(screen_pio, screen_sm, true), true);
 
-    irq_set_exclusive_handler(DMA_IRQ_0, dma_complete);
+    irq_remove_handler(DMA_IRQ_0, dma_complete);
+    irq_add_shared_handler(DMA_IRQ_0, dma_complete, PICO_SHARED_IRQ_HANDLER_HIGHEST_ORDER_PRIORITY);
     irq_set_enabled(DMA_IRQ_0, true);
 
     // initialise audio pwm pin

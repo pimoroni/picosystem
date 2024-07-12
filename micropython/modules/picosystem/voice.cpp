@@ -325,8 +325,7 @@ mp_obj_t PicosystemVoice_make_new(const mp_obj_type_t *type, size_t n_args, size
     mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
     mp_arg_parse_all_kw_array(n_args, n_kw, all_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 
-    self = m_new_obj_with_finaliser(_PicosystemVoice_obj_t);
-    self->base.type = &PicosystemVoice_type;
+    self = mp_obj_malloc_with_finaliser(_PicosystemVoice_obj_t, &PicosystemVoice_type);
 
     self->voice = m_new(voice_t, 1);
     self->voice->attack    = args[ARG_attack].u_int;
@@ -345,7 +344,7 @@ mp_obj_t PicosystemVoice_make_new(const mp_obj_type_t *type, size_t n_args, size
 }
 
 mp_obj_t picosystem_audio_play(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    if(!mp_obj_is_type(pos_args[0], &PicosystemVoice_type)) {
+    if(!mp_obj_is_exact_type(pos_args[0], &PicosystemVoice_type)) {
         mp_raise_TypeError("play: not a valid Voice. Expected a Voice class");
     }
 

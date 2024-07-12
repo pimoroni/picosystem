@@ -22,7 +22,7 @@ jobs:
             cache-key: picosystem
             release-suffix: PicoSystem
             cmake-args: -DPICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk -DPICO_BOARD=pimoroni_picosystem -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-            apt-packages: ccache gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib python3-setuptools
+            apt-packages: ccache python3-setuptools
 
     runs-on: ${{matrix.os}}
 
@@ -31,25 +31,30 @@ jobs:
 
     steps:
     - name: Checkout PicoSystem SDK
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     # Pico SDK
     - name: Checkout Pico SDK
       if: matrix.pico-sdk
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         repository: raspberrypi/pico-sdk
         path: pico-sdk
         submodules: true
 
     - name: Cache
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: /home/runner/.ccache
         key: ccache-${{matrix.cache-key}}-${{github.ref}}-${{github.sha}}
         restore-keys: |
           ccache-${{matrix.cache-key}}-${{github.ref}}
           ccache-${{matrix.cache-key}}-
+
+    - name: Install Arm GNU Toolchain (arm-none-eabi-gcc)
+      uses: carlosperate/arm-none-eabi-gcc-action@v1
+      with:
+        release: '9-2020-q2'
 
     # Linux deps
     - name: Install deps
