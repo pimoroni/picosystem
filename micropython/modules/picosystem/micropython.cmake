@@ -32,7 +32,6 @@ target_include_directories(usermod_picosystem INTERFACE
 target_compile_definitions(usermod_picosystem INTERFACE
     MODULE_PICOSYSTEM_ENABLED=1
     PIXEL_DOUBLE=1
-    NO_OVERCLOCK=1
 )
 
 target_link_libraries(usermod_picosystem INTERFACE
@@ -51,12 +50,6 @@ set_source_files_properties(
     ${CMAKE_CURRENT_LIST_DIR}/picosystem.cpp
     PROPERTIES COMPILE_FLAGS
     "-DPIXEL_DOUBLE=1"
-)
-
-set_source_files_properties(
-    ${CMAKE_CURRENT_LIST_DIR}/hardware.cpp
-    PROPERTIES COMPILE_FLAGS
-    "-DNO_OVERCLOCK=1"
 )
 
 # TODO fix sign compare issues in codebase
