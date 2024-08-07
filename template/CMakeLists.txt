@@ -35,6 +35,9 @@ picosystem_executable(
   ${PROJECT_SOURCES}
 )
 
+# Link the platformer spritesheet
+picosystem_asset(${PROJECT_NAME} ../assets/s4m_ur4i-platformer.16bpp)
+
 # --- End Of Boilerplate ---
 
 # Set your build options here
