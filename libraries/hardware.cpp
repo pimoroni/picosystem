@@ -8,6 +8,7 @@
 #include "hardware/pio.h"
 #include "hardware/irq.h"
 #include "hardware/vreg.h"
+#include "hardware/clocks.h"
 
 #include "pico/bootrom.h"
 #include "pico/stdlib.h"
