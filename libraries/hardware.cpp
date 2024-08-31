@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "hardware/adc.h"
+#include "hardware/clocks.h"
 #include "hardware/spi.h"
 #include "hardware/dma.h"
 #include "hardware/pwm.h"
