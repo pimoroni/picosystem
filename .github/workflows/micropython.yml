@@ -8,7 +8,7 @@ on:
 
 env:
   MICROPYTHON_VERSION: v1.23.0
-  WORKFLOW_VERSION: 0
+  WORKFLOW_VERSION: 1
 
 jobs:
   deps:
@@ -38,13 +38,14 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       working-directory: micropython
-      run: git submodule update --init
-
-    - name: Fetch Pico SDK submodules
-      if: steps.cache.outputs.cache-hit != 'true'
-      shell: bash
-      working-directory: micropython/lib/pico-sdk
-      run: git submodule update --init
+      run: |
+        git submodule update --init lib/pico-sdk
+        git submodule update --init lib/cyw43-driver
+        git submodule update --init lib/lwip
+        git submodule update --init lib/mbedtls
+        git submodule update --init lib/micropython-lib
+        git submodule update --init lib/tinyusb
+        git submodule update --init lib/btstack
 
     - name: Build mpy-cross
       if: steps.cache.outputs.cache-hit != 'true'
