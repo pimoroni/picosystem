@@ -222,6 +222,7 @@ namespace picosystem {
 
   // hardware
   bool        pressed(uint32_t b);
+  bool        released(uint32_t b);
   bool        button(uint32_t b);
   uint32_t    battery();
   void        led(uint8_t r, uint8_t g, uint8_t b);
