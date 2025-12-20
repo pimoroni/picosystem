@@ -4,6 +4,7 @@ using namespace picosystem;
 
 enum state_t {PLAYING, GAME_OVER};
 state_t state = PLAYING;
+voice_t sound;
 
 // a helpful way to represent an x, y coordinate pair such as the apple
 // location or the body segments of the snake
@@ -14,6 +15,7 @@ struct vec_t {
 // the map will be 18x16 squares big with 6x6 pixel sized squares
 constexpr vec_t bounds{.x = 18, .y = 16};
 constexpr int scale = 6;
+bool pause = false;
 
 // details about the snake
 struct {
@@ -31,7 +33,7 @@ struct {
   // then removes the last segment of its body
   void move() {
     body.insert(body.begin(), next());
-    if(body.size() > length) { body.pop_back(); }
+    if(body.size() > length) { body.pop_back(); }//Schlange hat was gegessen also verlängern
   }
 } snake;
 
@@ -41,8 +43,9 @@ vec_t apple;
 // place the apple in a new random location which is not the snake location
 // or part of the snakes tail
 void place_apple() {
-  bool hit = false;
+  bool hit;
   do {
+	hit = false;
     // generate a new location for the apple
     apple.x = std::rand() % bounds.x;
     apple.y = std::rand() % bounds.y;
@@ -63,7 +66,17 @@ vec_t transform(vec_t v) {
 void init() {
   // set the current state to PLAYING
   state = PLAYING;
-
+  sound = voice(
+    30,//(   "attack"),
+    70,//(    "decay"),
+    50,//(  "sustain"),
+    150,//(  "release"),
+    0,//(     "bend"),
+    100,//(  "bend ms"),
+    0,//(   "reverb"),
+    0,//(    "noise"),
+    0);//(  "distort"));
+	
   // place the snake back in the centre of the map, remove its tail, and
   // reset its direction
   snake.body.clear();
@@ -78,14 +91,24 @@ void init() {
 // process user input and update the world state
 void update(uint32_t tick) {
   if(state == PLAYING) {
+	  // player input, you can't reverse direction - for example changing
+	  // direction to "up" cannot occur if you're currently pointing "down"
+	  if(pressed(UP)    && snake.dir.y == 0) {snake.dir.x =  0; snake.dir.y = -1;}
+	  if(pressed(DOWN)  && snake.dir.y == 0) {snake.dir.x =  0; snake.dir.y =  1;}
+	  if(pressed(LEFT)  && snake.dir.x == 0) {snake.dir.x = -1; snake.dir.y =  0;}
+	  if(pressed(RIGHT) && snake.dir.x == 0) {snake.dir.x =  1; snake.dir.y =  0;}
+	  if (pressed(A))
+		  pause= !pause;
+	  if (pressed(B))
+		play(sound, 523.3, 200, 50);
+
+	  if (pressed(Y))
+		play(sound, 587.3, 200, 50);
+	  if (pressed(X))
+		play(sound, 659.3, 50);
+	  
     // every 10 ticks (10 times per second) we'll update position
-    if(tick % 10 == 0) {
-      // player input, you can't reverse direction - for example changing
-      // direction to "up" cannot occur if you're currently pointing "down"
-      if(button(UP)    && snake.dir.y == 0) {snake.dir.x =  0; snake.dir.y = -1;}
-      if(button(DOWN)  && snake.dir.y == 0) {snake.dir.x =  0; snake.dir.y =  1;}
-      if(button(LEFT)  && snake.dir.x == 0) {snake.dir.x = -1; snake.dir.y =  0;}
-      if(button(RIGHT) && snake.dir.x == 0) {snake.dir.x =  1; snake.dir.y =  0;}
+    if(tick % 12 == 0 && !pause) {
 
       vec_t next = snake.next();
 
@@ -93,6 +116,7 @@ void update(uint32_t tick) {
       // and move the apple to a new location
       if(next.x == apple.x && next.y == apple.y) {
         snake.length++;
+		play(sound, 440, 200, 50);
         place_apple();
       }
 
@@ -127,9 +151,9 @@ void update(uint32_t tick) {
 void draw(uint32_t tick) {
   // clear the screen in noxious 3310 backlight green and draw everything in
   // a faint blended black to get that cheap 90s LCD feel
-  pen(10, 12, 0);
+  pen(8, 12, 0);
   clear();
-  pen(0, 0, 0, 4);
+  pen(3, 3, 3, 4);
 
   // draw the scoreboard
   hline(2, 12, 116);
