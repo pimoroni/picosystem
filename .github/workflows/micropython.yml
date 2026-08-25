@@ -60,7 +60,7 @@ jobs:
     - name: "Install Arm GNU Toolchain (arm-none-eabi-gcc)"
       uses: carlosperate/arm-none-eabi-gcc-action@v1
       with:
-        release: '13.3.Rel1'
+        release: '15.3.Rel1'
 
     - name: "Prepare All: Install dependencies"
       if: steps.cache-prepare-all.outputs.cache-hit == 'true'
