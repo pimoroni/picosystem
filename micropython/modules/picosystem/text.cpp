@@ -35,7 +35,7 @@ mp_obj_t picosystem_text(mp_uint_t n_args, const mp_obj_t *args) {
         }
     }
     else {
-        mp_raise_TypeError("text(): string required!");
+        mp_raise_TypeError(MP_ERROR_TEXT("text(): string required!"));
     }
 
     return mp_const_none;
@@ -59,7 +59,7 @@ mp_obj_t picosystem_measure(mp_uint_t n_args, const mp_obj_t *args) {
         return mp_obj_new_tuple(2, tuple);
     }
     else {
-        mp_raise_TypeError("text(): string required!");
+        mp_raise_TypeError(MP_ERROR_TEXT("text(): string required!"));
     }
 
     return mp_const_none;

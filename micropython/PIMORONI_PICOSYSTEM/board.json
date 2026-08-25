@@ -1,0 +1,14 @@
+{
+    "docs": "https://github.com/pimoroni/picosystem/blob/main/micropython/README.md",
+    "features": [
+        "Battery Charging",
+        "Display",
+        "Dual-core",
+        "External Flash",
+        "USB"
+    ],
+    "mcu": "rp2040",
+    "product": "PicoSystem",
+    "url": "https://shop.pimoroni.com/products/picosystem",
+    "vendor": "Pimoroni"
+}

@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   release:
-    types: [created]
+    types: [published]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-20.04
+          - os: ubuntu-24.04
             pico-sdk: true
             name: PicoSystem Build (Linux)
             cache-key: picosystem
@@ -31,20 +31,20 @@ jobs:
 
     steps:
     - name: Checkout PicoSystem SDK
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     # Pico SDK
     - name: Checkout Pico SDK
       if: matrix.pico-sdk
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         repository: raspberrypi/pico-sdk
-        ref: 2.0.0
+        ref: 2.3.0
         path: pico-sdk
         submodules: true
 
     - name: Cache
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: /home/runner/.ccache
         key: ccache-${{matrix.cache-key}}-${{github.ref}}-${{github.sha}}
@@ -55,14 +55,13 @@ jobs:
     - name: Install Arm GNU Toolchain (arm-none-eabi-gcc)
       uses: carlosperate/arm-none-eabi-gcc-action@v1
       with:
-        release: '9-2020-q2'
+        release: '13.3.Rel1'
 
     # Linux deps
     - name: Install deps
       if: runner.os == 'Linux'
       run: |
         sudo apt update && sudo apt install ${{matrix.apt-packages}}
-        pip3 install requests
 
     - name: Create Build Environment
       run: |
@@ -102,24 +101,10 @@ jobs:
       run: |
         cmake --build . --config $BUILD_TYPE --target package
 
-    - name: Upload .tar (Examples)
+    - name: Upload .tar & .zip (Examples)
       if: github.event_name == 'release' && matrix.release-suffix != ''
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      uses: softprops/action-gh-release@v3
       with:
-        asset_path: ${{runner.workspace}}/build/${{env.RELEASE_FILE}}.tar.gz
-        upload_url: ${{github.event.release.upload_url}}
-        asset_name: ${{env.RELEASE_FILE}}.tar.gz
-        asset_content_type: application/octet-stream #??
-
-    - name: Upload .zip (Examples)
-      if: github.event_name == 'release' && matrix.release-suffix != ''
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      with:
-        asset_path: ${{runner.workspace}}/build/${{env.RELEASE_FILE}}.zip
-        upload_url: ${{github.event.release.upload_url}}
-        asset_name: ${{env.RELEASE_FILE}}.zip
-        asset_content_type: application/zip
+        files: |
+          ${{runner.workspace}}/build/${{env.RELEASE_FILE}}.tar.gz
+          ${{runner.workspace}}/build/${{env.RELEASE_FILE}}.zip

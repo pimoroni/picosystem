@@ -297,7 +297,7 @@ mp_obj_t PicosystemVoice_play(size_t n_args, const mp_obj_t *pos_args, mp_map_t 
     }
 
     if(freq == 0) {
-        mp_raise_TypeError("play: note must be a frequency (int) or note name (eg: G8)");
+        mp_raise_TypeError(MP_ERROR_TEXT("play: note must be a frequency (int) or note name (eg: G8)"));
     }
     
     play(*(self->voice), freq, args[ARG_duration].u_int, args[ARG_volume].u_int);
@@ -345,7 +345,7 @@ mp_obj_t PicosystemVoice_make_new(const mp_obj_type_t *type, size_t n_args, size
 
 mp_obj_t picosystem_audio_play(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     if(!mp_obj_is_exact_type(pos_args[0], &PicosystemVoice_type)) {
-        mp_raise_TypeError("play: not a valid Voice. Expected a Voice class");
+        mp_raise_TypeError(MP_ERROR_TEXT("play: not a valid Voice. Expected a Voice class"));
     }
 
     enum { ARG_duration, ARG_volume };
@@ -368,7 +368,7 @@ mp_obj_t picosystem_audio_play(size_t n_args, const mp_obj_t *pos_args, mp_map_t
     }
 
     if(freq == 0) {
-        mp_raise_TypeError("play: note must be a frequency (int) or note name (eg: G8)");
+        mp_raise_TypeError(MP_ERROR_TEXT("play: note must be a frequency (int) or note name (eg: G8)"));
     }
 
     _PicosystemVoice_obj_t *voice = MP_OBJ_TO_PTR2(pos_args[0], _PicosystemVoice_obj_t);

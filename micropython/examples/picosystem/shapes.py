@@ -20,7 +20,7 @@ def reset():
     global shapes
 
     shapes = []
-    for i in range(50):
+    for _i in range(50):
         x = randrange(0, 120)
         y = randrange(0, 120)
         w = randrange(0, 20)

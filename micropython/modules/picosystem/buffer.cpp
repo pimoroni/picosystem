@@ -60,7 +60,7 @@ mp_obj_t PicosystemBuffer_make_new(const mp_obj_type_t *type, size_t n_args, siz
     int h = args[ARG_h].u_int;
 
     if(w <= 0 || h <= 0) {
-        mp_raise_ValueError("Buffer(): both w and h must be greater than zero");
+        mp_raise_ValueError(MP_ERROR_TEXT("Buffer(): both w and h must be greater than zero"));
     }
 
     self = mp_obj_malloc_with_finaliser(_PicosystemBuffer_obj_t, &PicosystemBuffer_type);
@@ -79,7 +79,7 @@ mp_obj_t PicosystemBuffer_make_new(const mp_obj_type_t *type, size_t n_args, siz
         uint32_t file_size = mp_obj_get_int(tuple->items[6]);
 
         if(file_size > buffer_size * sizeof(color_t)) {
-            mp_raise_ValueError("Buffer(): file too large!");
+            mp_raise_ValueError(MP_ERROR_TEXT("Buffer(): file too large!"));
         }
         
         mp_obj_t args[2] = {
