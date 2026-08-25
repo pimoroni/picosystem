@@ -41,8 +41,10 @@ vec_t apple;
 // place the apple in a new random location which is not the snake location
 // or part of the snakes tail
 void place_apple() {
-  bool hit = false;
+  bool hit;
   do {
+    hit = false;
+
     // generate a new location for the apple
     apple.x = std::rand() % bounds.x;
     apple.y = std::rand() % bounds.y;
