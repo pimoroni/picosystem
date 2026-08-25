@@ -67,6 +67,10 @@ namespace picosystem {
     return !(_io & (1U << b)) && (_lio & (1U << b));
   }
 
+  bool released(uint32_t b) {
+    return (_io & (1U << b)) && !(_lio & (1U << b));
+  }
+
   bool button(uint32_t b) {
     return !(_io & (1U << b));
   }
