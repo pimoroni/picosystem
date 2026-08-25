@@ -69,7 +69,7 @@ mp_obj_t PicosystemBuffer_make_new(const mp_obj_type_t *type, size_t n_args, siz
     self->buffer->w = w;
     self->buffer->h = h;
     uint32_t buffer_size = w * h;
-    self->buffer->data = m_new(color_t, buffer_size);
+    self->buffer->data = m_new0(color_t, buffer_size);
 
     mp_obj_t filename = args[ARG_file].u_obj;
 
