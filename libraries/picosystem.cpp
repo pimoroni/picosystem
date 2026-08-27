@@ -22,48 +22,37 @@ namespace picosystem {
   blend_func_t _bf = ALPHA;
 
   #ifndef DYNAMIC_BUFFER
-  #ifdef PIXEL_DOUBLE
-    color_t _fb[120 * 120] __attribute__ ((aligned (4))) = { };
+    color_t _fb[SCREEN_WIDTH * SCREEN_HEIGHT] __attribute__ ((aligned (4))) = { };
     buffer_t _SCREEN = {
-      .w = 120,
-      .h = 120,
+      .w = SCREEN_WIDTH,
+      .h = SCREEN_HEIGHT,
       .data = (color_t *)&_fb
     };
-    int32_t _cx = 0, _cy = 0, _cw = 120, _ch = 120;
+    int32_t _cx = 0, _cy = 0, _cw = SCREEN_WIDTH, _ch = SCREEN_HEIGHT;
     buffer_t *SCREEN = &_SCREEN;
-  #else
-    color_t _fb[240 * 240] __attribute__ ((aligned (4))) = { };
-    buffer_t _SCREEN = {
-      .w = 240,
-      .h = 240,
-      .data = (color_t *)&_fb
-    };
-    int32_t _cx = 0, _cy = 0, _cw = 240, _ch = 240;
-    buffer_t *SCREEN = &_SCREEN;
-  #endif
   #else
     buffer_t *SCREEN = nullptr;
-    int32_t _cx = 0, _cy = 0, _cw = 120, _ch = 120;
+    int32_t _cx = 0, _cy = 0, _cw = SCREEN_WIDTH, _ch = SCREEN_HEIGHT;
   #endif
 
   buffer_t *_dt = SCREEN;
 
   #ifdef NO_SPRITESHEET
-    buffer_t *_ss = nullptr;
+    const buffer_t *_ss = nullptr;
   #else
     buffer_t _SPRITESHEET = {
       .w = 128,
       .h = 128,
       .data = (color_t *)_default_sprite_sheet
     };
-    buffer_t *SPRITESHEET = &_SPRITESHEET;
-    buffer_t *_ss = SPRITESHEET;
+    const buffer_t *SPRITESHEET = &_SPRITESHEET;
+    const buffer_t *_ss = SPRITESHEET;
   #endif
 
   #ifdef NO_FONT
-    uint8_t *_font = nullptr;
+    const uint8_t *_font = nullptr;
   #else
-    uint8_t *_font = (uint8_t *)&_default_font[0][0];
+    const uint8_t *_font = &_default_font[0][0];
   #endif
 
 }

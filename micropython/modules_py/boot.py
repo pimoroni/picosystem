@@ -13,8 +13,12 @@ for k, v in picosystem.__dict__.items():
         setattr(builtins, k, v)
 
 
-# Run PicoSystem init() and launches the launcher if A is held.
+# Run PicoSystem init(), then the launcher if A is held, or the escape hatch
+# if B and Y are held.
 init()
 
 if button(A):
     import launcher  # noqa: F401
+
+if button(B) and button(Y):
+    import escape  # noqa: F401
