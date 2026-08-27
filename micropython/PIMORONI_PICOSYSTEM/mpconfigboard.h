@@ -1,6 +1,9 @@
 #define MICROPY_HW_BOARD_NAME          "Pimoroni PicoSystem"
 #define MICROPY_HW_FLASH_STORAGE_BYTES (15 * 1024 * 1024)
 
+void picosystem_board_startup(void);
+#define MICROPY_BOARD_STARTUP picosystem_board_startup
+
 // --- I2C ---
 #ifndef PICO_DEFAULT_I2C
 #define PICO_DEFAULT_I2C 0

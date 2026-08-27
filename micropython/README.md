@@ -18,17 +18,15 @@ Play with audio beeps and boops via the REPL, and get a simple game running with
   - [Recipes \& Common Usage Patterns](#recipes--common-usage-patterns)
       - [Loading a spritesheet](#loading-a-spritesheet)
   - [Build from source](#build-from-source)
-    - [Build mpy-cross:](#build-mpy-cross)
-    - [Navigate to the RP2 port:](#navigate-to-the-rp2-port)
-    - [Configure:](#configure)
-    - [Build:](#build)
+    - [Fetch MicroPython, the tools, and build mpy-cross:](#fetch-micropython-the-tools-and-build-mpy-cross)
+    - [Configure and build:](#configure-and-build)
     - [Install:](#install)
 
 ## Get the latest release
 
 Go to the [GitHub releases page](https://github.com/pimoroni/picosystem/releases/latest) to find the latest release of PicoSystem MicroPython.
 
-* Scroll down and download the .uf2 file. eg: "picosystem-v0.1.0-micropython-v1.17.uf2"
+* Scroll down and download the .uf2 file. eg: "pimoroni-picosystem-v1.0.0-micropython.uf2"
 * Connect your PicoSystem to your computer.
 * Hold X while powering on your PicoSystem to enter bootloader mode.
 * Copy the .uf2 file (linked below) onto the "RPI-RP2" directory that appears.
@@ -165,55 +163,38 @@ spritesheet(my_sprites)
 
 ## Build from source
 
-These steps mirror those in the GitHub actions workflow: https://github.com/pimoroni/picosystem/blob/main/.github/workflows/micropython.yml
+The GitHub Actions workflow and the local build share the same script: https://github.com/pimoroni/picosystem/blob/main/ci/micropython.sh
 
-A customised version of MicroPython is required, since PicoSystem uses some hacks that have not yet been tidied and submitted upstream.
-
-Clone PicoSystem (if you have not already done so):
+It expects two directories - `CI_PROJECT_ROOT` (this repository) and `CI_BUILD_ROOT` (a scratch directory for MicroPython and tools):
 
 ```
 git clone https://github.com/pimoroni/picosystem
+mkdir build && cd build
+export CI_USE_ENV=1
+export CI_PROJECT_ROOT=$(realpath ../picosystem)
+export CI_BUILD_ROOT=$(pwd)
+source $CI_PROJECT_ROOT/ci/micropython.sh
 ```
 
-Clone MicroPython and fetch the submodules (note you must use the `experimental/picosystem` branch for now, this is subject to change):
+### Fetch MicroPython, the tools, and build mpy-cross:
 
 ```
-git clone https://github.com/micropython/micropython
-cd micropython
-git submodule update --init
+ci_prepare_all
 ```
 
-### Build mpy-cross:
+### Configure and build:
 
 ```
-cd ../../mpy-cross
-make
+ci_cmake_configure
+ci_cmake_build
 ```
 
-### Navigate to the RP2 port:
+This leaves `picosystem.uf2` in `CI_BUILD_ROOT`. To get a .uf2 with the examples in its filesystem:
 
 ```
-cd ../ports/rp2
+ci_uf2_append_examples
 ```
-
-### Configure:
-
-You must build against the PicoSystem set of `USER_C_MODULES` and use the `PIMORONI_PICOSYSTEM` board directory. These can be specified when configuring MicroPython, like so:
-
-```
-cmake -S . -B build-picosystem -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=../../../picosystem/micropython/modules/micropython.cmake -DMICROPY_BOARD_DIR=../../../picosystem/micropython/PIMORONI_PICOSYSTEM
-```
-
-### Build:
-
-```
-cmake --build build-picosystem
-```
-
-If you see an error about `pio` headers, don't dispair, just build again. There's some kind of race condition here.
 
 ### Install:
 
-```
-cp build-picosystem/firmware.uf2 /path/to/RPI-RP2/
-```
+Hold X while powering on your PicoSystem to enter bootloader mode, then copy the .uf2 onto the "RPI-RP2" drive that appears.

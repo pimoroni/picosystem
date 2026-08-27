@@ -178,7 +178,7 @@ int main() {
     // calculate fps and round to nearest value (instead of truncating/floor)
     stats.fps = (1000000 - 1) / stats.tick_us + 1;
 
-    if(stats.fps > 40) {
+    if(stats.fps >= 40) {
       // if fps is high enough then we definitely didn't miss vsync
       stats.idle = (wait_us * 100) / stats.tick_us;
     }else{

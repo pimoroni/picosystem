@@ -13,7 +13,7 @@ def image_to_data(image):
     """Generator function to convert a PIL image to 16-bit 565 RGB bytes."""
     # NumPy is much faster at doing this. NumPy code provided by:
     # Keith (https://www.blogger.com/profile/02555547344016007163)
-    pb = numpy.array(image.convert('RGBA')).astype('uint16')
+    pb = numpy.array(image.convert("RGBA")).astype("uint16")
 
     r = pb[:, :, 0] // 16
     g = pb[:, :, 1] // 16

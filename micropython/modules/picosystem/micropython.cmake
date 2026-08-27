@@ -25,6 +25,15 @@ target_sources(usermod_picosystem INTERFACE
 pico_generate_pio_header(usermod_picosystem ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/screen.pio)
 pico_generate_pio_header(usermod_picosystem ${CMAKE_CURRENT_LIST_DIR}/../../../libraries/screen_double.pio)
 
+# The qstr scan preprocesses every usermod source, so the generated PIO headers
+# have to exist before it runs. Listing them as interface sources gets them into
+# MICROPY_SOURCE_QSTR, which the scan depends on. Headers are skipped by the
+# preprocessor step itself.
+target_sources(usermod_picosystem INTERFACE
+    ${CMAKE_CURRENT_BINARY_DIR}/screen.pio.h
+    ${CMAKE_CURRENT_BINARY_DIR}/screen_double.pio.h
+)
+
 target_include_directories(usermod_picosystem INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}
 )

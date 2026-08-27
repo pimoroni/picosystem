@@ -88,7 +88,7 @@ mp_obj_t picosystem_start() {
         update_callback_obj = pimoroni_mp_load_global(qstr_from_str("update"));
         if(update_callback_obj == mp_const_none) {
             //TODO switch out this URL for the final one
-            mp_raise_msg(&mp_type_NameError, "a function named 'update(ticks)' is not defined. Check out https://github.com/pimoroni/picosystem/blob/main/micropython/README.md for instructions");
+            mp_raise_msg(&mp_type_NameError, MP_ERROR_TEXT("a function named 'update(ticks)' is not defined. Check out https://github.com/pimoroni/picosystem/blob/main/micropython/README.md for instructions"));
         }
     }
 
@@ -96,7 +96,7 @@ mp_obj_t picosystem_start() {
         draw_callback_obj = mp_load_global(qstr_from_str("draw"));
         if(draw_callback_obj == mp_const_none) {
             //TODO switch out this URL for the final one
-            mp_raise_msg(&mp_type_NameError, "a function named 'draw()' is not defined. Check out https://github.com/pimoroni/picosystem/blob/main/micropython/README.md for instructions");
+            mp_raise_msg(&mp_type_NameError, MP_ERROR_TEXT("a function named 'draw()' is not defined. Check out https://github.com/pimoroni/picosystem/blob/main/micropython/README.md for instructions"));
         }
     }
 
